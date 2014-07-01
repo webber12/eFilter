@@ -1,0 +1,14 @@
+.eFiltr{display:inline-block;}
+.eFiltr_form{}
+.eFiltr .fltr_cat_zagol{}
+.eFiltr  label.disabled{color:#999999;}
+.eFiltr .fltr_block{display:inline-block;}
+.eFiltr .fltr_block_checkbox{}
+.eFiltr .fltr_block_select{}
+.eFiltr .fltr_name{display:none;}
+.eFiltr .fltr_name_checkbox{}
+.eFiltr .fltr_name_select{}
+.eFiltr .fltr_count{color:#333333;}
+.eFiltr .fltr_count:before{content:"("}
+.eFiltr .fltr_count:after{content:")"}
+.eFiltr  label.disabled .fltr_count{color:#999999;}

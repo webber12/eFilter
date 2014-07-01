@@ -1,0 +1,50 @@
+<?php
+$settings['display'] = 'vertical';
+$settings['fields'] = array(
+	'param_id' => array(
+        'caption' => '<b>Параметр</b>',
+        'type' => 'dropdown',
+        'elements' => '@EVAL return $modx->runSnippet("multiParams", array("action"=>"getParamsToMultiTV"));'
+    ),
+	'cat_name' => array(
+        'caption' => 'Категория',
+        'type' => 'text'
+    ),
+	'list_yes' => array(
+        'caption' => 'В списке',
+        'type' => 'checkbox',
+        'elements' => 'Да==1'
+    ),
+    'fltr_yes' => array(
+        'caption' => 'Фильтр',
+        'type' => 'checkbox',
+        'elements' => 'Да==1'
+    ),
+    'fltr_type' => array(
+        'caption' => 'Тип фильтра',
+        'type' => 'dropdown',
+        'elements' => '||Чекбокс==1||Список==2||Мультисписок==3||Диапазон==4||Произвольное значение==5'
+    ),
+    'fltr_name' => array(
+        'caption' => 'Название фильтра',
+        'type' => 'text'
+    ),
+	'fltr_many' => array(
+        'caption' => 'Множественный',
+        'type' => 'checkbox',
+        'elements' => 'Да==1'
+    ),
+	'param_choose' => array(
+        'caption' => 'Форма выбора',
+        'type' => 'checkbox',
+        'elements' => 'Да==1'
+    )
+);
+$settings['templates'] = array(
+    'outerTpl' => '[+wrapper+]',
+    'rowTpl' => '[+element+]'
+);
+$settings['configuration'] = array(
+    'enablePaste' => false,
+    'enableClear' => true
+);
