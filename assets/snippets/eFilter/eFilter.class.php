@@ -70,21 +70,26 @@ public function getParamTvName() {
 
 public function getFilterParam ($param_tv_name) {
     $filter_param = array();
-    $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid'=>$this->docid, 'tv'=>'1', 'field'=>$param_tv_name));
-    if ($param_tv_val != '') {//если задано для категории, ее и берем
-        $filter_param = json_decode($param_tv_val, true);
-    } else {//если не задано, идем к родителю
-        $parent = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$this->docid} AND parent != 0 LIMIT 0,1");
-        if ($parent) {
-            $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid'=>$parent, 'tv'=>'1', 'field'=>$param_tv_name));
-            if ($param_tv_val != '') {
-                $filter_param = json_decode($param_tv_val, true);
-            } else {//если и у родителя нет, идет к дедушке
-                $parent2 = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$parent} AND parent != 0 LIMIT 0,1");
-                if ($parent2) {
-                    $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid'=>$parent2, 'tv'=>'1', 'field'=>$param_tv_name));
-                    if ($param_tv_val != '') {
-                        $filter_param = json_decode($param_tv_val, true);
+    $tv_config = isset ($this->params['tv_config']) ? $this->params['tv_config'] : '';
+    if ($tv_config != '') {
+        $filter_param = json_decode($tv_config, true);
+    } else {
+        $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid'=>$this->docid, 'tv'=>'1', 'field'=>$param_tv_name));
+        if ($param_tv_val != '') {//если задано для категории, ее и берем
+            $filter_param = json_decode($param_tv_val, true);
+        } else {//если не задано, идем к родителю
+            $parent = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$this->docid} AND parent != 0 LIMIT 0,1");
+            if ($parent) {
+                $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid'=>$parent, 'tv'=>'1', 'field'=>$param_tv_name));
+                if ($param_tv_val != '') {
+                    $filter_param = json_decode($param_tv_val, true);
+                } else {//если и у родителя нет, идет к дедушке
+                    $parent2 = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$parent} AND parent != 0 LIMIT 0,1");
+                    if ($parent2) {
+                        $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid'=>$parent2, 'tv'=>'1', 'field'=>$param_tv_name));
+                        if ($param_tv_val != '') {
+                            $filter_param = json_decode($param_tv_val, true);
+                        }
                     }
                 }
             }
