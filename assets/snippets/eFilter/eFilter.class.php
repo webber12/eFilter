@@ -4,6 +4,12 @@ $output = "";
 
 class eFilter {
 
+//id TV в котором хранятся настройки для категории товара
+public $param_tv_id = '';
+
+//имя TV в котором хранятся настройки для категории товара
+public $param_tv_name = '';
+
 //исходные параметры фильтра из json-строки multiTV
 public $filter_param = array();
 
@@ -52,9 +58,14 @@ public function __construct($modx, $params){
     $this->modx = $modx;
     $this->params = $params;
     $this->param_tv_id = $this->params['param_tv_id'];
+    $this->param_tv_name = $this->getParamTvName();
     $this->product_template_id = $this->params['product_template_id'];
     $this->docid = isset($this->params['docid']) ? $this->params['docid'] : $this->modx->documentIdentifier;
     $this->cfg = (isset($this->params['cfg']) && $this->params['cfg'] != '') ? $this->params['cfg'] : 'default';
+}
+
+public function getParamTvName() {
+    return $this->modx->db->getValue("SELECT `name` FROM " . $this->modx->getFullTableName('site_tmplvars') . " WHERE id = {$this->param_tv_id} LIMIT 0,1");
 }
 
 public function getFilterParam ($param_tv_name) {

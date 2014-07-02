@@ -45,11 +45,9 @@ while($row = $modx->db->getRow($q)){
     $tv_list[$row['id']]['caption'] = $row['caption'];
 }
 
-//находим разрешенные для данного товара параметры
-//имя TV в котором содержится конфиг фильтров
-$param_tv_name = $modx->db->getValue("SELECT name FROM " . $modx->getFullTableName('site_tmplvars') . " WHERE id = {$param_tv_id} LIMIT 0,1");
+
 //разрешененные для данного типа товара параметры
-$tmp = $eFltr->getFilterParam ($param_tv_name);
+$tmp = $eFltr->getFilterParam ($eFltr->param_tv_name);
 if (isset($tmp['fieldValue'])) {
     foreach ($tmp['fieldValue'] as $k=>$v) {
         $allowedParams[$v['param_id']] = '1';

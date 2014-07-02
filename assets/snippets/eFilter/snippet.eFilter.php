@@ -7,13 +7,10 @@ $eFltr = new eFilter($modx, $params);
 
 $eFltr->modx->regClientCSS('assets/snippets/eFilter/html/css/eFilter.css');
 
-//имя TV в котором содержится конфиг фильтров
-$param_tv_name = $modx->db->getValue("SELECT name FROM " . $modx->getFullTableName('site_tmplvars') . " WHERE id = {$param_tv_id} LIMIT 0,1");
-
 
 //получаем значение параметров для категории товара в виде массива
 //если у ресурса не задано - смотрим родителя, если у родителя нет- смотрим дедушку
-$eFltr->filter_param = $eFltr->getFilterParam ($param_tv_name);
+$eFltr->filter_param = $eFltr->getFilterParam ($eFltr->param_tv_name);
 
 
 //формируем основные массивы для описания наших фильтров
