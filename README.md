@@ -39,7 +39,7 @@ tovarParams
 7. На страницах категорий товаров, где необходим фильтр разместить вызов сниппета [!eFilter!] (либо [!eFilter? &tv_config=`[*tovarparams*]`!], где tovarparams - это имя TV, в котором хранится json-конфиг из multiTV - это ускоряет обработку), затем - в нужном месте шаблона плейсхолдер для вывода формы фильтра [+eFilter_form+] и сниппет для вывода результата 
 например
 
-		[!eFilterResult? &addWhereList=`c.template=9` &parents=`[*id*]` &depth=`3` &paginate=`pages` &display=`15` &tvList=`image,price`!]
+		[!eFilterResult? &parents=`[*id*]` &depth=`3` &paginate=`pages` &display=`15` &tvList=`image,price`!]
 		
 		[+pages+]
 		
