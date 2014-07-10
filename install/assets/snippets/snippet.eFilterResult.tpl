@@ -26,14 +26,14 @@ $ids = $modx->getPlaceholder('eFilter_ids');
 //фиксим DocLister - при пустом списке documents и пустом фильтре - отдавать все
 //при пустом списке documents и НЕ пустом фильтре - ничего не отдавать
 if($ids == '' && (isset($_GET['f']))) {
-    $ids = $modx->config['site_start'];
-    $f = $_GET['f'];
-    foreach($f as $k=>$v){
-        foreach ($v as $val) {
-            if($val != '0' && $val != '') {$ids = '2';}
-        }
-    }
-    if ($ids == $modx->config['site_start']) {$ids = '';}    
+	$ids = $modx->config['site_start'];
+	$f = $_GET['f'];
+	foreach($f as $k=>$v){
+		foreach ($v as $val) {
+			if($val != '0' && $val != '') {$ids = '2';}
+		}
+	}
+	if ($ids == $modx->config['site_start']) {$ids = '';}	
 }
 
 //получаем из плейсхолдера список ТВ для вывода в список
@@ -44,15 +44,15 @@ $tv_names = $modx->getPlaceholder('eFilter_tv_names');
 // удаляеи из списка общие исключенные ТВ (в настройках модуля) -
 // (например цена и т.п., которая выводится отдельно и есть у всех
 if (isset($exclude_tvs_from_list) && $exclude_tvs_from_list != '') {
-    $exclude_tvs = explode(',', $exclude_tvs_from_list);
-    foreach($exclude_tvs as $k=>$v){
-        if (isset($tv_names[$v])) {
-            unset($tv_names[$v]);
-        }
-        if (isset($tv_list[$v])) {
-            unset($tv_list[$v]);
-        }
-    }
+	$exclude_tvs = explode(',', $exclude_tvs_from_list);
+	foreach($exclude_tvs as $k=>$v){
+		if (isset($tv_names[$v])) {
+			unset($tv_names[$v]);
+		}
+		if (isset($tv_list[$v])) {
+			unset($tv_list[$v]);
+		}
+	}
 }
 ///////
 
@@ -67,18 +67,18 @@ $paramOuter = isset($paramOuter) ? $paramOuter : '<div class="eFilter_list_param
 
 $tovar_params_tpl = '';
 foreach($tv_names as $tv_id=>$tv_name) {
-    $param_value = '[+tv.' . $tv_list[$tv_id] . '+]';
-    $tovar_params_tpl .= str_replace(
-        array('[+param_title+]', '[+param_value+]', '[+param_id+]'),
-        array($tv_name, $param_value, $tv_id),
-        $paramRow
-    );
+	$param_value = '[+tv.' . $tv_list[$tv_id] . '+]';
+	$tovar_params_tpl .= str_replace(
+		array('[+param_title+]', '[+param_value+]', '[+param_id+]'),
+		array($tv_name, $param_value, $tv_id),
+		$paramRow
+	);
 }
 
 $tovar_params_wrapper = str_replace(
-    array('[+wrapper+]'),
-    array($tovar_params_tpl),
-    $paramOuter
+	array('[+wrapper+]'),
+	array($tovar_params_tpl),
+	$paramOuter
 );
 
 $tovarChunk = $modx->getChunk($tovarChunkName);
@@ -90,17 +90,18 @@ $params['tpl'] = $tovarChunk;
 $out = '';
 $id = isset($id) ? $id : $modx->documentIdentifier;
 if ($ids) {
-    $params['documents'] = $ids;
-    unset($params['parents']);
-    unset($params['depth']);
+	$params['documents'] = $ids;
+	unset($params['parents']);
+	unset($params['depth']);
 } else {
-    $params['parents'] = $id;
+	$params['parents'] = $id;
 }
+$params['addWhereList'] = 'c.template IN(' . $product_templates_id . ')';
 if (!empty($tv_list)) {
-    $params['tvList'] = $params['tvList'] == '' ? implode(',', $tv_list) : $params['tvList'] . ',' . implode(',', $tv_list);
-    $params['renderTV'] = $params['renderTV'] == '' ? implode(',', $tv_list) : $params['renderTV'] . ',' . implode(',', $tv_list);
+	$params['tvList'] = $params['tvList'] == '' ? implode(',', $tv_list) : $params['tvList'] . ',' . implode(',', $tv_list);
+	$params['renderTV'] = $params['renderTV'] == '' ? implode(',', $tv_list) : $params['renderTV'] . ',' . implode(',', $tv_list);
 }
 if (!empty($params)) {
-    $out .= $modx->runSnippet("DocLister", $params);
+	$out .= $modx->runSnippet("DocLister", $params);
 }
 return $out;

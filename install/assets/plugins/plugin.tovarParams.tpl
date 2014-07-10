@@ -23,16 +23,17 @@ if(!defined('MODX_BASE_PATH')) die('What are you doing? Get out of here!');
 
 
 $output = '';
-//массив разрешеннных TV (id)
+//массив разрешеннных ТВ (id)
 $allowedParams = array();
-//массив запрещенных TV (id) - будем их скрывать
+//массив запрещенных ТВ (id) - будем их скрывать
 $disallowedParams = array();
-//массив всех TV из категорий "параметры для товара" - $param_cat_id из модуля
+//массив всех ТВ из категорий "параметры для товара" - $param_cat_id
 $tv_list = array();
 
 if($modx->event->name == 'OnDocFormRender') {
     global $content;
-    if (isset($content['template']) && $content['template'] == $product_template_id) {
+    $product_template_array = explode(',', $product_templates_id);
+    if (isset($content['template']) && in_array($content['template'], $product_template_array)) {
         //узнаем родителя, чтобы грузить конфиг
         if ($id == '0') {
             $pid = $_GET['pid'];

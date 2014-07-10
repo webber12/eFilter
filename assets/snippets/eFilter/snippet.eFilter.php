@@ -50,7 +50,7 @@ if (!empty($eFltr->list_tv_ids)) {
 //он используется для поиска подходящих id ресурсов как без фильтров (категория, вложенность, опубликованность, удаленность и т.п.)
 //так и с использованием фильтра
 //на выходе получаем список id подходящих ресурсов через запятую
-$DLparams = array('parents' => $eFltr->docid, 'tpl' => '@CODE [+id+],', 'depth' => '3', 'addWhereList' => 'c.template =' . $eFltr->params['product_template_id']);
+$DLparams = array('parents' => $eFltr->docid, 'tpl' => '@CODE [+id+],', 'depth' => '3', 'addWhereList' => 'c.template IN(' . $eFltr->params['product_templates_id'].')');
 
 
 //это список всех id товаров данной категории, дальше будем вычленять ненужные :)

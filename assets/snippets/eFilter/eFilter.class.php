@@ -59,7 +59,8 @@ public function __construct($modx, $params){
     $this->params = $params;
     $this->param_tv_id = $this->params['param_tv_id'];
     $this->param_tv_name = $this->getParamTvName();
-    $this->product_template_id = $this->params['product_template_id'];
+    $this->product_templates_id = $this->params['product_templates_id'];
+    $this->product_templates_array = explode(',', $this->product_templates_id);
     $this->docid = isset($this->params['docid']) ? $this->params['docid'] : $this->modx->documentIdentifier;
     $this->cfg = (isset($this->params['cfg']) && $this->params['cfg'] != '') ? $this->params['cfg'] : 'default';
 }
@@ -117,9 +118,11 @@ public function makeFilterArrays() {
 public function getTVNames ($tv_ids = '', $field = 'name') {
     $tv_names = array();
     if ($tv_ids != '') {
-        $q = $this->modx->db->query("SELECT `a`.`id`, `a`.`".$field."` FROM " . $this->modx->getFullTableName('site_tmplvars') . " as `a`, " . $this->modx->getFullTableName('site_tmplvar_templates') . " as `b` WHERE `a`.`id` IN (". $tv_ids.") AND `a`.`id` = `b`.`tmplvarid` AND `b`.`templateid` = " . $this->product_template_id . " ORDER BY `b`.`rank` ASC, `a`.`$field` ASC");
+        $q = $this->modx->db->query("SELECT `a`.`id`, `a`.`".$field."` FROM " . $this->modx->getFullTableName('site_tmplvars') . " as `a`, " . $this->modx->getFullTableName('site_tmplvar_templates') . " as `b` WHERE `a`.`id` IN (". $tv_ids.") AND `a`.`id` = `b`.`tmplvarid` AND `b`.`templateid` IN(" . $this->product_templates_id . ") ORDER BY `b`.`rank` ASC, `a`.`$field` ASC");
         while ($row = $this->modx->db->getRow($q)){
-            $tv_names[$row['id']] = $row[$field];
+            if (!isset($tv_names[$row['id']])) {
+                $tv_names[$row['id']] = $row[$field];
+            }
         }
     }
     return $tv_names;
