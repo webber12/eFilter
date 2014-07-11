@@ -35,6 +35,8 @@ eFilter
 eFilterResult
 multiParams
 tovarParams
+
+
 5. Отредактировать параметры настройки модуля  - &param_tv_id=ID TV параметров товара;string; &product_templates_id=ID шаблонов товара;string; &param_cat_id=ID категории параметров;string; &exclude_tvs_from_list=Не включать ТВ в параметры при выводе;string; &tovarChunkName=Имя чанка вывода товара;string;
 где
 &param_tv_id - id tv в котором размещается вызов multiTV для настройки параметров товара (созданный в пункте 2)
