@@ -63,7 +63,7 @@ public function __construct($modx, $params){
     $this->product_templates_array = explode(',', $this->product_templates_id);
     $this->docid = isset($this->params['docid']) ? $this->params['docid'] : $this->modx->documentIdentifier;
     $this->cfg = (isset($this->params['cfg']) && $this->params['cfg'] != '') ? $this->params['cfg'] : 'default';
-	$this->params['remove_disabled'] = isset($this->params['remove_disabled']) && $this->params['remove_disabled'] != '0' ? '1' : '0';
+    $this->params['remove_disabled'] = isset($this->params['remove_disabled']) && $this->params['remove_disabled'] != '0' ? '1' : '0';
 }
 
 public function getParamTvName() {
