@@ -381,7 +381,9 @@ public function makeAllContentIDs ($DLparams, $input=array()){
                             }
                         }
                         $val = implode(',', $v);
-                        $oper = 'containsOne';
+                        if (count($v) > 1) {
+                            $oper = 'containsOne';
+                        }
                     } else {
                         $val = ($v == '0' || $v == '') ? '' : $v; 
                     }
@@ -431,7 +433,9 @@ public function makeCurrFilterValuesContentIDs ($DLparams, $input=array()){
                                     }
                                 }
                                 $val = implode(',', $v);
-                                $oper = 'containsOne';
+                                if (count($v) > 1) {
+                                    $oper = 'containsOne';
+                                }
                             } else {
                                 $val = ($v == '0' || $v == '') ? '' : $v; 
                             }
