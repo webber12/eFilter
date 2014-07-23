@@ -36,7 +36,15 @@ if($modx->event->name == 'OnDocFormRender') {
     if (isset($content['template']) && in_array($content['template'], $product_template_array)) {
         //узнаем родителя, чтобы грузить конфиг
         if ($id == '0') {
-            $pid = $_GET['pid'];
+            if (isset($_GET['pid'])) {
+                $pid = $_GET['pid'];
+            }
+            if (isset($content['parent'])) {
+                $pid = $content['parent'];
+            }
+            if (isset($_POST['pid'])) {
+                $pid = $_POST['pid'];
+            }
         } else {
             $pid = $modx->db->getValue("SELECT parent FROM " . $modx->getFullTableName('site_content') . " WHERE id={$id} LIMIT 0,1");
         }
