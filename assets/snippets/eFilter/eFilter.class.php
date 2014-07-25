@@ -218,7 +218,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         );
                         break;
                         
-                    case '4': //диапазон
+                    case '3': //диапазон
                         //исходя из запроса $_GET
                         $minval = '';
                         $maxval = '';
