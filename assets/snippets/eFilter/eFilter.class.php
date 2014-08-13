@@ -150,7 +150,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                 uksort($filter_values_full[$tv_id], create_function('$a,$b', 'return is_numeric($a) && is_numeric($b) ? ($a-$b) : strcasecmp(strtolower($a), strtolower($b));'));
                 $wrapper = '';
                 $count = '';
-                //Чекбокс==1||Список==2||Мультисписок==3||Диапазон==4||Произвольное значение==5
+                //||Чекбокс==1||Список==2||Диапазон==3||Флажок==4||Мультиселект==5
                 switch ($filters[$tv_id]['type']) {
                     case '1'://чекбоксы
                         $tplRow = $tplRowCheckbox;
