@@ -149,6 +149,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
             if (isset($filter_values_full[$tv_id])) {
                 uksort($filter_values_full[$tv_id], create_function('$a,$b', 'return is_numeric($a) && is_numeric($b) ? ($a-$b) : strcasecmp(strtolower($a), strtolower($b));'));
                 $wrapper = '';
+                $count = '';
                 //Чекбокс==1||Список==2||Мультисписок==3||Диапазон==4||Произвольное значение==5
                 switch ($filters[$tv_id]['type']) {
                     case '1'://чекбоксы
@@ -168,7 +169,11 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 }
                             }
                             $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
-                            $count =  (isset($filter_values[$tv_id][$k]['count']) ? $filter_values[$tv_id][$k]['count'] : $filter_values_full[$tv_id][$k]['count']);
+                            if ($disabled == '') {
+                                $count =  (isset($filter_values[$tv_id][$k]['count']) ? $filter_values[$tv_id][$k]['count'] : $filter_values_full[$tv_id][$k]['count']);
+                            } else {
+                                $count = '';
+                            }
                             if ($this->params['remove_disabled'] == '0' || $disabled == '') {
                                 $wrapper .= $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+selected+]', '[+disabled+]', '[+count+]'),
@@ -202,7 +207,11 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 }
                             }
                             $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
-                            $count = (isset($filter_values[$tv_id][$k]['count']) ? $filter_values[$tv_id][$k]['count'] : $filter_values_full[$tv_id][$k]['count']);
+                            if ($disabled == '') {
+                                $count = (isset($filter_values[$tv_id][$k]['count']) ? $filter_values[$tv_id][$k]['count'] : $filter_values_full[$tv_id][$k]['count']);
+                            } else {
+                                $count = '';
+                            }
                             if ($this->params['remove_disabled'] == '0' || $disabled == '') {
                                 $wrapper .= $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+selected+]', '[+disabled+]', '[+count+]'),
@@ -251,7 +260,81 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tplOuter
                         );
                         break;
-                        
+
+                    case '4': //radio
+                        $tplRow = $tplRowRadio;
+                        $tplOuter = $tplOuterRadio;
+                        foreach ($filter_values_full[$tv_id] as $k => $v) {
+                            $selected = '  ';
+                            if (isset ($_GET['f'][$tv_id])) {
+                                $flag = false;
+                                if (is_array($_GET['f'][$tv_id]) && in_array($k, $_GET['f'][$tv_id])) {
+                                    $flag = true;
+                                } else {
+                                    $flag =  ($_GET['f'][$tv_id] == $k) ? true : false;
+                                }
+                                if ($flag) {
+                                    $selected = 'checked="checked" ';
+                                }
+                            }
+                            $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
+                            if ($disabled == '') {
+                                $count = (isset($filter_values[$tv_id][$k]['count']) ? $filter_values[$tv_id][$k]['count'] : $filter_values_full[$tv_id][$k]['count']);
+                            } else {
+                                $count = '';
+                            }
+                            if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                                $wrapper .= $this->parseTpl(
+                                    array('[+tv_id+]', '[+value+]', '[+selected+]', '[+disabled+]', '[+count+]'),
+                                    array($tv_id, $k, $selected, $disabled, $count),
+                                    $tplRow
+                                );
+                            }
+                        }
+                        $output .= $this->parseTpl(
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            $tplOuter
+                        );
+                        break;
+
+                    case '5': //мультиселекты
+                        $tplRow = $tplRowMultySelect;
+                        $tplOuter = $tplOuterMultySelect;
+                        foreach ($filter_values_full[$tv_id] as $k => $v) {
+                            $selected = '  ';
+                            if (isset ($_GET['f'][$tv_id])) {
+                                $flag = false;
+                                if (is_array($_GET['f'][$tv_id]) && in_array($k, $_GET['f'][$tv_id])) {
+                                    $flag = true;
+                                } else {
+                                    $flag =  ($_GET['f'][$tv_id] == $k) ? true : false;
+                                }
+                                if ($flag) {
+                                    $selected = 'selected="selected" ';
+                                }
+                            }
+                            $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
+                            if ($disabled == '') {
+                                $count = (isset($filter_values[$tv_id][$k]['count']) ? $filter_values[$tv_id][$k]['count'] : $filter_values_full[$tv_id][$k]['count']);
+                            } else {
+                                $count = '';
+                            }
+                            if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                                $wrapper .= $this->parseTpl(
+                                    array('[+tv_id+]', '[+value+]', '[+selected+]', '[+disabled+]', '[+count+]'),
+                                    array($tv_id, $k, $selected, $disabled, $count),
+                                    $tplRow
+                                );
+                            }
+                        }
+                        $output .= $this->parseTpl(
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            $tplOuter
+                        );
+                        break;
+
                     default: //по умолчанию - чекбоксы
                         $tplRow = $tplRowCheckbox;
                         $tplOuter = $tplOuterCheckbox;
@@ -269,7 +352,11 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 }
                             }
                             $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
-                            $count =  (isset($filter_values[$tv_id][$k]['count']) ? $filter_values[$tv_id][$k]['count'] : $filter_values_full[$tv_id][$k]['count']);
+                            if ($disabled == '') {
+                                $count =  (isset($filter_values[$tv_id][$k]['count']) ? $filter_values[$tv_id][$k]['count'] : $filter_values_full[$tv_id][$k]['count']);
+                            } else {
+                                $count = '';
+                            }
                             if ($this->params['remove_disabled'] == '0' || $disabled == '') {
                                 $wrapper .= $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+selected+]', '[+disabled+]', '[+count+]'),
