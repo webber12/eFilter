@@ -88,13 +88,13 @@ $params['tpl'] = $tovarChunk;
 
 
 $out = '';
-$id = isset($id) ? $id : $modx->documentIdentifier;
+$pid = isset($pid) ? $pid : $modx->documentIdentifier;
 if ($ids) {
 	$params['documents'] = $ids;
 	unset($params['parents']);
 	unset($params['depth']);
 } else {
-	$params['parents'] = $id;
+	$params['parents'] = $pid;
 }
 $params['addWhereList'] = 'c.template IN(' . $product_templates_id . ')';
 if (!empty($tv_list)) {
