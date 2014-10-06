@@ -335,6 +335,40 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         );
                         break;
 
+                    case '6': //диапазон
+                        //исходя из запроса $_GET
+                        $minval = '';
+                        $maxval = '';
+                        //смотрим мин. и макс. значения исходя из списка доступных contentid и запроса $_GET
+                        //т.е. реальный доступный диапазон значений "от и до"
+                        $minvalcurr = '';
+                        $maxvalcurr = '';
+                        
+                        if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '') {
+                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(".$this->curr_filter_values[$tv_id]['content_ids'].") AND tmplvarid = {$tv_id}");
+                            $minmax = $this->modx->db->getRow($q);
+                            $minvalcurr = $minmax['min'];
+                            $maxvalcurr = $minmax['max'];
+                        }
+                        
+                        $tplRow = $tplRowSlider;
+                        $tplOuter = $tplOuterSlider;
+                        /*$minvalcurr = isset($_GET['f'][$tv_id]['min']) && (int)$_GET['f'][$tv_id]['min'] != 0 && (int)$_GET['f'][$tv_id]['min'] >= (int)$minvalcurr ? (int)$_GET['f'][$tv_id]['min'] : $minvalcurr;
+                        $maxvalcurr = isset($_GET['f'][$tv_id]['max']) && (int)$_GET['f'][$tv_id]['max'] != 0 && (int)$_GET['f'][$tv_id]['max'] <= (int)$maxvalcurr  ? (int)$_GET['f'][$tv_id]['max'] : $maxvalcurr;*/
+                        $minval = isset($_GET['f'][$tv_id]['min']) && (int)$_GET['f'][$tv_id]['min'] != 0 ? (int)$_GET['f'][$tv_id]['min'] : $minval;
+                        $maxval = isset($_GET['f'][$tv_id]['max']) && (int)$_GET['f'][$tv_id]['max'] != 0 ? (int)$_GET['f'][$tv_id]['max'] : $maxval;
+                        $wrapper .= $this->parseTpl(
+                            array('[+tv_id+]', '[+minval+]', '[+maxval+]', '[+minvalcurr+]', '[+maxvalcurr+]'),
+                            array($tv_id, $minval, $maxval, $minvalcurr, $maxvalcurr),
+                            $tplRow
+                        );
+                        $output .= $this->parseTpl(
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            $tplOuter
+                        );
+                        break;
+
                     default: //по умолчанию - чекбоксы
                         $tplRow = $tplRowCheckbox;
                         $tplOuter = $tplOuterCheckbox;
