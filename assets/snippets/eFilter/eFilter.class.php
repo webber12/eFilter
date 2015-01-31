@@ -630,11 +630,12 @@ public function prepareGetParams ($fp) {
         foreach ($tmp as $v) {
             $tmp2 = explode("~", $v);
             $tmp3 = isset($tmp2[1]) && $tmp2[1] != '' ? explode(",", $tmp2[1]) : array();
+            $tv_id = (int)$tmp2[0];
             if (isset($tmp2[2]) && $tmp2[2] == 'minmax') {
-                $out['f'][$tmp2[0]]['min'] = $tmp3[0];
-                $out['f'][$tmp2[0]]['max'] = ($tmp3[1] != '' ? $tmp3[1] : '');
+                $out['f'][$tv_id]['min'] = $tmp3[0];
+                $out['f'][$tv_id]['max'] = ($tmp3[1] != '' ? $tmp3[1] : '');
             } else {
-                $out['f'][$tmp2[0]] = $tmp3;
+                $out['f'][$tv_id] = $tmp3;
             }
         }
         if (!empty($out['f'])) {
