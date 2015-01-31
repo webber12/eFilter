@@ -53,6 +53,9 @@ public $filter_values = array();
 //текущие значения фильтра для поиска tv_id =>array()
 public $curr_filter_values = array();
 
+//текущие значения фильтра для поиска из $_GET['f']
+public $fp = array();
+
 
 public function __construct($modx, $params){
     $this->modx = $modx;
@@ -64,6 +67,8 @@ public function __construct($modx, $params){
     $this->docid = isset($this->params['docid']) ? $this->params['docid'] : $this->modx->documentIdentifier;
     $this->cfg = (isset($this->params['cfg']) && $this->params['cfg'] != '') ? $this->params['cfg'] : 'default';
     $this->params['remove_disabled'] = isset($this->params['remove_disabled']) && $this->params['remove_disabled'] != '0' ? '1' : '0';
+    $this->fp = isset($_GET['f']) ? $_GET['f'] : array();
+    $this->prepareGetParams($this->fp);
 }
 
 public function getParamTvName() {
@@ -157,12 +162,12 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplOuter = $tplOuterCheckbox;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $selected = '  ';
-                            if (isset ($_GET['f'][$tv_id])) {
+                            if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($_GET['f'][$tv_id]) && in_array($k, $_GET['f'][$tv_id])) {
+                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
                                     $flag = true;
                                 } else {
-                                    $flag =  ($_GET['f'][$tv_id] == $k) ? true : false;
+                                    $flag =  ($this->fp[$tv_id] == $k) ? true : false;
                                 }
                                 if ($flag) {
                                     $selected = 'checked="checked" ';
@@ -195,12 +200,12 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplOuter = $tplOuterSelect;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $selected = '  ';
-                            if (isset ($_GET['f'][$tv_id])) {
+                            if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($_GET['f'][$tv_id]) && in_array($k, $_GET['f'][$tv_id])) {
+                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
                                     $flag = true;
                                 } else {
-                                    $flag =  ($_GET['f'][$tv_id] == $k) ? true : false;
+                                    $flag =  ($this->fp[$tv_id] == $k) ? true : false;
                                 }
                                 if ($flag) {
                                     $selected = 'selected="selected" ';
@@ -245,10 +250,10 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         
                         $tplRow = $tplRowInterval;
                         $tplOuter = $tplOuterInterval;
-                        $minvalcurr = isset($_GET['f'][$tv_id]['min']) && (int)$_GET['f'][$tv_id]['min'] != 0 && (int)$_GET['f'][$tv_id]['min'] >= (int)$minvalcurr ? (int)$_GET['f'][$tv_id]['min'] : $minvalcurr;
-                        $maxvalcurr = isset($_GET['f'][$tv_id]['max']) && (int)$_GET['f'][$tv_id]['max'] != 0 && (int)$_GET['f'][$tv_id]['max'] <= (int)$maxvalcurr  ? (int)$_GET['f'][$tv_id]['max'] : $maxvalcurr;
-                        $minval = isset($_GET['f'][$tv_id]['min']) && (int)$_GET['f'][$tv_id]['min'] != 0 ? (int)$_GET['f'][$tv_id]['min'] : $minval;
-                        $maxval = isset($_GET['f'][$tv_id]['max']) && (int)$_GET['f'][$tv_id]['max'] != 0 ? (int)$_GET['f'][$tv_id]['max'] : $maxval;
+                        $minvalcurr = isset($this->fp[$tv_id]['min']) && (int)$this->fp[$tv_id]['min'] != 0 && (int)$this->fp[$tv_id]['min'] >= (int)$minvalcurr ? (int)$this->fp[$tv_id]['min'] : $minvalcurr;
+                        $maxvalcurr = isset($this->fp[$tv_id]['max']) && (int)$this->fp[$tv_id]['max'] != 0 && (int)$this->fp[$tv_id]['max'] <= (int)$maxvalcurr  ? (int)$this->fp[$tv_id]['max'] : $maxvalcurr;
+                        $minval = isset($this->fp[$tv_id]['min']) && (int)$this->fp[$tv_id]['min'] != 0 ? (int)$this->fp[$tv_id]['min'] : $minval;
+                        $maxval = isset($this->fp[$tv_id]['max']) && (int)$this->fp[$tv_id]['max'] != 0 ? (int)$this->fp[$tv_id]['max'] : $maxval;
                         $wrapper .= $this->parseTpl(
                             array('[+tv_id+]', '[+minval+]', '[+maxval+]', '[+minvalcurr+]', '[+maxvalcurr+]'),
                             array($tv_id, $minval, $maxval, $minvalcurr, $maxvalcurr),
@@ -266,12 +271,12 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplOuter = $tplOuterRadio;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $selected = '  ';
-                            if (isset ($_GET['f'][$tv_id])) {
+                            if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($_GET['f'][$tv_id]) && in_array($k, $_GET['f'][$tv_id])) {
+                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
                                     $flag = true;
                                 } else {
-                                    $flag =  ($_GET['f'][$tv_id] == $k) ? true : false;
+                                    $flag =  ($this->fp[$tv_id] == $k) ? true : false;
                                 }
                                 if ($flag) {
                                     $selected = 'checked="checked" ';
@@ -303,12 +308,12 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplOuter = $tplOuterMultySelect;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $selected = '  ';
-                            if (isset ($_GET['f'][$tv_id])) {
+                            if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($_GET['f'][$tv_id]) && in_array($k, $_GET['f'][$tv_id])) {
+                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
                                     $flag = true;
                                 } else {
-                                    $flag =  ($_GET['f'][$tv_id] == $k) ? true : false;
+                                    $flag =  ($this->fp[$tv_id] == $k) ? true : false;
                                 }
                                 if ($flag) {
                                     $selected = 'selected="selected" ';
@@ -367,10 +372,10 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         
                         $tplRow = $tplRowSlider;
                         $tplOuter = $tplOuterSlider;
-                        /*$minvalcurr = isset($_GET['f'][$tv_id]['min']) && (int)$_GET['f'][$tv_id]['min'] != 0 && (int)$_GET['f'][$tv_id]['min'] >= (int)$minvalcurr ? (int)$_GET['f'][$tv_id]['min'] : $minvalcurr;
-                        $maxvalcurr = isset($_GET['f'][$tv_id]['max']) && (int)$_GET['f'][$tv_id]['max'] != 0 && (int)$_GET['f'][$tv_id]['max'] <= (int)$maxvalcurr  ? (int)$_GET['f'][$tv_id]['max'] : $maxvalcurr;*/
-                        $minval = isset($_GET['f'][$tv_id]['min']) && (int)$_GET['f'][$tv_id]['min'] != 0 ? (int)$_GET['f'][$tv_id]['min'] : $minval;
-                        $maxval = isset($_GET['f'][$tv_id]['max']) && (int)$_GET['f'][$tv_id]['max'] != 0 ? (int)$_GET['f'][$tv_id]['max'] : $maxval;
+                        /*$minvalcurr = isset($this->fp[$tv_id]['min']) && (int)$this->fp[$tv_id]['min'] != 0 && (int)$this->fp[$tv_id]['min'] >= (int)$minvalcurr ? (int)$this->fp[$tv_id]['min'] : $minvalcurr;
+                        $maxvalcurr = isset($this->fp[$tv_id]['max']) && (int)$this->fp[$tv_id]['max'] != 0 && (int)$this->fp[$tv_id]['max'] <= (int)$maxvalcurr  ? (int)$this->fp[$tv_id]['max'] : $maxvalcurr;*/
+                        $minval = isset($this->fp[$tv_id]['min']) && (int)$this->fp[$tv_id]['min'] != 0 ? (int)$this->fp[$tv_id]['min'] : $minval;
+                        $maxval = isset($this->fp[$tv_id]['max']) && (int)$this->fp[$tv_id]['max'] != 0 ? (int)$this->fp[$tv_id]['max'] : $maxval;
                         $wrapper .= $this->parseTpl(
                             array('[+tv_id+]', '[+minval+]', '[+maxval+]', '[+minvalcurr+]', '[+maxvalcurr+]'),
                             array($tv_id, $minval, $maxval, $minvalcurr, $maxvalcurr),
@@ -388,12 +393,12 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplOuter = $tplOuterCheckbox;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $selected = '  ';
-                            if (isset ($_GET['f'][$tv_id])) {
+                            if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($_GET['f'][$tv_id]) && in_array($k, $_GET['f'][$tv_id])) {
+                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
                                     $flag = true;
                                 } else {
-                                    $flag =  ($_GET['f'][$tv_id] == $k) ? true : false;
+                                    $flag =  ($this->fp[$tv_id] == $k) ? true : false;
                                 }
                                 if ($flag) {
                                     $selected = 'checked="checked" ';
@@ -490,10 +495,11 @@ public function getFilterFutureValues ($curr_filter_values, $filter_tv_ids = '')
 }
 
 
-public function makeAllContentIDs ($DLparams, $input=array()){
+public function makeAllContentIDs ($DLparams){
     $this->content_ids = '';
-    if (isset($input) && !empty($input) && isset($input['f'])) {//разбираем фильтры из строки GET и добавляем их в фильтр DocLister
-        $f = $input['f'];
+    /*if (isset($input) && !empty($input) && isset($input['f'])) {//разбираем фильтры из строки GET и добавляем их в фильтр DocLister*/
+    if (!empty($this->fp)) {//разбираем фильтры из строки GET и добавляем их в фильтр DocLister
+        $f = $this->fp;
         $this->content_ids = '';
         if (is_array($f)) {
             $fltr = '';
@@ -542,9 +548,10 @@ public function makeAllContentIDs ($DLparams, $input=array()){
     return $this->content_ids;
 }
 
-public function makeCurrFilterValuesContentIDs ($DLparams, $input=array()){
-    if (isset($input) && !empty($input) && isset($input['f'])) {//разбираем фильтры из строки GET и считаем возможные значения и количество для этих фильтров без учета одного из них (выбранного)
-        $f = $input['f'];
+public function makeCurrFilterValuesContentIDs ($DLparams){
+    /*if (isset($input) && !empty($input) && isset($input['f'])) {//разбираем фильтры из строки GET и считаем возможные значения и количество для этих фильтров без учета одного из них (выбранного)*/
+    if (!empty($this->fp)) {//разбираем фильтры из строки GET и считаем возможные значения и количество для этих фильтров без учета одного из них (выбранного)
+        $f = $this->fp;
         if (is_array($f)) {
             foreach ($this->filter_tv_names as $fid =>$name) {
                 $fltr = '';
@@ -606,5 +613,38 @@ public function setPlaceholders ($array = array()) {
     }
 }
 
+public function prepareGetParams ($fp) {
+    $out = array();
+    if (is_scalar($fp) && $fp != '') {
+        //расшифровываем GET-строку формата f=1~значение1,значение2||2~значение3,значение4||3~100,300~minmax и преобразуем ее в обычный массив $f, 
+        //где 1,2,3 - id соответствующих тв для фильтрации, значение1,значение2 - из значения через запятую
+        //значения изначально должны быть url-кодированными, например через метод js encodeURIComponent
+        //на выходе получим нужный нам массив 
+        //$f = array(
+        //    "1" => array("значение1", "значение2"),
+        //    "2" => array("значение3", "значение4"),
+        //    "3" => array ("min" => "100", "max" => "300")
+        //);
+        $fp = urldecode($fp);
+        $tmp = explode("||", $fp);
+        foreach ($tmp as $v) {
+            $tmp2 = explode("~", $v);
+            $tmp3 = isset($tmp2[1]) && $tmp2[1] != '' ? explode(",", $tmp2[1]) : array();
+            if (isset($tmp2[2]) && $tmp2[2] == 'minmax') {
+                $out['f'][$tmp2[0]]['min'] = $tmp3[0];
+                $out['f'][$tmp2[0]]['max'] = ($tmp3[1] != '' ? $tmp3[1] : '');
+            } else {
+                $out['f'][$tmp2[0]] = $tmp3;
+            }
+        }
+        if (!empty($out['f'])) {
+            $this->fp = $out['f'];
+        } else {
+            $this->fp = array();
+        }
+    } else {
+        $this->fp = $fp;
+    }
+}
 
 }

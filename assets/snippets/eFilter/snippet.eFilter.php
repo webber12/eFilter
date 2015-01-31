@@ -63,7 +63,7 @@ $eFltr->content_ids_full = str_replace(' ', '', substr($eFltr->content_ids_full,
 //это пойдет в плейсхолдер (список documents через запятую
 //как все подходящие к данному фильтру товары
 //для подстановки в вызов DocLister и вывода списка отфильтрованных товаров на сайте
-$eFltr->makeAllContentIDs($DLparams, $_GET);
+$eFltr->makeAllContentIDs($DLparams);
 
 
 //начинаем формировать фильтр
@@ -71,7 +71,7 @@ $eFltr->makeAllContentIDs($DLparams, $_GET);
 //формируем по итогам массив $eFltr->curr_filter_values
 //в котором каждому id тв фильтра соответствует список документов, которые подходят для всего фильтра за 
 //исключением текущего
-$eFltr->makeCurrFilterValuesContentIDs($DLparams, $_GET);
+$eFltr->makeCurrFilterValuesContentIDs($DLparams);
 
 //берем все доступные значения для параметров до фильтрации
 $eFltr->filter_values_full = $eFltr->getFilterValues ($eFltr->content_ids_full, $eFltr->filter_tv_ids);
