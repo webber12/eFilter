@@ -678,6 +678,7 @@ public function getDefaultTVValues($array = array()) {
             }
         }
     }
+	$this->modx->ef_elements_name = $out;
     return $out;
 }
 
