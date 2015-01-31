@@ -49,8 +49,8 @@ $tplOuterInterval = '
 //радио - radio 
 $tplRowRadio = '<input type="radio" name="f[[+tv_id+]][]" value="[+value+]" [+selected+] [+disabled+]  onchange="document.getElementById(\'eFiltr\').submit();"> [+name+] <span class="fltr_count">[+count+]</span>';
 $tplOuterRadio = '
-	<div class="fltr_block fltr_block_select fltr_block[+tv_id+]">
-		<span class="fltr_name fltr_name_select fltr_name[+tv_id+]">[+name+]</span>
+	<div class="fltr_block fltr_block_radio fltr_block[+tv_id+]">
+		<span class="fltr_name fltr_name_radio fltr_name[+tv_id+]">[+name+]</span>
 		<input type="radio" name="f[[+tv_id+]][]" value="0" onchange="document.getElementById(\'eFiltr\').submit();" checked="checked"> Все</span>
 		[+wrapper+]
 	</div>
@@ -59,8 +59,8 @@ $tplOuterRadio = '
 //выпадающий список - мультиселект
 $tplRowMultySelect = '<option value="[+value+]" [+selected+] [+disabled+]>[+name+] ([+count+])</option>';
 $tplOuterMultySelect = '
-	<div class="fltr_block fltr_block_select fltr_block[+tv_id+]">
-		<span class="fltr_name fltr_name_select fltr_name[+tv_id+]">[+name+]</span>
+	<div class="fltr_block fltr_block_multy fltr_block[+tv_id+]">
+		<span class="fltr_name fltr_name_multy fltr_name[+tv_id+]">[+name+]</span>
 		<select name="f[[+tv_id+]][]" onchange="document.getElementById(\'eFiltr\').submit();" multiple size="5">
 			<option value="0"> - [+name+] - </option>
 			[+wrapper+]
