@@ -653,7 +653,6 @@ public function prepareGetParams ($fp) {
             }
         }
     }
-	print_r($tmp);
     $this->fp = $tmp;
 }
 
