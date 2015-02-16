@@ -25,6 +25,16 @@ $ids = $modx->getPlaceholder('eFilter_ids');
 
 //фиксим DocLister - при пустом списке documents и пустом фильтре - отдавать все
 //при пустом списке documents и НЕ пустом фильтре - ничего не отдавать
+if($ids == '' && (isset($_GET))) {
+	$ids = $modx->config['site_start'];
+	$f = $_GET;
+	foreach($f as $k => $val){
+		if (preg_match("/^f(\d+)/i", $k, $matches)) {
+			if($val != '0' && $val != '') {$ids = '2';}
+		}
+	}
+	if ($ids == $modx->config['site_start']) {$ids = '';}	
+}
 if($ids == '' && (isset($_GET['f']))) {
 	$ids = $modx->config['site_start'];
 	$f = $_GET['f'];
