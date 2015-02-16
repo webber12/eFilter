@@ -67,7 +67,7 @@ public function __construct($modx, $params){
     $this->docid = isset($this->params['docid']) ? $this->params['docid'] : $this->modx->documentIdentifier;
     $this->cfg = (isset($this->params['cfg']) && $this->params['cfg'] != '') ? $this->params['cfg'] : 'default';
     $this->params['remove_disabled'] = isset($this->params['remove_disabled']) && $this->params['remove_disabled'] != '0' ? '1' : '0';
-    $this->fp = isset($_GET['f']) ? $_GET['f'] : array();
+    $this->fp = isset($_GET) ? $_GET : array();
     $this->prepareGetParams($this->fp);
 }
 
@@ -620,6 +620,44 @@ public function setPlaceholders ($array = array()) {
 }
 
 public function prepareGetParams ($fp) {
+    $tmp = array();
+    if (isset($fp['f']) && is_array($fp['f'])) {
+        $tmp = $fp['f'];
+    } else {
+        //расшифровываем GET-строку формата f16=значение1,значение2&f17=значение3,значение4&f18=minmax~100,300 и преобразуем ее в обычный стандартный массив для обработки eFilter, 
+        // array(
+        //    "16" => array("значение1", "значение2"),
+        //    "17" => array("значение3", "значение4"),
+        //    "18" => array ("min" => "100", "max" => "300")
+        //);
+        //значения изначально должны быть url-кодированными, например через метод js encodeURIComponent
+        foreach ($fp as $k => $v) {
+            if (preg_match("/^f(\d+)/i", $k, $matches)) {
+                $key = $matches[1];
+                if (isset($matches[1]) && is_scalar($matches[1])) {
+                    $minmax = strpos($v, 'minmax~');
+                    if ($minmax !== false) {
+                        $v = str_replace('minmax~', '', $v);
+                    }
+                    $tmp2 = explode(',', $v);
+                    foreach ($tmp2 as $k2 => $v2) {
+                        $tmp2[$k2] = urldecode($v2);
+                    }
+                    if ($minmax !== false) {
+                        $tmp[$matches[1]]['min'] = isset($tmp2[0]) ? $tmp2[0] : '';
+                        $tmp[$matches[1]]['max'] = isset($tmp2[1]) ? $tmp2[1] : '';
+                    } else {
+                        $tmp[$matches[1]] = $tmp2;
+                    }
+                }
+            }
+        }
+    }
+	print_r($tmp);
+    $this->fp = $tmp;
+}
+
+public function prepareGetParamsOld ($fp) {
     $out = array();
     if (is_scalar($fp) && $fp != '') {
         //расшифровываем GET-строку формата f=1~значение1,значение2||2~значение3,значение4||3~100,300~minmax и преобразуем ее в обычный массив $f, 
