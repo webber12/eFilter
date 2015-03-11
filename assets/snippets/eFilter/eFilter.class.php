@@ -148,7 +148,9 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
     }
     
     $output = '';
+    $fc = 0;
     foreach ($filter_cats as $cat_name => $tmp) {
+        $output .= '<div class="eFilter_cat eFilter_cat' . $fc . '">';
         if (count($filter_cats) > 1) {$output .= $this->parseTpl(array('[+cat_name+]'), array($cat_name), $filterCatName);}
         $tv_elements = $this->getDefaultTVValues($tmp);
         foreach ($tmp as $tv_id => $tmp2) {
@@ -434,6 +436,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
 
             }
         }
+        $fc++;
+        $output .= '</div>';
     }
     $tpl = $tplFilterForm;
     $output = $output != '' ? $this->parseTpl(array('[+url+]', '[+wrapper+]'), array($this->modx->makeUrl($this->modx->documentIdentifier), $output), $tpl) : '';
