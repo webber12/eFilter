@@ -7,7 +7,7 @@ $eFltr = new eFilter($modx, $params);
 
 $eFltr->modx->regClientCSS('assets/snippets/eFilter/html/css/eFilter.css');
 $eFltr->modx->regClientCSS('assets/snippets/eFilter/html/css/slider.css');
-$eFltr->modx->regClientStartupScript('assets/snippets/eFilter/html/js/jquery.ui-slider.js');
+$eFltr->modx->regClientStartupScript('assets/snippets/eFilter/html/js/jquery-ui.min.js');
 
 //получаем значение параметров для категории товара в виде массива
 //если у ресурса не задано - смотрим родителя, если у родителя нет- смотрим дедушку
