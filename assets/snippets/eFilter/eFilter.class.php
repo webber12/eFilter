@@ -184,11 +184,11 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 $count = '';
                             }
                             if ($this->params['remove_disabled'] == '0' || $disabled == '') {
-                                $wrapper .= $this->parseTpl(
+                                $wrapper .= $k != '' ? $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]'),
                                     array($tv_id, $k, $tv_val_name, $selected, $disabled, $count),
                                     $tplRow
-                                );
+                                ) : '';
                             }
                         }
                         
@@ -419,11 +419,11 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 $count = '';
                             }
                             if ($this->params['remove_disabled'] == '0' || $disabled == '') {
-                                $wrapper .= $this->parseTpl(
+                                $wrapper .= $k != '' ? $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]'),
                                     array($tv_id, $k, $tv_val_name, $selected, $disabled, $count),
                                     $tplRow
-                                );
+                                ) : '';
                             }
                         }
                         $output .= $this->parseTpl(
