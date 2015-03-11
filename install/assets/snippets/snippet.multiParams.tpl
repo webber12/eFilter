@@ -22,6 +22,8 @@
  // @EVAL return $modx->runSnippet("multiParams", array("parent"=>"2")); - выглядит это примерно так в модуле
  // где 2 - это id родителя нужного списка в отдельной таблице (он формируется автоматом)
  // 
+ // если вам не нужно первое пустое значение в tv (например, у вас тип ввода - чекбокс- вызывайте multiParams с дополнительным параметром "firstEmpty" => "0"
+ //
  // если же вы предпочитаете хранить списки возможных значений TV в дереве, то добавляйте к вызову в поле "возможные значения" дополнительный параметр 'action'=>'getParamsFromTree'
  // т.е. итоговый вызов в поле "возможные значения" для TV будет выглядеть так
  // @EVAL return $modx->runSnippet("multiParams", array("parent"=>"25", "action"=>"getParamsFromTree"));
@@ -29,29 +31,34 @@
  // 
  
 $out = '';
+$firstEmpty = isset($firstEmpty) && (int)$firstEmpty == 0 ? false : true;
+if ($firstEmpty) {
+    $out .= '||';
+}
 switch ($action){
     case 'getParamsToMultiTV' :
         $sql = "SELECT `id`,`caption` FROM " . $modx->getFullTableName('site_tmplvars') . " WHERE `category` IN (" . $param_cat_id . ") ORDER BY `rank` ASC, `caption` ASC";
         $q = $modx->db->query($sql);
         while($row = $modx->db->getRow($q)){
-            $out .= '||' . $row['caption'] . '==' . $row['id'];
+            $out .= $row['caption'] . '==' . $row['id'] . '||';
         }
         break;
     
     case 'getParamsFromTree' :
         $sql = "SELECT pagetitle, id FROM " . $modx->getFullTableName('site_content') . " WHERE parent={$parent} ORDER BY menuindex ASC, pagetitle ASC";
         $q = $modx->db->query($sql);
-        while ($row = $modx->db->getRow($q)){
-            $out .= '||' . $row['pagetitle'];
-        }    
+        while ($row = $modx->db->getRow($q)) {
+            $out .= $row['pagetitle'] . '||';
+        }
         break;
     
     default:
         $sql = "SELECT title, id FROM " . $modx->getFullTableName('list_value_table') . " WHERE parent={$parent} ORDER BY sort ASC, title ASC";
         $q = $modx->db->query($sql);
-        while ($row = $modx->db->getRow($q)){
-            $out .= '||' . $row['title'];
+        while ($row = $modx->db->getRow($q)) {
+            $out .= $row['title'] . '||';
         }
         break;
 }
+$out = substr($out, 0, -2);
 return $out;
