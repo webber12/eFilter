@@ -8,6 +8,10 @@ $eFltr = new eFilter($modx, $params);
 $eFltr->modx->regClientCSS('assets/snippets/eFilter/html/css/eFilter.css');
 $eFltr->modx->regClientCSS('assets/snippets/eFilter/html/css/slider.css');
 $eFltr->modx->regClientStartupScript('assets/snippets/eFilter/html/js/jquery-ui.min.js');
+if (isset($params['ajax']) && $params['ajax'] == '1') {
+    $eFltr->modx->regClientStartupScript('<script>var eFiltrAjax = "1";</script>', array('plaintext' => true));
+}
+$eFltr->modx->regClientStartupScript('assets/snippets/eFilter/html/js/eFilter.js');
 
 //получаем значение параметров для категории товара в виде массива
 //если у ресурса не задано - смотрим родителя, если у родителя нет- смотрим дедушку
