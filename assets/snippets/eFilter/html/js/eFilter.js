@@ -17,12 +17,21 @@ $(document).on("submit", "form#eFiltr", function(e){
 			beforeSend:function(){
 				$("#eFiltr").css({'opacity':'0.5'});
 				$("#eFiltr_results").css({'opacity':'0.5'});
+				if (typeof(beforeFilterSend) == 'function') {
+					beforeFilterSend(_form);
+				}
 			},                   
 			success: function(msg){
+				if (typeof(afterFilterSend) == 'function') {
+					afterFilterSend(msg);
+				}
 				var new_form = $(msg).find("#eFiltr").html();
 				$("#eFiltr").html(new_form).css({'opacity':'1'});
 				var new_result = $(msg).find("#eFiltr_results").html();
 				$("#eFiltr_results").html(new_result).css({'opacity':'1'});
+				if (typeof(afterFilterComplete) == 'function') {
+					afterFilterComplete(_form);
+				}
 			}
 		})
 	}
