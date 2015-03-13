@@ -125,3 +125,16 @@ $("#slider[+tv_id+]").slider({
 </script>
 ';
 
+//цвета
+$tplRowColors = '
+	<label class="[+disabled+] [+label_selected+]" style="background:[+value+]" title="[+name+]">
+		<input type="checkbox" name="f[[+tv_id+]][]" value="[+value+]" [+selected+] [+disabled+]> [+name+] <span class="fltr_count">[+count+]</span>
+	</label>
+';
+$tplOuterColors = '
+	<div class="fltr_block fltr_block_checkbox fltr_colors fltr_block[+tv_id+] fltr_colors[+tv_id+]">
+		<span class="fltr_name fltr_name_checkbox fltr_name[+tv_id+]">[+name+]</span>
+		[+wrapper+]
+	</div>
+';
+

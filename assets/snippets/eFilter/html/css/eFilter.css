@@ -13,3 +13,8 @@
 .eFiltr .fltr_count:before{content:"("}
 .eFiltr .fltr_count:after{content:")"}
 .eFiltr  label.disabled .fltr_count{color:#999999;}
+.eFiltr .fltr_colors{}
+.eFiltr .fltr_colors label{width:15px;height:15px;margin-right:2px;display:inline-block;color:transparent;font-size:0;cursor:pointer;border:solid 1px #ffffff;}
+.eFiltr .fltr_colors label.active{border:solid 1px #e71b00;}
+.eFiltr .fltr_colors label.disabled{opacity:0.5;cursor:default !important;}
+.eFiltr .fltr_colors label input{display:none;}

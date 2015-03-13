@@ -395,6 +395,47 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         );
                         break;
 
+                    case '7'://Цвет
+                        $tplRow = $tplRowColors;
+                        $tplOuter = $tplOuterColors;
+                        foreach ($filter_values_full[$tv_id] as $k => $v) {
+                            $tv_val_name = isset($tv_elements[$k]) ? $tv_elements[$k] : $k;
+                            $selected = '  ';
+                            $label_selected = '';
+                            if (isset ($this->fp[$tv_id])) {
+                                $flag = false;
+                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
+                                    $flag = true;
+                                } else {
+                                    $flag =  ($this->fp[$tv_id] == $k) ? true : false;
+                                }
+                                if ($flag) {
+                                    $selected = 'checked="checked" ';
+                                    $label_selected = 'active';
+                                }
+                            }
+                            $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
+                            if ($disabled == '') {
+                                $count =  (isset($filter_values[$tv_id][$k]['count']) ? $filter_values[$tv_id][$k]['count'] : $filter_values_full[$tv_id][$k]['count']);
+                            } else {
+                                $count = '';
+                            }
+                            if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                                $wrapper .= $k != '' ? $this->parseTpl(
+                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+label_selected+]', '[+disabled+]', '[+count+]'),
+                                    array($tv_id, $k, $tv_val_name, $selected, $label_selected, $disabled, $count),
+                                    $tplRow
+                                ) : '';
+                            }
+                        }
+                        
+                        $output .= $this->parseTpl(
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            $tplOuter
+                        );
+                        break;
+                    
                     default: //по умолчанию - чекбоксы
                         $tplRow = $tplRowCheckbox;
                         $tplOuter = $tplOuterCheckbox;
