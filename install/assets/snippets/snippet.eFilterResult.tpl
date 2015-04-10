@@ -99,7 +99,7 @@ $params['tpl'] = $tovarChunk;
 
 $out = '';
 $pid = isset($pid) ? $pid : $modx->documentIdentifier;
-$params['ownerTPL'] = isset($ownerTPL) ? $ownerTPL :'@CODE: <div id="eFiltr_results">[+dl.wrap+][+pages+]</div>';
+$params['ownerTPL'] = isset($ownerTPL) ? $ownerTPL :'@CODE: <div id="eFiltr_results"><div class="eFiltr_loader"></div>[+dl.wrap+][+pages+]</div>';
 if ($ids) {
 	$params['documents'] = $ids;
 	unset($params['parents']);

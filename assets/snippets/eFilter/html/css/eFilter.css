@@ -19,3 +19,6 @@
 .eFiltr .fltr_colors label.active{border:solid 1px #e71b00;}
 .eFiltr .fltr_colors label.disabled{opacity:0.5;cursor:default !important;}
 .eFiltr .fltr_colors label input{display:none;}
+
+#eFiltr_results{position:relative;}
+#eFiltr_results .eFiltr_loader{position:absolute;top:10px;left:50%;margin-left:-32px;z-index:10;width:64px;height:64px;background:url(loader.GIF) 0 0 no-repeat;display:none;}
