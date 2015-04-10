@@ -16,7 +16,8 @@ $(document).on("submit", "form#eFiltr", function(e){
 			type: "GET",   
 			beforeSend:function(){
 				$("#eFiltr").css({'opacity':'0.5'});
-				$("#eFiltr_results").css({'opacity':'0.5'}).find(".eFiltr_loader").show();
+				$("#eFiltr_results_wrapper .eFiltr_loader").show();
+				$("#eFiltr_results").css({'opacity':'0.5'});
 				if (typeof(beforeFilterSend) == 'function') {
 					beforeFilterSend(_form);
 				}
@@ -28,7 +29,7 @@ $(document).on("submit", "form#eFiltr", function(e){
 				var new_form = $(msg).find("#eFiltr").html();
 				$("#eFiltr").html(new_form).css({'opacity':'1'});
 				var new_result = $(msg).find("#eFiltr_results").html();
-				$("#eFiltr_results .eFiltr_loader").hide();
+				$("#eFiltr_results_wrapper .eFiltr_loader").hide();
 				$("#eFiltr_results").html(new_result).css({'opacity':'1'});
 				if (typeof(afterFilterComplete) == 'function') {
 					afterFilterComplete(_form);
