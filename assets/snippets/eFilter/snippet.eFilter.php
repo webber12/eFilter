@@ -55,27 +55,26 @@ if (!empty($eFltr->list_tv_ids)) {
 //он используется для поиска подходящих id ресурсов как без фильтров (категория, вложенность, опубликованность, удаленность и т.п.)
 //так и с использованием фильтра
 //на выходе получаем список id подходящих ресурсов через запятую
-$DLparams = array('parents' => $eFltr->docid, 'tpl' => '@CODE [+id+],', 'depth' => '3', 'addWhereList' => 'c.template IN(' . $eFltr->params['product_templates_id'].')', 'makeUrl' => '0');
-
-
+$DLparams = array('parents' => $eFltr->docid, /*'tpl' => '@CODE [+id+],', */'depth' => '3', 'addWhereList' => 'c.template IN(' . $eFltr->params['product_templates_id'].')', 'makeUrl' => '0');
+$DLparamsAPI = array('JSONformat' => 'new', 'api' => '1', 'selectFields' => 'c.id');
+$DLparamsAll = array_merge($DLparams, $DLparamsAPI);
 //это список всех id товаров данной категории, дальше будем вычленять ненужные :)
-$eFltr->content_ids_full = $eFltr->modx->runSnippet("DocLister", $DLparams);
-$eFltr->content_ids_full = str_replace(' ', '', substr($eFltr->content_ids_full, 0, -1));
+$_ = $eFltr->modx->runSnippet("DocLister", $DLparamsAll);
+$eFltr->content_ids_full = $eFltr->getListFromJson($_);
 
 
 //получаем $eFltr->content_ids
 //это пойдет в плейсхолдер (список documents через запятую
 //как все подходящие к данному фильтру товары
 //для подстановки в вызов DocLister и вывода списка отфильтрованных товаров на сайте
-$eFltr->makeAllContentIDs($DLparams);
-
+$eFltr->makeAllContentIDs($DLparamsAll);
 
 //начинаем формировать фильтр
 //проходимся по каждому фильтру и берем список всех товаров с учетом всех фильтров кроме текущего
 //формируем по итогам массив $eFltr->curr_filter_values
 //в котором каждому id тв фильтра соответствует список документов, которые подходят для всего фильтра за 
 //исключением текущего
-$eFltr->makeCurrFilterValuesContentIDs($DLparams);
+$eFltr->makeCurrFilterValuesContentIDs($DLparamsAll);
 
 //берем все доступные значения для параметров до фильтрации
 $eFltr->filter_values_full = $eFltr->getFilterValues ($eFltr->content_ids_full, $eFltr->filter_tv_ids);

@@ -596,8 +596,9 @@ public function makeAllContentIDs ($DLparams){
             if ($fltr != '') {
                 $fltr = 'AND(' . $fltr . ')';
                 $DLparams['filters'] = $fltr;
-                $this->content_ids = $this->modx->runSnippet("DocLister", $DLparams);
-                $this->content_ids = str_replace(' ', '', substr($this->content_ids, 0, -1));
+                $_ = $this->modx->runSnippet("DocLister", $DLparams);
+                $this->content_ids = $this->getListFromJson($_);
+                //$this->content_ids = str_replace(' ', '', substr($this->content_ids, 0, -1));
             }
         }
     }
@@ -648,12 +649,16 @@ public function makeCurrFilterValuesContentIDs ($DLparams){
                 if ($fltr != '') {
                     $fltr = 'AND(' . $fltr . ')';
                     $DLparams['filters'] = $fltr;
-                    $tmp_content_ids = $this->modx->runSnippet("DocLister", $DLparams);
-                    $this->curr_filter_values[$fid]['content_ids'] = str_replace(' ', '', substr($tmp_content_ids, 0, -1));
+                    //$tmp_content_ids = $this->modx->runSnippet("DocLister", $DLparams);
+                    //$this->curr_filter_values[$fid]['content_ids'] = str_replace(' ', '', substr($tmp_content_ids, 0, -1));
+                    $_ = $this->modx->runSnippet("DocLister", $DLparams);
+                    $this->curr_filter_values[$fid]['content_ids'] = $this->getListFromJson($_);
                 } else {
                     unset($DLparams['filters']);
-                    $tmp_content_ids = $this->modx->runSnippet("DocLister", $DLparams);
-                    $this->curr_filter_values[$fid]['content_ids'] = str_replace(' ', '', substr($tmp_content_ids, 0, -1));
+                    //$tmp_content_ids = $this->modx->runSnippet("DocLister", $DLparams);
+                    //$this->curr_filter_values[$fid]['content_ids'] = str_replace(' ', '', substr($tmp_content_ids, 0, -1));
+                    $_ = $this->modx->runSnippet("DocLister", $DLparams);
+                    $this->curr_filter_values[$fid]['content_ids'] = $this->getListFromJson($_);
                 }
             }
         }
@@ -766,6 +771,21 @@ public function getDefaultTVValues($array = array()) {
         }
     }
     $this->modx->ef_elements_name = $out;
+    return $out;
+}
+
+public function getListFromJson($json = '', $field = 'id', $separator = ',') {
+    $out = '';
+    $_ = array();
+    if (!empty($json)) {
+        $tmp = json_decode($json, true);
+        if (!empty($tmp) && isset($tmp['rows'])) {
+            foreach ($tmp['rows'] as $row) {
+                $_[] = $row[$field];
+            }
+        }
+        $out = implode($separator, $_);
+    }
     return $out;
 }
 
