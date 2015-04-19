@@ -53,7 +53,7 @@ $tplRowRadio = '<input type="radio" name="f[[+tv_id+]][]" value="[+value+]" [+se
 $tplOuterRadio = '
 	<div class="fltr_block fltr_block_radio fltr_block[+tv_id+]">
 		<span class="fltr_name fltr_name_radio fltr_name[+tv_id+]">[+name+]</span>
-		<input type="radio" name="f[[+tv_id+]][]" value="0"> Все</span>
+		<input type="radio" name="f[[+tv_id+]][]" value="0"> Все
 		[+wrapper+]
 	</div>
 ';
