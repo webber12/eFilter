@@ -14,11 +14,22 @@
 .eFiltr .fltr_count:after{content:")"}
 .eFiltr  label.disabled .fltr_count{color:#999999;}
 .eFiltr .fltr_colors{}
-.eFiltr .fltr_colors label{width:15px;height:15px;margin-right:2px;display:inline-block;color:transparent;font-size:0;cursor:pointer;border:solid 1px #ffffff;}
+.eFiltr .fltr_colors label{width:15px;height:15px;margin-right:2px;display:inline-block;vertical-align:middle;color:transparent;font-size:0;cursor:pointer;border:solid 1px #ffffff;}
 .eFiltr .fltr_colors .fltr_count{color:transparent !important;font-size:0;}
 .eFiltr .fltr_colors label.active{border:solid 1px #e71b00;}
 .eFiltr .fltr_colors label.disabled{opacity:0.5;cursor:default !important;}
 .eFiltr .fltr_colors label input{display:none;}
+.eFiltr .fltr_colors label .jq-checkbox{opacity:0;}
+
+.eFiltr .fltr_pattern{}
+.eFiltr .fltr_pattern label{margin-right:2px;display:inline-block;cursor:pointer;border:solid 1px #ffffff;position:relative;}
+.eFiltr .fltr_pattern .fltr_count{}
+.eFiltr .fltr_pattern label input{display:none;}
+.eFiltr .fltr_pattern label .jq-checkbox{opacity:0;position:absolute !important;top:0;left:0;}
+.eFiltr .fltr_pattern label img{vertical-align:middle;display:inline-block;}
+.eFiltr .fltr_pattern label.active  img{border:solid 1px #e71b00;}
+.eFiltr .fltr_pattern label.disabled   img{opacity:0.5;cursor:default !important;}
+
 
 #eFiltr_results_wrapper{position:relative;min-height:64px;}
 #eFiltr_results{}

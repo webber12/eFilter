@@ -71,6 +71,7 @@ public function __construct($modx, $params){
     $this->params['remove_disabled'] = isset($this->params['remove_disabled']) && $this->params['remove_disabled'] != '0' ? '1' : '0';
     $this->fp = isset($_GET) ? $_GET : array();
     $this->zero = isset($this->params['hide_zero']) ? '' : '0';
+	$this->pattern_folder = (isset($this->params['pattern_folder']) && $this->params['pattern_folder'] != '') ? $this->params['pattern_folder'] : 'assets/images/pattern/';
     $this->prepareGetParams($this->fp);
 }
 
@@ -427,6 +428,47 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 $wrapper .= $k != '' ? $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+label_selected+]', '[+disabled+]', '[+count+]'),
                                     array($tv_id, $k, $tv_val_name, $selected, $label_selected, $disabled, $count),
+                                    $tplRow
+                                ) : '';
+                            }
+                        }
+                        
+                        $output .= $this->parseTpl(
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            $tplOuter
+                        );
+                        break;
+                    
+                    case '8'://Паттерны
+                        $tplRow = $tplRowPattern;
+                        $tplOuter = $tplOuterPattern;
+                        foreach ($filter_values_full[$tv_id] as $k => $v) {
+                            $tv_val_name = isset($tv_elements[$k]) ? $tv_elements[$k] : $k;
+                            $selected = '  ';
+                            $label_selected = '';
+                            if (isset ($this->fp[$tv_id])) {
+                                $flag = false;
+                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
+                                    $flag = true;
+                                } else {
+                                    $flag =  ($this->fp[$tv_id] == $k) ? true : false;
+                                }
+                                if ($flag) {
+                                    $selected = 'checked="checked" ';
+                                    $label_selected = 'active';
+                                }
+                            }
+                            $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
+                            if ($disabled == '') {
+                                $count =  (isset($filter_values[$tv_id][$k]['count']) ? $filter_values[$tv_id][$k]['count'] : $filter_values_full[$tv_id][$k]['count']);
+                            } else {
+                                $count = $this->zero;
+                            }
+                            if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                                $wrapper .= $k != '' ? $this->parseTpl(
+                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+label_selected+]', '[+disabled+]', '[+count+]', '[+pattern_folder+]'),
+                                    array($tv_id, $k, $tv_val_name, $selected, $label_selected, $disabled, $count, $this->pattern_folder),
                                     $tplRow
                                 ) : '';
                             }
