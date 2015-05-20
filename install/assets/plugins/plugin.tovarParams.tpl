@@ -81,14 +81,14 @@ if($modx->event->name == 'OnDocFormRender') {
         if (!empty($disallowedParams)) {
             $output .= '<script type="text/javascript">$j(document).ready(function(){';
             foreach ($disallowedParams as $k => $v) {
-                $output .= '$j("#tv'.$k.'").parent().parent().css({"display":"none"}).next("tr").css({"display":"none"});';
+                $output .= '$j("#tv' . $k . '").parents("tr").hide().next("tr").find("td[colspan=2]").parent("tr").hide();';
                 //фикс чекбоксов
-                $output .= '$j("input[name=\'tv'.$k.'[]\']").parent().parent().css({"display":"none"}).next("tr").css({"display":"none"});';
+                $output .= '$j("input[name=\'tv' . $k . '[]\']").parents("tr").hide().next("tr").find("td[colspan=2]").parent("tr").hide();';
                 //фикс радио
-                $output .= '$j("input[name=\'tv'.$k.'\']").parent().parent().css({"display":"none"}).next("tr").css({"display":"none"});';
+                $output .= '$j("input[name=\'tv' . $k . '\']").parents("tr").hide().next("tr").find("td[colspan=2]").parent("tr").hide();';
             }
             $output .= '})</script>';
-            echo $output;
+            $modx->event->output($output);
         }
         
     }
