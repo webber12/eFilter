@@ -91,8 +91,9 @@ $tovar_params_wrapper = str_replace(
 	$paramOuter
 );
 
+$tovarChunkName = isset($params['tpl']) && !empty($params['tpl']) ? $params['tpl'] : $tovarChunkName;
 $tovarChunk = $modx->getChunk($tovarChunkName);
-$tovarChunk = '@CODE '.str_replace('[+params+]', $tovar_params_wrapper, $tovarChunk);
+$tovarChunk = '@CODE: ' . str_replace('[+params+]', $tovar_params_wrapper, $tovarChunk);
 $params['tpl'] = $tovarChunk;
 ///////конец замены чанка вывода товаров
 
