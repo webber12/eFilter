@@ -8,7 +8,7 @@ $eFltr = new eFilter($modx, $params);
 $eFltr->modx->regClientCSS('assets/snippets/eFilter/html/css/eFilter.css');
 $eFltr->modx->regClientCSS('assets/snippets/eFilter/html/css/slider.css');
 $eFltr->modx->regClientStartupScript('assets/snippets/eFilter/html/js/jquery-ui.min.js');
-$eFltr->modx->regClientStartupScript('assets/snippets/eFilter/html/js/jquery.ui.touch-punch.min');
+$eFltr->modx->regClientStartupScript('assets/snippets/eFilter/html/js/jquery.ui.touch-punch.min.js');
 if (isset($params['ajax']) && $params['ajax'] == '1') {
     $eFltr->modx->regClientStartupScript('<script>var eFiltrAjax = "1";</script>', array('plaintext' => true));
 }
