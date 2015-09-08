@@ -20,7 +20,9 @@
 	width: 13px;
 	height: 15px;
 	background: url(slider.png) no-repeat;
-	cursor: pointer
+	cursor: pointer;
+	-ms-touch-action: none;
+	touch-action: none;
 }
 .ui-slider .ui-slider-range {
 	position: absolute;
