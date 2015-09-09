@@ -38,6 +38,25 @@ $(document).on("submit", "form#eFiltr", function(e){
 		})
 	}
 })
-
+/* ajax-paging of eFilter Results */
+$(document).on("click", ".paginate a", function(e){
+	if (window.eFiltrAjax && eFiltrAjax == '1') {
+		e.preventDefault();
+		var data2 = '';
+		var action = $(this).attr("href");
+		$.ajax({
+			url: action,                                   
+			data: data2,
+			type: "POST",   
+			beforeSend:function(){
+				$("#eFiltr_results").css({'opacity':'0.5'});
+			},                   
+			success: function(msg){
+				var new_result = $(msg).find("#eFiltr_results").html();
+				$("#eFiltr_results").html(new_result).css({'opacity':'1'});
+			}
+		})
+	}
+})
 
 })
