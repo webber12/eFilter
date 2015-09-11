@@ -527,7 +527,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
     }
     $tpl = $tplFilterForm;
     $resetTpl = $tplFilterReset;
-    $output = $output != '' ? $this->parseTpl(array('[+url+]', '[+wrapper+]'), array($this->modx->makeUrl($this->modx->documentIdentifier), $output), $tpl) : '';
+    $output = $output != '' ? $this->parseTpl(array('[+url+]', '[+wrapper+]'), array($this->modx->makeUrl($this->docid), $output), $tpl) : '';
     $output .= $output != '' ? $this->parseTpl(array('[+reset_url+]'), array($this->modx->makeUrl($this->modx->documentIdentifier)), $resetTpl) : '';
     return $output;
 }
