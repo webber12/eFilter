@@ -8,7 +8,7 @@ $(document).on("submit", "form#eFiltr", function(e){
 	if (window.eFiltrAjax && eFiltrAjax == '1') {
 		e.preventDefault();
 		var _form = $(this);
-		var data2 = _form.serialize();
+		var data2 = _form.serialize() + '&no_ajax_for_star_rating=1';
 		var action = _form.attr("action");
 		$.ajax({
 			url: action,                                   
@@ -42,7 +42,8 @@ $(document).on("submit", "form#eFiltr", function(e){
 $(document).on("click", ".paginate a", function(e){
 	if (window.eFiltrAjax && eFiltrAjax == '1') {
 		e.preventDefault();
-		var data2 = '';
+		var _form = '';
+		var data2 = '&no_ajax_for_star_rating=1';
 		var action = $(this).attr("href");
 		$.ajax({
 			url: action,                                   
