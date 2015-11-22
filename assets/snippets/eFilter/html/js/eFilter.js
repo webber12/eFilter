@@ -1,7 +1,9 @@
 $(document).ready(function(){
 
-$(document).on("change", "form#eFiltr input, form#eFiltr select", function(e){
-	$("form#eFiltr").submit();
+$(document).on("change", "form#eFiltr input, form#eFiltr select", function(e) {
+    if (window.eFiltrAutoSubmit && eFiltrAutoSubmit == '1') {
+        $("form#eFiltr").submit();
+    }
 })
 
 $(document).on("submit", "form#eFiltr", function(e){
