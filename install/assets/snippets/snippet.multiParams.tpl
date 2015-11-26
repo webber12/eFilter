@@ -29,9 +29,17 @@
  // @EVAL return $modx->runSnippet("multiParams", array("parent"=>"25", "action"=>"getParamsFromTree"));
  // где 25 - это id ресурса-родителя нужного списка в дереве, его подставляем самостоятельно
  // 
+ // @EVAL return $modx->runSnippet("multiParams", array("field"=>"template", "value"=>"15", "action"=>"getParamsFromTree"));
+ // позволяет в выпадающий список вывести все ресурсы с template=15 (для фильтрации можно использовать любое поле из таблицы site_content
+ //
+ // @EVAL return $modx->runSnippet("multiParams", array("field"=>"description","value"=>"58", "action"=>"getParamsFromTree", "order" => "menuindex ASC", "firstEmpty" => "0"));
+ // выбираем в выпадающий список все ресурсы у которых в поле description значение 58, сортируем по menuindex с возрастанием, первый пустой не показываем (важно для вывода в виде чекбоксов)
+ // сортировка по умолчанию - сначала по pagetitle по возрастанию, потом по menuindex по возрастанию
+ //
  
 $out = '';
 $firstEmpty = isset($firstEmpty) && (int)$firstEmpty == 0 ? false : true;
+$order = isset($order) && !empty($order) ? $order : "pagetitle ASC, menuindex ASC";
 if ($firstEmpty) {
     $out .= '||';
 }
@@ -45,10 +53,15 @@ switch ($action){
         break;
     
     case 'getParamsFromTree' :
-        $sql = "SELECT pagetitle, id FROM " . $modx->getFullTableName('site_content') . " WHERE parent={$parent} ORDER BY menuindex ASC, pagetitle ASC";
+        if (isset($field) && isset($value)) {
+            $sql = "SELECT pagetitle, id FROM " . $modx->getFullTableName('site_content') . " WHERE `" . $field . "`='" . $value . "' ORDER BY " . $order;
+        } else {
+            $sql = "SELECT pagetitle, id FROM " . $modx->getFullTableName('site_content') . " WHERE parent IN(" . $parent . ") ORDER BY " . $order;
+        }
         $q = $modx->db->query($sql);
         while ($row = $modx->db->getRow($q)) {
-            $out .= $row['pagetitle'] . '||';
+            //в выпадающем списке админки показываем вместе с id ресурса
+            $out .= $row['pagetitle'] . (strpos($_SERVER['REQUEST_URI'], MGR_DIR) !== FALSE ? ' (' . $row['id'] . ')' : '') . '==' . $row['id'] . '||';
         }
         break;
     
