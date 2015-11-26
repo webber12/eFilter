@@ -101,6 +101,16 @@ $params['tpl'] = $tovarChunk;
 $out = '';
 $pid = isset($pid) ? $pid : $modx->documentIdentifier;
 $params['ownerTPL'] = isset($ownerTPL) ? $ownerTPL :'@CODE: <div id="eFiltr_results_wrapper"><div class="eFiltr_loader"></div><div id="eFiltr_results">[+dl.wrap+][+pages+]</div></div>';
+
+//параметры сортировки и вывода из сессии
+$docid = isset($docid) ? (int)$docid : $modx->documentIdentifier;
+$display = isset($_SESSION['sortDisplay']) ? $modx->db->escape($_SESSION['sortDisplay']) : ($params['display'] ? $params['display'] : '12');
+$sortBy = isset($_SESSION['sortBy']) ? $modx->db->escape($_SESSION['sortBy']) : ($params['sortBy'] ? $params['sortBy'] : 'menuindex');
+$sortOrder = isset($_SESSION['sortOrder']) ? $modx->db->escape($_SESSION['sortOrder']) : ($params['sortOrder'] ? $params['sortOrder'] : 'DESC');
+$params['orderBy'] = $sortBy . ' ' . $sortOrder;
+$params['display'] = $display;
+if ($display == 'all') unset($params['display']);
+
 if ($ids) {
 	$params['documents'] = $ids;
 	unset($params['parents']);
