@@ -95,8 +95,8 @@ public function getFilterParam ($param_tv_name)
         if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}') {//если задано для категории, ее и берем
             $filter_param = json_decode($param_tv_val, true);
         } else {//если не задано, идем к родителю
-            //$filter_param = $this->checkParentConfig($this->docid, $param_tv_name);
-            $parent = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$this->docid} AND parent != 0 LIMIT 0,1");
+            $filter_param = $this->_getParentParam ($this->docid, $param_tv_name);
+            /*$parent = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$this->docid} AND parent != 0 LIMIT 0,1");
             if ($parent) {
                 $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid'=>$parent, 'tv'=>'1', 'field'=>$param_tv_name));
                 if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}') {
@@ -126,7 +126,21 @@ public function getFilterParam ($param_tv_name)
                         }
                     }
                 }
-            }
+            }*/
+        }
+    }
+    return $filter_param;
+}
+
+public function _getParentParam ($docid, $param_tv_name) {
+    $filter_param = array();
+    $parent = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$docid} AND parent != 0 LIMIT 0,1");
+    if ($parent) {
+        $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid' => $parent, 'tv' => '1', 'field' => $param_tv_name));
+        if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}' && $param_tv_val != '[]') {
+            $filter_param = json_decode($param_tv_val, true);
+        }  else {
+            $filter_param = $this->_getParentParam ($parent, $param_tv_name);
         }
     }
     return $filter_param;
