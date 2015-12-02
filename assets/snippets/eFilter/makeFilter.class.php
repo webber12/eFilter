@@ -119,13 +119,15 @@ public function render($tv_arr){
         $clear_line = $new_line == '1' ? $new_line_html : '';
         //только доступные значения ТВ
         $exist_tv = array();
+        //количество видимых (остальные скрыты - присваиваем блоку класс hidden)
+        $show_visible = !isset($this->params['show_visible']) ? false : (int)$this->params['show_visible'];
 
         switch ($type) {
             case 'checkbox':
                 $exist_tv = $show_all == '1' ? array() : $this->makeExistsTV ($_, $id);
                 $ignoreEmpty = '1';
                 $outerTpl = isset($this->params['outerTpl']) ? $this->params['outerTpl'] : '
-                    <div class="filter_block filter_block[+param_id+] bbx">
+                    <div class="filter_block filter_block[+param_id+] bbx [+hidden+] [+active+]">
                         ' . ($show_zagol == '1' ? '<div class="filter_zagol bg_gray">[+zagol+]</div>' : '') . '
                         <div class="filter_list">
                             [+rows+]
@@ -199,7 +201,7 @@ public function render($tv_arr){
                 if (!empty($_tmp)) {
                 $ignoreEmpty = '1';
                 $outerTpl = isset($this->params['outerTpl']) ? $this->params['outerTpl'] : '
-                    <div class="filter_block filter_block[+param_id+] bbx">
+                    <div class="filter_block filter_block[+param_id+] bbx [+hidden+] [+active+]">
                         <div class="filter_zagol bg_gray">[+zagol+]</div>
                         <div class="filter_list">
                             [+rows+]
@@ -247,7 +249,7 @@ public function render($tv_arr){
                 if (!empty($_tmp)) {
                 $ignoreEmpty = '1';
                 $outerTpl = isset($this->params['outerTpl']) ? $this->params['outerTpl'] : '
-                    <div class="filter_block filter_block[+param_id+] bbx">
+                    <div class="filter_block filter_block[+param_id+] bbx [+hidden+] [+active+]">
                         <div class="filter_zagol bg_gray">[+zagol+]</div>
                         <div class="filter_list">
                             [+rows+]
@@ -323,9 +325,15 @@ public function render($tv_arr){
             case 'option':
                 $ignoreEmpty = '1';
                 $outerTpl = isset($this->params['outerTpl']) ? $this->params['outerTpl'] : '
-                    <select name="[+name+]">
-                        [+rows+]
-                    </select>[+clear+]
+                    <div class="filter_block filter_block[+param_id+] filter_block_select filter_block_select[+param_id+] bbx [+hidden+] [+active+]">
+                        ' . ($show_zagol == '1' ? '<div class="filter_zagol filter_zagol_select">[+zagol+]</div>' : '') . '
+                        <div class="filter_list filter_list_select">
+                            <select name="[+name+]">
+                                [+rows+]
+                            </select>
+                        </div>
+                    </div>
+                    [+clear+]
                 ';
                 $rowTpl = isset($this->params['rowTpl']) ? $this->params['rowTpl'] : '<option value="[+value+]" [+checked+]>[+label+]</option>';
                 if (isset($tv['values'])) {
@@ -345,15 +353,15 @@ public function render($tv_arr){
             break;
         }
         if (!empty($rows)) {
-            $hidden = $i > 4 ? ' hidden' : '';
+            $hidden = ($show_visible && $i > $show_visible) ? ' hidden' : '';
             $active = $i == 0 ? ' active' : '';
             $filter .= $this->parseTpl (array('[+zagol+]', '[+rows+]', '[+hidden+]', '[+active+]', '[+name+]', '[+more+]', '[+param_id+]', '[+clear+]'), array($zagol, $rows, $hidden, $active, $name, $more, $id, $clear_line), $outerTpl);
         }
         $i++;
     }
-    /*if ($i > 4) {
+    if ($show_visible && $i > $show_visible) {
         $filter .= '<div class="filter_show_all"><span data-target-class="filter_block_inner.hidden">Показать все критерии</span></div>';
-    }*/
+    }
     return $filter;
 }
 
