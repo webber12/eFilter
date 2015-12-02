@@ -119,8 +119,16 @@ public function render($tv_arr){
         $clear_line = $new_line == '1' ? $new_line_html : '';
         //только доступные значения ТВ
         $exist_tv = array();
+        //количество видимых строк (чекбоксов в блоке, для списка чекбоксов предварительно поставить высоту и overflow:hidden)
+        //добавляет к блоку строку из параметра &visible_row_text, на которую вешается скрипт раскрытия/скрытия блока (пишется отдельно) и класс hidden_rows к самому блоку
+        $visible_row = !isset($this->params['visible_row']) ? false : '3';
+        //строка, показывается при наличии скрытых строк в фильтре
+        $visible_row_text = isset($this->params['visible_row_text']) ? $this->params['visible_row_text'] : '<div class="filter_more"><a href="#">Ещё...</a></div>';
         //количество видимых (остальные скрыты - присваиваем блоку класс hidden)
-        $show_visible = !isset($this->params['show_visible']) ? false : (int)$this->params['show_visible'];
+        //добавляет после всех блоков строку из параметра &visible_block_text, на которую можно повесить скрипт скрытия/показа скрываемых блоков
+        $visible_block = !isset($this->params['visible_block']) ? false : (int)$this->params['visible_block'];
+        //строка показывается после всех блоков фильтра (при наличии скрытых)
+        $visible_block_text = isset($this->params['visible_block_text']) ? $this->params['visible_block_text'] : '<div class="filter_show_all"><span data-target-class="filter_block_inner.hidden">Показать все критерии</span></div>';
 
         switch ($type) {
             case 'checkbox':
@@ -161,7 +169,7 @@ public function render($tv_arr){
                     if ($show_all == '1') {
                         $j = count($tmp);
                     }
-                    if ($j > 3) {
+                    if ($visible_row && $j > $visible_row) {
                         $more = '<div class="filter_more"><a href="#">Ещё...</a></div>';
                     }
                 }
@@ -214,13 +222,13 @@ public function render($tv_arr){
             break;
         }
         if (!empty($rows)) {
-            $hidden = ($show_visible && $i > $show_visible) ? ' hidden' : '';
+            $hidden = ($visible_row && $i > $visible_row) ? ' hidden_rows' : '';
             $active = $i == 0 ? ' active' : '';
             $filter .= $this->parseTpl (array('[+zagol+]', '[+rows+]', '[+hidden+]', '[+active+]', '[+name+]', '[+more+]', '[+param_id+]', '[+clear+]'), array($zagol, $rows, $hidden, $active, $name, $more, $id, $clear_line), $outerTpl);
         }
         $i++;
     }
-    if ($show_visible && $i > $show_visible) {
+    if ($visible_block && $i > $visible_block) {
         $filter .= '<div class="filter_show_all"><span data-target-class="filter_block_inner.hidden">Показать все критерии</span></div>';
     }
     return $filter;
