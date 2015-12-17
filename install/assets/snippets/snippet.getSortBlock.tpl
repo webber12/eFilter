@@ -54,7 +54,7 @@ $out = '';
 //блок сортировки
 $sortBlock = '';
 foreach ($cfg['sort']['values'] as $k => $v) {
-    $sortBlock .= '<a href="#" class="sorter sort_vid sort_pic ' . ($sortBy == $k ? 'active ' . ($sortOrder == 'ASC' ? ' up' : ' down') : '' ) . '" data-sort-by="' . $k . '" data-sort-order="' . ($sortOrder == 'ASC' ? 'DESC' : 'ASC') . '">' . $v . '</a>';
+    $sortBlock .= '<a href="#" class="sorter sort_vid sort_pic ' . ($sortBy == $k ? ' active ' . ($sortOrder == 'ASC' ? ' up' : ' down') : '' ) . '" data-sort-by="' . $k . '" data-sort-order="' . ($sortOrder == 'ASC' ? 'DESC' : 'ASC') . '">' . $v . '</a>';
 }
 $sortBlock = '<div class="eFilter_sort_block"><span class="eFilter_sort_title">' . $cfg['sort']['title'] . '</span><span class="eFilter_sort_options">' . $sortBlock . '</span></div>';
 

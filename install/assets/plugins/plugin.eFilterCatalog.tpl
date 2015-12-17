@@ -1,5 +1,5 @@
 /**
- * eFilterSort
+ * eFilterCatalog
  *
  * Установка нужных параметров для сортировки и display в сессию
  *
@@ -22,7 +22,7 @@ if($e->name == 'OnWebPageInit') {
             case 'changesortBy':
                 //ставим в сессию параметры сортировки и вывода
                 $sortBy = ($_POST['sortBy'] && !empty($_POST['sortBy'])) ? $modx->db->escape($_POST['sortBy']) : '';
-                $sortOrder = ($_POST['sortOrder'] && !empty($_POST['sortOrder'])) ? $modx->db->escape($_POST['sortDisplay']) : '';
+                $sortOrder = ($_POST['sortOrder'] && !empty($_POST['sortOrder'])) ? $modx->db->escape($_POST['sortOrder']) : '';
                 $sortDisplay = ($_POST['sortDisplay'] && !empty($_POST['sortDisplay'])) ? $modx->db->escape($_POST['sortDisplay']) : '';
                 if (!empty($sortBy)) {
                     $_SESSION['sortBy'] = $sortBy;
