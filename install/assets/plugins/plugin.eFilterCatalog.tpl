@@ -19,7 +19,7 @@ if($e->name == 'OnWebPageInit') {
     if (isset($_POST['action'])) {
         $action = $modx->db->escape($_POST['action']);
         switch ($action) {
-            case 'changeSortVid':
+            case 'changesortBy':
                 //ставим в сессию параметры сортировки и вывода
                 $sortBy = ($_POST['sortBy'] && !empty($_POST['sortBy'])) ? $modx->db->escape($_POST['sortBy']) : '';
                 $sortOrder = ($_POST['sortOrder'] && !empty($_POST['sortOrder'])) ? $modx->db->escape($_POST['sortDisplay']) : '';
