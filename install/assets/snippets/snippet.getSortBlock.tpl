@@ -34,7 +34,7 @@ foreach ($tmp as $k => $v) {
     if ($k == '0') {
         $cfg['sort']['title'] = $v;
     } else {
-        $_tmp = axplode("==", $v) {
+        $_tmp = explode("==", $v) {
             $cfg['sort']['values'][$_tmp[0]] = (isset($_tmp[1]) && !empty($_tmp[1])) ? $_tmp[1] : $_tmp[0];
         }
     }
@@ -44,7 +44,7 @@ foreach ($tmp as $k => $v) {
     if ($k == '0') {
         $cfg['display']['title'] = $v;
     } else {
-        $_tmp = axplode("==", $v) {
+        $_tmp = explode("==", $v) {
             $cfg['display']['values'][$_tmp[0]] = (isset($_tmp[1]) && !empty($_tmp[1])) ? $_tmp[1] : $_tmp[0];
         }
     }
