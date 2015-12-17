@@ -86,7 +86,7 @@ $(document).ready(function(){
         e.preventDefault();
         var sortBy = $(this).data("sortBy");
         var sortOrder = $(this).data("sortOrder");
-        $(".catalog_sort a.left").removeClass("active");
+        $("#eFilter_sort_block a.sort_vid").removeClass("active");
         $(this).addClass("active");
         $("input[name='sortBy']").val(sortBy);
         $("input[name='sortOrder']").val(sortOrder);
