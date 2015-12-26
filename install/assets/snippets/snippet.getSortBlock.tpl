@@ -70,13 +70,13 @@ foreach ($cfg['sort']['values'] as $k => $v) {
     $classActive = $sortBy == $k ? ' active ' : '';
     $classUpDown = !empty($classActive) ? (($sortOrder == 'ASC' ? ' up ' : ' down ')) : '';
     $sortOrderDirection = $sortOrder == 'ASC' ? 'DESC' : 'ASC';
-    $sortRows .= atr_replace(
+    $sortRows .= str_replace(
         array('[+classActive+]', '[+classUpDown+]', '[+sortBy+]', '[+sortOrder+]', '[+title+]'),
         array($classActive, $classUpDown, $k, $sortOrderDirection, $v),
         $sortRow
     );
 }
-$sortBlock .= atr_replace(
+$sortBlock .= str_replace(
     array('[+title+]', '[+rows+]'),
     array($cfg['sort']['title'], $sortRows),
     $sortOuter
@@ -86,13 +86,13 @@ $sortBlock .= atr_replace(
 $displayBlock = '';
 $displayRows = '';
 foreach ($cfg['display']['values'] as $k => $v) {
-    $displayRows .= atr_replace(
+    $displayRows .= str_replace(
         array('[+value+]', '[+selected+]', '[+title+]),
         array($k, ($sortDisplay == $k ? ' selected' : ''), $v),
         $displayRow
     );
 }
-$displayBlock .= atr_replace(
+$displayBlock .= str_replace(
     array('[+title+]', '[+rows+]'),
     array($cfg['display']['title'], $displayRows),
     $displayOuter
