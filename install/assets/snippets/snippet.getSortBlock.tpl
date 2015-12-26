@@ -14,11 +14,15 @@
  
  // вызываем в нужном месте getSortBlock
  // требует подключенного к странице jquery версии не ниже 1.9
- // дополнительные параметры
+ // дополнительные параметры (опционально)
  // &sortBy - по умолчанию menuindex (может быть как поле из site_content, так и любое ТВ, которое выводится в списке через DocLister и, соответветственно указано в его параметре tvList
  // &sortOrder - ASC | DESC (по умолчанию DESC)
  // &config_sort - конфиг параметров сортировки (первая часть до || - заголовок, остальные - варианты. Может быть как поле site_content , так и приемлемый для DocLister TV). По умолчанию - Сортировать по:||pagetitle==Названию||price==Цене (по названию и цене)
  // &config_display - настройка селекта "показывать по". По умолчанию - Показывать по:||==--не выбрано--||10||20||30||40||all
+ // &sortRow
+ // &sortOuter
+ // &displayRow
+ // &displayOuter
  
  
 $sortBy = isset($_SESSION['sortBy']) ? $_SESSION['sortBy'] : (isset($param['sortBy']) ? $param['sortBy'] : 'menuindex');
@@ -26,6 +30,14 @@ $sortOrder = isset($_SESSION['sortOrder']) ? $_SESSION['sortOrder'] : (isset($pa
 $sortDisplay = isset($_SESSION['sortDisplay']) ? $_SESSION['sortDisplay'] : isset($param['display']) ? $param['display'] : '12';
 $config_sort = isset($param[$config_sort]) ? $param[$config_sort] : 'Сортировать по:||pagetitle==Названию||price==Цене';
 $config_display = isset($param[$config_display]) ? $param[$config_display] : 'Показывать по:||==--не выбрано--||10||20||30||40||all==все';
+$sortRow = isset($param['sortRow']) ? $param['sortRow'] : '<a href="#" class="sorter sort_vid sort_pic [+classActive+] [+classUpDown+]" data-sort-by="[+sortBy+]" data-sort-order="[+sortOrder+]">[+title+]</a>';
+$sortOuter = isset($param['sortOuter']) ? $param['sortOuter'] : '<div class="eFilter_sort_block"><span class="eFilter_sort_title">[+title+]</span><span class="eFilter_sort_options">[+rows+]</span></div>';
+$displayRow = isset($param['displayRow']) ? $param['displayRow'] : '<option value="[+value+]" [+selected+]>[+title+]</option>';
+$displayOuter = isset($param['displayOuter']) ? $param['displayOuter'] : '
+    <div class="eFilter_display_block">
+        <span class="eFilter_display_title">[+title+]</span>
+        <span class="eFilter_display_options"><select name="sortDisplay" class="eFilter_display_select">[+rows+]</select></span>
+    </div>';
 
 //разбираем конфиг
 $cfg = array();
@@ -53,21 +65,38 @@ $out = '';
 
 //блок сортировки
 $sortBlock = '';
+$sortRows = '';
 foreach ($cfg['sort']['values'] as $k => $v) {
-    $sortBlock .= '<a href="#" class="sorter sort_vid sort_pic ' . ($sortBy == $k ? ' active ' . ($sortOrder == 'ASC' ? ' up' : ' down') : '' ) . '" data-sort-by="' . $k . '" data-sort-order="' . ($sortOrder == 'ASC' ? 'DESC' : 'ASC') . '">' . $v . '</a>';
+    $classActive = $sortBy == $k ? ' active ' : '';
+    $classUpDown = !empty($classActive) ? (($sortOrder == 'ASC' ? ' up ' : ' down ')) : '';
+    $sortOrderDirection = $sortOrder == 'ASC' ? 'DESC' : 'ASC';
+    $sortRows .= atr_replace(
+        array('[+classActive+]', '[+classUpDown+]', '[+sortBy+]', '[+sortOrder+]', '[+title+]'),
+        array($classActive, $classUpDown, $k, $sortOrderDirection, $v),
+        $sortRow
+    );
 }
-$sortBlock = '<div class="eFilter_sort_block"><span class="eFilter_sort_title">' . $cfg['sort']['title'] . '</span><span class="eFilter_sort_options">' . $sortBlock . '</span></div>';
+$sortBlock .= atr_replace(
+    array('[+title+]', '[+rows+]'),
+    array($cfg['sort']['title'], $sortRows),
+    $sortOuter
+);
 
 //блок "показать по"
 $displayBlock = '';
+$displayRows = '';
 foreach ($cfg['display']['values'] as $k => $v) {
-    $displayBlock .= '<option value="' . $k . '"' . ($sortDisplay == $k ? ' selected' : '') . '>' . $v . '</option>';
+    $displayRows .= atr_replace(
+        array('[+value+]', '[+selected+]', '[+title+]),
+        array($k, ($sortDisplay == $k ? ' selected' : ''), $v),
+        $displayRow
+    );
 }
-$displayBlock = '
-    <div class="eFilter_display_block">
-        <span class="eFilter_display_title">' . $cfg['display']['title'] . '</span>
-        <span class="eFilter_display_options"><select name="sortDisplay" class="eFilter_display_select">' . $displayBlock . '</select></span>
-    </div>';
+$displayBlock .= atr_replace(
+    array('[+title+]', '[+rows+]'),
+    array($cfg['display']['title'], $displayRows),
+    $displayOuter
+);
 
 
 //итоговая форма
