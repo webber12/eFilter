@@ -23,6 +23,10 @@
  // &sortOuter
  // &displayRow
  // &displayOuter
+ // &classActiveName
+ // &classUpName
+ // &classDownName
+ // &classSelectedName
  
  
 $sortBy = isset($_SESSION['sortBy']) ? $_SESSION['sortBy'] : (isset($param['sortBy']) ? $param['sortBy'] : 'menuindex');
@@ -38,6 +42,10 @@ $displayOuter = isset($param['displayOuter']) ? $param['displayOuter'] : '
         <span class="eFilter_display_title">[+title+]</span>
         <span class="eFilter_display_options"><select name="sortDisplay" class="eFilter_display_select">[+rows+]</select></span>
     </div>';
+$classActiveName = isset($param['classActiveName']) ? $param['classActiveName'] : 'active';
+$classUpName = isset($param['classUpName']) ? $param['classUpName'] : 'up';
+$classDownName = isset($param['classDownName']) ? $param['classDownName'] : 'down';
+$classSelectedName = isset($param['classSelectedName']) ? $param['classSelectedName'] : 'selected';
 
 //разбираем конфиг
 $cfg = array();
@@ -67,8 +75,8 @@ $out = '';
 $sortBlock = '';
 $sortRows = '';
 foreach ($cfg['sort']['values'] as $k => $v) {
-    $classActive = $sortBy == $k ? ' active ' : '';
-    $classUpDown = !empty($classActive) ? (($sortOrder == 'ASC' ? ' up ' : ' down ')) : '';
+    $classActive = $sortBy == $k ? ' ' . $classActiveName . ' ' : '';
+    $classUpDown = !empty($classActive) ? (($sortOrder == 'ASC' ? ' ' . $classUpName. ' ' : ' ' . $classDownName. ' ')) : '';
     $sortOrderDirection = $sortOrder == 'ASC' ? 'DESC' : 'ASC';
     $sortRows .= str_replace(
         array('[+classActive+]', '[+classUpDown+]', '[+sortBy+]', '[+sortOrder+]', '[+title+]'),
@@ -86,9 +94,10 @@ $sortBlock .= str_replace(
 $displayBlock = '';
 $displayRows = '';
 foreach ($cfg['display']['values'] as $k => $v) {
+    $selected = $sortDisplay == $k ? ' ' . $classSelectedName : '';
     $displayRows .= str_replace(
         array('[+value+]', '[+selected+]', '[+title+]),
-        array($k, ($sortDisplay == $k ? ' selected' : ''), $v),
+        array($k, $selected, $v),
         $displayRow
     );
 }
