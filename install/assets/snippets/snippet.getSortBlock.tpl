@@ -46,6 +46,7 @@ $classActiveName = isset($param['classActiveName']) ? $param['classActiveName'] 
 $classUpName = isset($param['classUpName']) ? $param['classUpName'] : 'up';
 $classDownName = isset($param['classDownName']) ? $param['classDownName'] : 'down';
 $classSelectedName = isset($param['classSelectedName']) ? $param['classSelectedName'] : 'selected';
+$action_uri = $_SERVER['REQUEST_URI'];
 
 //разбираем конфиг
 $cfg = array();
@@ -111,7 +112,7 @@ $displayBlock .= str_replace(
 //итоговая форма
 $out .= <<<HTML
 <div id="eFilter_sort_block">
-<form action="[~[*id*]~]" method="post" id="changesortBy">
+<form action="{$action_uri}" method="post" id="changesortBy">
     {$sortBlock}
     {$displayBlock}
     <input type="hidden" name="action" value="changesortBy">
