@@ -847,15 +847,15 @@ public function getDefaultTVValues($array = array())
                 $element = trim(substr($element, 6));
                 $element = str_replace("\$modx->", "\$this->modx->", $element);
                 $element = eval($element);
-                if ($element != '') {
-                    $tmp = explode("||", $element);
-                    foreach ($tmp as $v) {
-                        $tmp2 = explode("==", $v);
-                        $key = isset($tmp2[1]) && $tmp2[1] != '' ? $tmp2[1] : $tmp2[0];
-                        $value = $tmp2[0];
-                        if ($key != '') {
-                            $out[$key] = $value;
-                        }
+            }
+            if ($element != '') {
+                $tmp = explode("||", $element);
+                foreach ($tmp as $v) {
+                    $tmp2 = explode("==", $v);
+                    $key = isset($tmp2[1]) && $tmp2[1] != '' ? $tmp2[1] : $tmp2[0];
+                    $value = $tmp2[0];
+                    if ($key != '') {
+                        $out[$key] = $value;
                     }
                 }
             }
