@@ -97,7 +97,7 @@ $displayRows = '';
 foreach ($cfg['display']['values'] as $k => $v) {
     $selected = $sortDisplay == $k ? ' ' . $classSelectedName : '';
     $displayRows .= str_replace(
-        array('[+value+]', '[+selected+]', '[+title+]),
+        array('[+value+]', '[+selected+]', '[+title+]'),
         array($k, $selected, $v),
         $displayRow
     );
