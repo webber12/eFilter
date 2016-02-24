@@ -84,28 +84,28 @@ $tplOuterSlider = '
 	<script type="text/javascript">
 	
 $(document).ready(function(){
-var minCost = 0;
-var maxCost = 0;
-var minCostCurr = 0;
-var maxCostCurr = 0;
+var minCost[+tv_id+] = 0;
+var maxCost[+tv_id+] = 0;
+var minCostCurr[+tv_id+] = 0;
+var maxCostCurr[+tv_id+] = 0;
 if ($("#minCostInp[+tv_id+]").val() != "") {
-	minCostCurr = $("#minCostInp[+tv_id+]").val();
+	minCostCurr[+tv_id+] = $("#minCostInp[+tv_id+]").val();
 } else {
-	minCostCurr = $("#minCostInp[+tv_id+]").data("minVal");
+	minCostCurr[+tv_id+] = $("#minCostInp[+tv_id+]").data("minVal");
 }
 if ($("#maxCostInp[+tv_id+]").val() != "") {
-	maxCostCurr = $("#maxCostInp[+tv_id+]").val();
+	maxCostCurr[+tv_id+] = $("#maxCostInp[+tv_id+]").val();
 } else {
-	maxCostCurr = $("#maxCostInp[+tv_id+]").data("maxVal");
+	maxCostCurr[+tv_id+] = $("#maxCostInp[+tv_id+]").data("maxVal");
 }
-minCost = $("#minCostInp[+tv_id+]").data("minVal");
-maxCost = $("#maxCostInp[+tv_id+]").data("maxVal");
-$("#minCost[+tv_id+]").html(minCostCurr);
-$("#maxCost[+tv_id+]").html(maxCostCurr);
+minCost[+tv_id+] = $("#minCostInp[+tv_id+]").data("minVal");
+maxCost[+tv_id+] = $("#maxCostInp[+tv_id+]").data("maxVal");
+$("#minCost[+tv_id+]").html(minCostCurr[+tv_id+]);
+$("#maxCost[+tv_id+]").html(maxCostCurr[+tv_id+]);
 $("#slider[+tv_id+]").slider({
-	min: minCost,
-	max: maxCost,
-	values: [minCostCurr,maxCostCurr],
+	min: minCost[+tv_id+],
+	max: maxCost[+tv_id+],
+	values: [ minCostCurr[+tv_id+],maxCostCurr[+tv_id+] ],
 	range: true,
 	stop: function(event, ui) {
 		$("input#minCostInp[+tv_id+]").val($("#slider[+tv_id+]").slider("values",0));
