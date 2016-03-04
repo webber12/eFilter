@@ -59,6 +59,9 @@ public $fp = array();
 //показывать 0 или ничего не показывать
 public $zero = '';
 
+//список id, значения которых не нужно сортировать
+public $nosort_tv_id = array();
+
 public function __construct($modx, $params)
 {
     $this->modx = $modx;
@@ -75,6 +78,7 @@ public function __construct($modx, $params)
     $this->fp = isset($_GET) ? $_GET : array();
     $this->zero = isset($this->params['hide_zero']) ? '' : '0';
     $this->pattern_folder = (isset($this->params['pattern_folder']) && $this->params['pattern_folder'] != '') ? $this->params['pattern_folder'] : 'assets/images/pattern/';
+    $this->nosort_tv_id = isset($this->params['nosort_tv_id']) ? explode(',', $this->params['nosort_tv_id']) : array();
     $this->prepareGetParams($this->fp);
 }
 
@@ -200,7 +204,16 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
         $tv_elements = $this->getDefaultTVValues($tmp);
         foreach ($tmp as $tv_id => $tmp2) {
             if (isset($filter_values_full[$tv_id])) {
-                uksort($filter_values_full[$tv_id], create_function('$a,$b', 'return is_numeric($a) && is_numeric($b) ? ($a-$b) : strcasecmp(strtolower($a), strtolower($b));'));
+                if (in_array($tv_id, $this->nosort_tv_id) {
+                    $sort_tmp = array();
+                    foreach($tv_elements as $k => $v) {
+                        $sort_tmp[$k] = $filter_values_full[$tv_id][$k];
+                    }
+                    $filter_values_full[$tv_id] = $sort_tmp;
+                    unset($sort_tmp);
+                } else {
+                    uksort($filter_values_full[$tv_id], create_function('$a,$b', 'return is_numeric($a) && is_numeric($b) ? ($a-$b) : strcasecmp(strtolower($a), strtolower($b));'));
+                }
                 $wrapper = '';
                 $count = '';
                 //||Чекбокс==1||Список==2||Диапазон==3||Флажок==4||Мультиселект==5
