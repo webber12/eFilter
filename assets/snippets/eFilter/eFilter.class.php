@@ -62,6 +62,9 @@ public $zero = '';
 //список id, значения которых не нужно сортировать
 public $nosort_tv_id = array();
 
+//тип фильтра для DocLister. По умолчанию - tvd
+public $dl_filter_type;
+
 public function __construct($modx, $params)
 {
     $this->modx = $modx;
@@ -79,6 +82,7 @@ public function __construct($modx, $params)
     $this->zero = isset($this->params['hide_zero']) ? '' : '0';
     $this->pattern_folder = (isset($this->params['pattern_folder']) && $this->params['pattern_folder'] != '') ? $this->params['pattern_folder'] : 'assets/images/pattern/';
     $this->nosort_tv_id = isset($this->params['nosort_tv_id']) ? explode(',', $this->params['nosort_tv_id']) : array();
+    $this->dl_filter_type = isset($this->params['dl_filter_type']) ? $this->params['dl_filter_type'] : 'tvd';
     $this->prepareGetParams($this->fp);
 }
 
@@ -664,10 +668,10 @@ public function makeAllContentIDs ($DLparams)
                 
                 if (isset($v['min']) || isset($v['max'])) {//если параметр - диапазон
                     if (isset($v['min']) && (int)$v['min'] != 0 ) {
-                        $fltr .= 'tvd:' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'] . ';';
+                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'] . ';';
                     }
                     if (isset($v['max']) && (int)$v['max'] != 0 ) {
-                        $fltr .= 'tvd:' . $this->filter_tv_names[$tvid] . ':elt:' . (int)$v['max'] . ';';
+                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':elt:' . (int)$v['max'] . ';';
                     }
                 } else {//если значение/значения, но не диапазон
                     if (is_array($v)) {
@@ -687,7 +691,7 @@ public function makeAllContentIDs ($DLparams)
                         if ($this->filters[$tvid]['many'] == '1') {
                             $oper = 'containsOne';
                         }
-                        $fltr .= 'tvd:' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val . ';';
+                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val . ';';
                     }
                 }
             }
@@ -719,10 +723,10 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                         
                         if (isset($v['min']) || isset($v['max'])) { //если параметр - диапазон
                             if (isset($v['min']) && (int)$v['min'] != 0 ) {
-                                $fltr .= 'tvd:' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'].';';
+                                $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'].';';
                             }
                             if (isset($v['max']) && (int)$v['max'] != 0 ) {
-                                $fltr .= 'tvd:' . $this->filter_tv_names[$tvid] . ':elt:' . (int)$v['max'].';';
+                                $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':elt:' . (int)$v['max'].';';
                             }
                         } else {//если значение/значения, но не диапазон
                             if (is_array($v)) {
@@ -740,7 +744,7 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                             }
                             if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
                                 if ($this->filters[$tvid]['many'] == '1') {$oper = 'containsOne';}
-                                $fltr .= 'tvd:' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val.';';
+                                $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val.';';
                             }
                         }
                     }
