@@ -210,7 +210,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
             if (isset($filter_values_full[$tv_id])) {
                 if (in_array($tv_id, $this->nosort_tv_id)) {
                     $sort_tmp = array();
-                    foreach($tv_elements as $k => $v) {
+                    foreach($tv_elements[$tv_id] as $k => $v) {
                         $sort_tmp[$k] = $filter_values_full[$tv_id][$k];
                     }
                     $filter_values_full[$tv_id] = $sort_tmp;
