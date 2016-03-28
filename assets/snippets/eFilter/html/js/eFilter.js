@@ -30,6 +30,7 @@
         },
         checkActions : function() {
             this.checkPagination();
+            this.bindForm();
             this.checkForm();
             this.checkSort();
         },
@@ -49,16 +50,17 @@
             var self = this;
             $(document).on("change", this.params.form_selector, function(e) {
                 if (typeof autoSubmit !== 'undefined') {
-                    self.submitForm();
+                    //self.submitForm();
+                    $(document).find(self.params.form).submit();
                 }
             })
         },
         checkSort : function() {
             
         },
-        submitForm : function() {
+        bindForm : function() {
             var self = this;
-            $(document).on("submit", this.params.form, function(e){
+            $(document).on("submit", this.params.form, function(e) {
                 if (typeof useAjax !== 'undefined') {
                     e.preventDefault();
                     var _form = $(this);
@@ -67,7 +69,6 @@
                     self.makeAjax(action, data2, _form, "GET", "all");
                 }
             })
-            this.params.form_obj.submit();
         },
         makeAjax : function(action, data2, _form, type, updateAll) {
             var self = this;
