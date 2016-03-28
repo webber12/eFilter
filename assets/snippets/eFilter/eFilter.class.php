@@ -226,7 +226,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowCheckbox;
                         $tplOuter = $tplOuterCheckbox;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$k]) ? $tv_elements[$k] : $k;
+                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
@@ -265,7 +265,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowSelect;
                         $tplOuter = $tplOuterSelect;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$k]) ? $tv_elements[$k] : $k;
+                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
@@ -337,7 +337,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowRadio;
                         $tplOuter = $tplOuterRadio;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$k]) ? $tv_elements[$k] : $k;
+                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
@@ -375,7 +375,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowMultySelect;
                         $tplOuter = $tplOuterMultySelect;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$k]) ? $tv_elements[$k] : $k;
+                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
@@ -461,7 +461,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowColors;
                         $tplOuter = $tplOuterColors;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$k]) ? $tv_elements[$k] : $k;
+                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
                             $label_selected = '';
                             if (isset ($this->fp[$tv_id])) {
@@ -502,7 +502,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowPattern;
                         $tplOuter = $tplOuterPattern;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$k]) ? $tv_elements[$k] : $k;
+                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
                             $label_selected = '';
                             if (isset ($this->fp[$tv_id])) {
@@ -543,7 +543,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowCheckbox;
                         $tplOuter = $tplOuterCheckbox;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$k]) ? $tv_elements[$k] : $k;
+                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
@@ -859,7 +859,7 @@ public function getDefaultTVValues($array = array())
     $tvs = implode(",", array_keys($array));
     if ($tvs != '') {
         $elements = $this->getTVNames($tv_ids = $tvs, $field = 'elements');
-        foreach ($elements as $element) {
+        foreach ($elements as $tv_id => $element) {
             if (stristr($element, "@EVAL")) {
                 $element = trim(substr($element, 6));
                 $element = str_replace("\$modx->", "\$this->modx->", $element);
@@ -872,7 +872,7 @@ public function getDefaultTVValues($array = array())
                     $key = isset($tmp2[1]) && $tmp2[1] != '' ? $tmp2[1] : $tmp2[0];
                     $value = $tmp2[0];
                     if ($key != '') {
-                        $out[$key] = $value;
+                        $out[$tv_id][$key] = $value;
                     }
                 }
             }
