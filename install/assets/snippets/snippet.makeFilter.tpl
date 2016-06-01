@@ -1,6 +1,6 @@
 //<?php
 /**
- * makeAddFilter
+ * makeFilter
  * 
  * Делаем простой фильтр по заданному TV
  *
@@ -21,4 +21,4 @@
 // 
 
 
-return require MODX_BASE_PATH . 'assets/snippets/makeFilter/snippet.makeFilter.php';
+return require MODX_BASE_PATH . 'assets/snippets/eFilter/snippet.makeFilter.php';

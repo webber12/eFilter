@@ -32,4 +32,4 @@
 *********************/
 
 
-return require MODX_BASE_PATH . 'assets/snippets/makeFilter/snippet.makeFilters.php';
+return require MODX_BASE_PATH . 'assets/snippets/eFilter/snippet.makeFilters.php';
