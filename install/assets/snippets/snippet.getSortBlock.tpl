@@ -28,12 +28,13 @@
  // &classDownName
  // &classSelectedName
  
+$param = $modx->event->params;
  
 $sortBy = isset($_SESSION['sortBy']) ? $_SESSION['sortBy'] : (isset($param['sortBy']) ? $param['sortBy'] : 'menuindex');
 $sortOrder = isset($_SESSION['sortOrder']) ? $_SESSION['sortOrder'] : (isset($param['sortOrder']) ? $param['sortOrder'] : 'DESC');
 $sortDisplay = isset($_SESSION['sortDisplay']) ? $_SESSION['sortDisplay'] : isset($param['display']) ? $param['display'] : '12';
-$config_sort = isset($param[$config_sort]) ? $param[$config_sort] : 'Сортировать по:||pagetitle==Названию||price==Цене';
-$config_display = isset($param[$config_display]) ? $param[$config_display] : 'Показывать по:||==--не выбрано--||10||20||30||40||all==все';
+$config_sort = isset($param['config_sort']) ? $param['config_sort'] : 'Сортировать по:||pagetitle==Названию||price==Цене';
+$config_display = isset($param['config_display']) ? $param['config_display'] : 'Показывать по:||==--не выбрано--||10||20||30||40||all==все';
 $sortRow = isset($param['sortRow']) ? $param['sortRow'] : '<a href="#" class="sorter sort_vid sort_pic [+classActive+] [+classUpDown+]" data-sort-by="[+sortBy+]" data-sort-order="[+sortOrder+]">[+title+]</a>';
 $sortOuter = isset($param['sortOuter']) ? $param['sortOuter'] : '<div class="eFilter_sort_block"><span class="eFilter_sort_title">[+title+]</span><span class="eFilter_sort_options">[+rows+]</span></div>';
 $displayRow = isset($param['displayRow']) ? $param['displayRow'] : '<option value="[+value+]" [+selected+]>[+title+]</option>';
