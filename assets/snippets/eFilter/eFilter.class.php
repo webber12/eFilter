@@ -211,7 +211,9 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                 if (in_array($tv_id, $this->nosort_tv_id)) {
                     $sort_tmp = array();
                     foreach($tv_elements[$tv_id] as $k => $v) {
-                        $sort_tmp[$k] = $filter_values_full[$tv_id][$k];
+                      if ( $filter_values_full[$tv_id][$k] ) {
+                          $sort_tmp[$k] = $filter_values_full[$tv_id][$k];
+                      }
                     }
                     $filter_values_full[$tv_id] = $sort_tmp;
                     unset($sort_tmp);
