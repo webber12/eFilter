@@ -10,10 +10,24 @@ $settings['fields'] = array(
         'caption' => 'Название фильтра',
         'type' => 'text'
     ),
+    'fltr_block_name' => array(
+        'caption' => 'Название блока',
+        'type' => 'text'
+    ),
+    'is_fltr' => array(
+        'caption' => 'Фильтр',
+        'type' => 'checkbox',
+        'elements' => 'Да==1'
+    ),
     'fltr_type' => array(
         'caption' => 'Тип фильтра',
         'type' => 'dropdown',
         'elements' => '||Блок чекбоксов==checkbox||Одиночный чекбокс==simplecheckbox||Выпадающий список==option'
+    ),
+    'fltr_many' => array(
+        'caption' => 'Множественный',
+        'type' => 'checkbox',
+        'elements' => 'Да==1'
     ),
     'show_zagol' => array(
         'caption' => 'Заголовок',
