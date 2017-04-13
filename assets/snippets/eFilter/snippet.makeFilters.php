@@ -18,9 +18,9 @@ function _getParentParam ($docid, $param_tv_name) {
     return $filter_param;
 }
 $docid = isset($docid) ? $docid : $modx->documentIdentifier;
-$cfg = $modx->runSnippet("DocInfo", array("docid" => $docid, "field" => "tovarparams", "tv" => "1"));
+$cfg = $modx->runSnippet("DocInfo", array("docid" => $docid, "field" => "filterparams", "tv" => "1"));
 if ($cfg == '' || $cfg == '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}') {
-    $cfg = _getParentParam ($docid, 'tovarparams');
+    $cfg = _getParentParam ($docid, 'filterparams');
 }
 if (isset($cfg) && !empty($cfg)) {
 	$filter_config = json_decode($cfg, true);
