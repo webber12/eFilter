@@ -82,15 +82,15 @@ if($modx->event->name == 'OnDocFormRender') {
         if (!empty($disallowedParams)) {
             $output .= '<script type="text/javascript">$j(document).ready(function(){';
             foreach ($disallowedParams as $k => $v) {
-                $output .= '$j("#tv' . $k . '").parents("tr").hide().next("tr").find("td[colspan=2]").parent("tr").hide();';
+                $output .= '$j(".sectionBody").find("#tv' . $k . '").parents("tr").addClass("hide_next");';
                 //фикс чекбоксов
-                $output .= '$j("input[name=\'tv' . $k . '[]\']").parents("tr").hide().next("tr").find("td[colspan=2]").parent("tr").hide();';
+                $output .= '$j(".sectionBody").find("input[name=\'tv' . $k . '[]\']").parents("tr").addClass("hide_next");';
                 //фикс радио
-                $output .= '$j("input[name=\'tv' . $k . '\']").parents("tr").hide().next("tr").find("td[colspan=2]").parent("tr").hide();';
+                $output .= '$j(".sectionBody").find("input[name=\'tv' . $k . '\']").parents("tr").addClass("hide_next");';
             }
             $output .= '})</script>';
-            $modx->event->output($output);
+            $output .= '<style>tr.hide_next,tr.hide_next + tr{display:none;}</style>' . "\n";
         }
-        
     }
+    $modx->event->output($output);
 }
