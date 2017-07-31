@@ -1,7 +1,7 @@
 //<?php
 /**
  * eFilterResult
- * 
+ *
  * Вывод отфильтрованных товаров
  *
  * @author      webber (web-ber12@yandex.ru)
@@ -11,7 +11,7 @@
  * @internal    @modx_category Filters
  * @internal    @installset base, sample
  */
- 
+
  //импортировать общие параметры из модуля eLists
  //использует для работы сниппет DocLister и выводит список товаров, при этом заменяя плейсхолдер [+params+] на список параметров товара, отмеченных для вывода в список
  //использует общие параметры из модуля eLists, также параметры $paramRow и $paramOuter для вывода параметров товара
@@ -19,7 +19,7 @@
  //пример вызова [!eFilterResult? &tpl=`tovarDL` &addWhereList=`c.template=9` &parents=`[*id*]` &depth=`3` &paginate=`pages` &display=`15` &tvList=`image,price`!] [+pages+]
  //все параметры аналогичны параметрам вызова DocLister + доп.параметры $paramRow и $paramOuter для вывода параметров товара
 
- 
+
 //получаем из плейсхолдера список документов для documents
 $ids = $modx->getPlaceholder('eFilter_ids');
 
@@ -33,7 +33,7 @@ if($ids == '' && (isset($_GET))) {
 			if($val != '0' && $val != '') {$ids = '2';}
 		}
 	}
-	if ($ids == $modx->config['site_start']) {$ids = '';}	
+	if ($ids == $modx->config['site_start']) {$ids = '';}
 }
 if($ids == '' && (isset($_GET['f']))) {
 	$ids = $modx->config['site_start'];
@@ -43,7 +43,7 @@ if($ids == '' && (isset($_GET['f']))) {
 			if($val != '0' && $val != '') {$ids = '2';}
 		}
 	}
-	if ($ids == $modx->config['site_start']) {$ids = '';}	
+	if ($ids == $modx->config['site_start']) {$ids = '';}
 }
 
 //получаем из плейсхолдера список ТВ для вывода в список
@@ -68,7 +68,7 @@ if (isset($exclude_tvs_from_list) && $exclude_tvs_from_list != '') {
 
 
 
-//заменяем плейсхолдер [+params+] в чанке вывода товаров 
+//заменяем плейсхолдер [+params+] в чанке вывода товаров
 //на нужный вывод параметров товаров
 //шаблоны вывода параметра в списке по умолчанию
 $paramRow = isset($paramRow) ? $paramRow : '<div class="eFilter_list_param eFilter_list_param[+param_id+]"><span class="eFilter_list_title">[+param_title+]: </span><span class="eFilter_list_value eFilter_list_value[+param_id+]">[+param_value+]</span></div>';
@@ -92,8 +92,12 @@ $tovar_params_wrapper = str_replace(
 );
 
 $tovarChunkName = isset($params['tpl']) && !empty($params['tpl']) ? $params['tpl'] : $tovarChunkName;
-$tovarChunk = $modx->getChunk($tovarChunkName);
-$tovarChunk = '@CODE: ' . str_replace('[+params+]', $tovar_params_wrapper, $tovarChunk);
+if ($tovarChunkName{0} !== '@') {
+	$tovarChunk = $modx->getChunk($tovarChunkName);
+	$tovarChunk = '@CODE: ' . str_replace('[+params+]', $tovar_params_wrapper, $tovarChunk);
+} else {
+	$tovarChunk = str_replace('[+params+]', $tovar_params_wrapper, $tovarChunkName);
+}
 $params['tpl'] = $tovarChunk;
 ///////конец замены чанка вывода товаров
 
