@@ -693,6 +693,7 @@ public function makeAllContentIDs ($DLparams)
                         if ($this->filters[$tvid]['many'] == '1') {
                             $oper = 'containsOne';
                         }
+                        $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
                         $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val . ';';
                     }
                 }
