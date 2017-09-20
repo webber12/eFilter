@@ -78,11 +78,11 @@ public function __construct($modx, $params)
     $this->docid = isset($this->params['docid']) ? $this->params['docid'] : $this->modx->documentIdentifier;
     $this->cfg = (isset($this->params['cfg']) && $this->params['cfg'] != '') ? $this->params['cfg'] : 'default';
     $this->params['remove_disabled'] = isset($this->params['remove_disabled']) && $this->params['remove_disabled'] != '0' ? '1' : '0';
-    $this->fp = isset($_GET) ? $_GET : array();
     $this->zero = isset($this->params['hide_zero']) ? '' : '0';
     $this->pattern_folder = (isset($this->params['pattern_folder']) && $this->params['pattern_folder'] != '') ? $this->params['pattern_folder'] : 'assets/images/pattern/';
     $this->nosort_tv_id = isset($this->params['nosort_tv_id']) ? explode(',', $this->params['nosort_tv_id']) : array();
     $this->dl_filter_type = isset($this->params['dl_filter_type']) ? $this->params['dl_filter_type'] : 'tvd';
+    $this->getFP ();
     $this->prepareGetParams($this->fp);
 }
 
@@ -104,37 +104,6 @@ public function getFilterParam ($param_tv_name)
             $filter_param = json_decode($param_tv_val, true);
         } else {//если не задано, идем к родителю
             $filter_param = $this->_getParentParam ($this->docid, $param_tv_name);
-            /*$parent = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$this->docid} AND parent != 0 LIMIT 0,1");
-            if ($parent) {
-                $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid'=>$parent, 'tv'=>'1', 'field'=>$param_tv_name));
-                if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}') {
-                    $filter_param = json_decode($param_tv_val, true);
-                } else {//если и у родителя нет, идет к дедушке
-                    $parent2 = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$parent} AND parent != 0 LIMIT 0,1");
-                    if ($parent2) {
-                        $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid'=>$parent2, 'tv'=>'1', 'field'=>$param_tv_name));
-                        if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}') {
-                            $filter_param = json_decode($param_tv_val, true);
-                        }  else {//если и у дедушки нет, идет к прадедушке
-                            $parent3 = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$parent2} AND parent != 0 LIMIT 0,1");
-                            if ($parent3) {
-                                $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid'=>$parent3, 'tv'=>'1', 'field'=>$param_tv_name));
-                                if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}') {
-                                    $filter_param = json_decode($param_tv_val, true);
-                                } else {//если и у прадедушки нет, идет к прапрадедушке
-                                    $parent4 = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$parent3} AND parent != 0 LIMIT 0,1");
-                                    if ($parent4) {
-                                        $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid'=>$parent4, 'tv'=>'1', 'field'=>$param_tv_name));
-                                        if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}') {
-                                            $filter_param = json_decode($param_tv_val, true);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }*/
         }
     }
     return $filter_param;
@@ -713,7 +682,6 @@ public function makeAllContentIDs ($DLparams)
 
 public function makeCurrFilterValuesContentIDs ($DLparams)
 {
-    /*if (isset($input) && !empty($input) && isset($input['f'])) {//разбираем фильтры из строки GET и считаем возможные значения и количество для этих фильтров без учета одного из них (выбранного)*/
     if (!empty($this->fp)) {//разбираем фильтры из строки GET и считаем возможные значения и количество для этих фильтров без учета одного из них (выбранного)
         $f = $this->fp;
         if (is_array($f)) {
@@ -821,6 +789,13 @@ public function prepareGetParams ($fp)
     $this->fp = $tmp;
 }
 
+public function getFP () {
+    //готовим почву для передачи нужных параметров фильтрации прямо при вызове фильтра
+    //вида &fp=`f16=значение1,значение2&f17=значение3,значение4&f18=minmax~100,300`
+    //todo seo url
+    $this->fp = (isset($this->params['fp']) && !empty($this->params['fp'])) ? $this->params['fp'] : (isset($_GET) ? $_GET : array());
+    return $this;
+}
 public function prepareGetParamsOld ($fp)
 {
     $out = array();
