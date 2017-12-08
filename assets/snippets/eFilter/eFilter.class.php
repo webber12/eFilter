@@ -196,6 +196,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                     case '1'://чекбоксы
                         $tplRow = $tplRowCheckbox;
                         $tplOuter = $tplOuterCheckbox;
+                        $i = 0;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
@@ -217,9 +218,10 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 $count = $this->zero;
                             }
                             if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                                $i++;
                                 $wrapper .= $k != '' ? $this->parseTpl(
-                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]'),
-                                    array($tv_id, $k, $tv_val_name, $selected, $disabled, $count),
+                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
+                                    array($tv_id, $k, $tv_val_name, $selected, $disabled, $count, $i),
                                     $tplRow
                                 ) : '';
                             }
@@ -235,6 +237,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                     case '2': //селекты
                         $tplRow = $tplRowSelect;
                         $tplOuter = $tplOuterSelect;
+                        $i = 0;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
@@ -256,9 +259,10 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 $count = $this->zero;
                             }
                             if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                                $i++;
                                 $wrapper .= $k != '' ? $this->parseTpl(
-                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]'),
-                                    array($tv_id, $k, $tv_val_name, $selected, $disabled, $count),
+                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
+                                    array($tv_id, $k, $tv_val_name, $selected, $disabled, $count, $i),
                                     $tplRow
                                 ) : '';
                             }
@@ -307,6 +311,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                     case '4': //radio
                         $tplRow = $tplRowRadio;
                         $tplOuter = $tplOuterRadio;
+                        $i = 0;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
@@ -328,9 +333,10 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 $count = $this->zero;
                             }
                             if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                                $i++;
                                 $wrapper .= $k != '' ? $this->parseTpl(
-                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]'),
-                                    array($tv_id, $k, $tv_val_name, $selected, $disabled, $count),
+                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
+                                    array($tv_id, $k, $tv_val_name, $selected, $disabled, $count, $i),
                                     $tplRow
                                 ) : '';
                             }
@@ -431,6 +437,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                     case '7'://Цвет
                         $tplRow = $tplRowColors;
                         $tplOuter = $tplOuterColors;
+                        $i = 0;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
@@ -454,9 +461,10 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 $count = $this->zero;
                             }
                             if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                                $i++;
                                 $wrapper .= $k != '' ? $this->parseTpl(
-                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+label_selected+]', '[+disabled+]', '[+count+]'),
-                                    array($tv_id, $k, $tv_val_name, $selected, $label_selected, $disabled, $count),
+                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+label_selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
+                                    array($tv_id, $k, $tv_val_name, $selected, $label_selected, $disabled, $count, $i),
                                     $tplRow
                                 ) : '';
                             }
@@ -472,6 +480,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                     case '8'://Паттерны
                         $tplRow = $tplRowPattern;
                         $tplOuter = $tplOuterPattern;
+                        $i = 0;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
@@ -495,9 +504,10 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 $count = $this->zero;
                             }
                             if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                                $i++;
                                 $wrapper .= $k != '' ? $this->parseTpl(
-                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+label_selected+]', '[+disabled+]', '[+count+]', '[+pattern_folder+]'),
-                                    array($tv_id, $k, $tv_val_name, $selected, $label_selected, $disabled, $count, $this->pattern_folder),
+                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+label_selected+]', '[+disabled+]', '[+count+]', '[+pattern_folder+]', '[+iteration+]'),
+                                    array($tv_id, $k, $tv_val_name, $selected, $label_selected, $disabled, $count, $this->pattern_folder, $i),
                                     $tplRow
                                 ) : '';
                             }
@@ -513,6 +523,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                     default: //по умолчанию - чекбоксы
                         $tplRow = $tplRowCheckbox;
                         $tplOuter = $tplOuterCheckbox;
+                        $i = 0;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
@@ -534,9 +545,10 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 $count = $this->zero;
                             }
                             if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                                $i++;
                                 $wrapper .= $k != '' ? $this->parseTpl(
-                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]'),
-                                    array($tv_id, $k, $tv_val_name, $selected, $disabled, $count),
+                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
+                                    array($tv_id, $k, $tv_val_name, $selected, $disabled, $count, $i),
                                     $tplRow
                                 ) : '';
                             }
