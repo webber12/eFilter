@@ -65,12 +65,16 @@ public $nosort_tv_id = array();
 //тип фильтра для DocLister. По умолчанию - tvd
 public $dl_filter_type;
 
+//id tv, с помощью которого товары привязываются к категориям с помощью плагина tagSaver
+public $tv_category_tag = 0;
+
 public function __construct($modx, $params)
 {
     $this->modx = $modx;
     $this->params = $params;
     $this->param_tv_id = $this->params['param_tv_id'];
     $this->param_tv_id_simple = $this->params['param_tv_id_simple'];
+    $this->tv_category_tag = isset($this->params['tv_category_tag']) && (int)$this->params['tv_category_tag'] > 0 ? (int)$this->params['tv_category_tag'] : 0;
     $this->param_tv_name = $this->getParamTvName();
     $this->param_tv_name_simple = $this->getParamTvName($this->param_tv_id_simple);
     $this->product_templates_id = $this->params['product_templates_id'];
@@ -887,6 +891,60 @@ public function getListFromJson($json = '', $field = 'id', $separator = ',')
         $out = implode($separator, $_);
     }
     return $out;
+}
+
+//возвращает список всех дочерних товаров категории плюс товаров, прикрепленных к категории тегом tagSaver через tv с id=$tv_id
+public function getCategoryAllProducts($id, $tv_id)
+{
+    if (!$tv_id) return array();
+    //сначала ищем все товары, вложенные в данную категорию на глубину до 6
+    $p = array(
+        'parents' => $id,
+        'depth' => '6',
+        'JSONformat' => 'new',
+        'api' => 'id',
+        'selectFields' => 'c.id',
+        'makeUrl' => '0',
+        'debug' => '2',
+        'addWhereList' => 'template IN (' . $this->product_templates_id . ')'
+    );
+    $json = $this->modx->runSnippet("DocLister", $p);
+    $children = array();
+    if ($json && !empty($json)) {
+        $arr = json_decode($json, TRUE);
+        if (!empty($arr) && isset($arr['rows'])) {
+            $tmp2 = array();
+            foreach ($arr['rows'] as $v) {
+                $children[$v['id']] = '1';
+            }
+        }
+    }
+    //затем берем id всех товаров, привязанных к этой категории через tv category id=$tv_id
+    $sql = "SELECT a.*, b.* FROM " . $this->modx->getFullTableName("tags") . " a, " . $this->modx->getFullTableName("site_content_tags") . " b WHERE b.tv_id = " . $tv_id . " AND a.id = b.tag_id AND a.name='" . $id . "'";
+    $q = $this->modx->db->query($sql);
+    $tmp_docs = array();
+    while ($row = $this->modx->db->getRow($q)) {
+        $children[$row['doc_id']] = '1';
+    }
+    
+    //а также - товары, прикрепленные ко всем дочерним "категориям" относительно текущей категории (через tv "категория")
+    $childs = $this->modx->getChildIds($id);
+    if (!empty($childs)) {
+        $q1 = $this->modx->db->query("SELECT id FROM " . $this->modx->getFullTableName("site_content") . " WHERE id IN (" . implode(',', array_values($childs)) . ") AND deleted=0 AND published=1 AND isfolder=1");
+        $tmp_parents = array();
+        while($row = $this->modx->db->getRow($q1)) {
+            $tmp_parents[] = $row['id'];
+        }
+        if (!empty($tmp_parents)) {
+            $sql = "SELECT a.*, b.* FROM " . $this->modx->getFullTableName("tags") . " a, " . $this->modx->getFullTableName("site_content_tags") . " b WHERE b.tv_id = " . $tv_id . " AND a.id = b.tag_id AND a.name IN (" . implode(",", $tmp_parents) . ")";
+            $q = $this->modx->db->query($sql);
+            $tmp_docs = array();
+            while ($row = $this->modx->db->getRow($q)) {
+                $children[$row['doc_id']] = '1';
+            }
+        }
+    }
+    return $children;
 }
 
 }
