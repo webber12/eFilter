@@ -905,7 +905,7 @@ public function getCategoryAllProducts($id, $tv_id)
         'api' => 'id',
         'selectFields' => 'c.id',
         'makeUrl' => '0',
-        'debug' => '2',
+        'debug' => '0',
         'addWhereList' => 'template IN (' . $this->product_templates_id . ')'
     );
     $json = $this->modx->runSnippet("DocLister", $p);
