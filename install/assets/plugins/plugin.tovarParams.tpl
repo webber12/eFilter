@@ -91,5 +91,9 @@ if($modx->event->name == 'OnDocFormRender') {
             $output .= '<style>tr.hide_next,tr.hide_next + tr{display:none;}</style>' . "\n";
         }
     }
+    if (isset($content['template']) && in_array($content['template'], explode(',', str_replace(', ', ',', $tv_category_for_tovarparams)))) {
+        $style = file_get_contents(MODX_SITE_URL . 'assets/snippets/eFilter/html/tovarparams_style.tpl');
+        $output .= $modx->parseText($style, array('param_tv_id' => $param_tv_id));
+    }
     $modx->event->output($output);
 }
