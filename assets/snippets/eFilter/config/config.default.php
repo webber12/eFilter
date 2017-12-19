@@ -2,7 +2,11 @@
 if(!defined('MODX_BASE_PATH')){die('What are you doing? Get out of here!');}
 
 //общая форма фильтра
-$tplFilterForm = '<form id="eFiltr" class="eFiltr eFiltr_form" action="[+url+]" method="get">[+wrapper+]</form>';
+$tplFilterForm = '
+                <form id="eFiltr" class="eFiltr eFiltr_form" action="[+url+]" method="get">
+                    <div style="display:none;" id="eFiltr_info"><span id="eFiltr_info_cnt">[+eFilter_ids_cnt+]</span><span id="eFiltr_info_cnt_ending">[+eFilter_ids_cnt_ending+]</span></div>
+                    [+wrapper+]
+                </form>';
 
 //кнопка "сброса" фильтра
 $tplFilterReset = '<div class="eFiltr_reset"><a href="[+reset_url+]">Сбросить фильтр</a></div>';

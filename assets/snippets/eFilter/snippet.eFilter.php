@@ -103,19 +103,26 @@ $output = $eFltr->renderFilterBlock ($eFltr->filter_cats, $eFltr->filter_values_
 //устанавливаем плейсхолдеры
 $eFltr->setPlaceholders (
     array(
-		//список документов для вывода (подставляем в DocLister, это происходит автоматом в сниппете getFilteredItems)
-		"eFilter_ids" => $eFltr->content_ids,
-		
-		//форма вывода фильтра - вставить плейсхолдер в нужное место шаблона
-		"eFilter_form" => $output,
-		
-		//перечень tv для вывода в список товаров
-		//нужно для обозначения в списке tvList вызова DocLister  в сниппете getFilteredItems
-		"eFilter_tv_list" => $eFltr->list_tv_names,
-		
-		//перечень tv для вывода в список товаров
-		//нужно для вывода названий параметра рядом с его значением
-		"eFilter_tv_names" => $eFltr->list_tv_captions
+        //список документов для вывода (подставляем в DocLister, это происходит автоматом в сниппете getFilteredItems)
+        "eFilter_ids" => $eFltr->content_ids,
+        
+        //количество документов найденных при фильтрации
+        //если искали и ничего не нашли (isset($_GET['f'])) - 0, если не искали - пусто ''
+        "eFilter_ids_cnt" => $eFltr->content_ids_cnt,
+        
+        //товар-товара-товаров в зависимости от количества и пусто, если ничего не искали
+        "eFilter_ids_cnt_ending" => $eFltr->content_ids_cnt_ending,
+
+        //форма вывода фильтра - вставить плейсхолдер в нужное место шаблона
+        "eFilter_form" => $output,
+        
+        //перечень tv для вывода в список товаров
+        //нужно для обозначения в списке tvList вызова DocLister  в сниппете getFilteredItems
+        "eFilter_tv_list" => $eFltr->list_tv_names,
+        
+        //перечень tv для вывода в список товаров
+        //нужно для вывода названий параметра рядом с его значением
+        "eFilter_tv_names" => $eFltr->list_tv_captions
     )
 );
 

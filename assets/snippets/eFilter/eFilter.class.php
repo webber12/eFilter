@@ -693,6 +693,14 @@ public function makeAllContentIDs ($DLparams)
             }
         }
     }
+    $this->content_ids_cnt = $this->content_ids != '' ? count(explode(',', $this->content_ids)) : (!empty($this->fp) ? '0' : '-1');
+    if ($this->content_ids_cnt != '-1' && $this->content_ids_cnt != '0') {
+        $this->content_ids_cnt_ending = $this->getNumEnding($this->content_ids_cnt, array('товар', 'товара', 'товаров'));
+    } else if ($this->content_ids_cnt == '0') {
+        $this->content_ids_cnt_ending = 'товаров';
+    } else {
+        $this->content_ids_cnt_ending = '';
+    }
     return $this->content_ids;
 }
 
@@ -945,6 +953,24 @@ public function getCategoryAllProducts($id, $tv_id)
         }
     }
     return $children;
+}
+
+public function getNumEnding($number, $endingArray)
+{
+    $number = $number % 100;
+    if ($number >= 11 && $number <= 19) {
+        $ending=$endingArray[2];
+    } else {
+        $i = $number % 10;
+        switch ($i) {
+            case (1): $ending = $endingArray[0]; break;
+            case (2):
+            case (3):
+            case (4): $ending = $endingArray[1]; break;
+            default: $ending = $endingArray[2]; break;
+        }
+    }
+    return $ending;
 }
 
 }
