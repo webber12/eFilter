@@ -1,16 +1,16 @@
 <?php
 $settings['display'] = 'vertical';
 $settings['fields'] = array(
-	'param_id' => array(
+    'param_id' => array(
         'caption' => '<b>Параметр</b>',
         'type' => 'dropdown',
         'elements' => '@EVAL return $modx->runSnippet("multiParams", array("action"=>"getParamsToMultiTV"));'
     ),
-	'cat_name' => array(
+    'cat_name' => array(
         'caption' => 'Категория',
         'type' => 'text'
     ),
-	'list_yes' => array(
+    'list_yes' => array(
         'caption' => 'В списке',
         'type' => 'checkbox',
         'elements' => 'Да==1'
@@ -29,13 +29,13 @@ $settings['fields'] = array(
         'caption' => 'Название фильтра',
         'type' => 'text'
     ),
-	'fltr_many' => array(
+    'fltr_many' => array(
         'caption' => 'Множественный',
         'type' => 'checkbox',
         'elements' => 'Да==1'
     ),
-	'param_choose' => array(
-        'caption' => 'Форма выбора',
+    'fltr_href' => array(
+        'caption' => 'Ссылка',
         'type' => 'checkbox',
         'elements' => 'Да==1'
     )

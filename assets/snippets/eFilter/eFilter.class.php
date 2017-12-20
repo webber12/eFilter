@@ -140,6 +140,7 @@ public function makeFilterArrays()
             $this->filters[$v['param_id']]['type'] = $v['fltr_type'];
             $this->filters[$v['param_id']]['name'] = $v['fltr_name'];
             $this->filters[$v['param_id']]['many'] = $v['fltr_many'];
+            $this->filters[$v['param_id']]['href'] = $v['fltr_href'];
         }
         if ($v['list_yes'] == '1'){
             $this->list_tv_ids[] = $v['param_id'];
@@ -206,6 +207,9 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $i = 0;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
+                            if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
+                                $tv_val_name = '<a href="' . $this->modx->makeUrl($k) . '">' . $tv_val_name . '</a>';
+                            }
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
@@ -321,6 +325,9 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $i = 0;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
+                            if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
+                                $tv_val_name = '<a href="' . $this->modx->makeUrl($k) . '">' . $tv_val_name . '</a>';
+                            }
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
@@ -447,6 +454,9 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $i = 0;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
+                            if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
+                                $tv_val_name = '<a href="' . $this->modx->makeUrl($k) . '">' . $tv_val_name . '</a>';
+                            }
                             $selected = '  ';
                             $label_selected = '';
                             if (isset ($this->fp[$tv_id])) {
@@ -490,6 +500,9 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $i = 0;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
+                            if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
+                                $tv_val_name = '<a href="' . $this->modx->makeUrl($k) . '">' . $tv_val_name . '</a>';
+                            }
                             $selected = '  ';
                             $label_selected = '';
                             if (isset ($this->fp[$tv_id])) {
@@ -533,6 +546,9 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $i = 0;
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
+                            if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
+                                $tv_val_name = '<a href="' . $this->modx->makeUrl($k) . '">' . $tv_val_name . '</a>';
+                            }                          
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;

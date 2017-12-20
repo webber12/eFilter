@@ -4,12 +4,14 @@
     .multitv #tv[+param_tv_id+]list .element select{vertical-align:middle;display:inline-block;position:relative;}
     .multitv #tv[+param_tv_id+]list .element input{margin-bottom:0;}
     .multitv #tv[+param_tv_id+]list .element input[type="checkbox"]{vertical-align:middle;display:inline-block;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(4){width:60px;position:relative;vertical-align:middle;display:inline-block;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(4){width:55px;position:relative;vertical-align:middle;display:inline-block;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(4):before{content:"в списке";position:absolute;top:-20px;left:0;font-size:12px;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(6){width:60px;position:relative;vertical-align:middle;display:inline-block;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(6){width:50px;position:relative;vertical-align:middle;display:inline-block;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(6):before{content:"фильтр";position:absolute;top:-20px;left:0;font-size:12px;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(10){width:60px;position:relative;vertical-align:middle;display:inline-block;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(10):before{content:"множеств.";position:absolute;top:-20px;left:0;font-size:12px;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(10){width:55px;position:relative;vertical-align:middle;display:inline-block;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(10):before{content:"множ.";position:absolute;top:-20px;left:0;font-size:12px;}
+	.multitv #tv[+param_tv_id+]list .element label:nth-of-type(12){width:50px;position:relative;vertical-align:middle;display:inline-block;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(12):before{content:"ссылка";position:absolute;top:-20px;left:0;font-size:12px;}
     .multitv #tv[+param_tv_id+]list .element input.mtv_cat_name{width:140px;vertical-align:middle;display:inline-block;position:relative;}
     .multitv #tv[+param_tv_id+]list .element input.mtv_fltr_name{width:140px;vertical-align:middle;display:inline-block;}
     .multitv #tv[+param_tv_id+]list .element br{display:none;}
@@ -20,6 +22,8 @@
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(7){display:none;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(8){display:none;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(9){display:none;}
+	.multitv #tv[+param_tv_id+]list .element label:nth-of-type(11){display:none;}
+	.multitv #tv[+param_tv_id+]list .element label.checkbox{cursor:pointer;}
 
     /*раскрашиваем чекбоксы*/
     .multitv #tv[+param_tv_id+]list .element input[type="checkbox"]:not(checked) {
