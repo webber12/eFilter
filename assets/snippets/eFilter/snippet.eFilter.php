@@ -51,6 +51,7 @@ $eFltr->filter_tv_names = $eFltr->getTVNames ($eFltr->filter_tv_ids);
 if (!empty($eFltr->list_tv_ids)) {
     $eFltr->list_tv_names = $eFltr->getTVNames (implode(',', $eFltr->list_tv_ids));
     $eFltr->list_tv_captions = $eFltr->getTVNames (implode(',', $eFltr->list_tv_ids), 'caption');
+    $eFltr->list_tv_elements = $eFltr->getTVNames (implode(',', $eFltr->list_tv_ids), 'elements');
 }
 
 
@@ -122,7 +123,11 @@ $eFltr->setPlaceholders (
         
         //перечень tv для вывода в список товаров
         //нужно для вывода названий параметра рядом с его значением
-        "eFilter_tv_names" => $eFltr->list_tv_captions
+        "eFilter_tv_names" => $eFltr->list_tv_captions,
+        
+        //перечень elements tv для вывода в список товаров
+        //нужно для определения откуда взято значение - из дерева или нет
+        "eFilter_tv_elements" => $eFltr->list_tv_elements
     )
 );
 
