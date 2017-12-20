@@ -99,8 +99,11 @@ public function getParamTvName($tv_id = '')
     return $this->modx->db->getValue("SELECT `name` FROM " . $this->modx->getFullTableName('site_tmplvars') . " WHERE id = {$tv_id} LIMIT 0,1");
 }
 
-public function getFilterParam ($param_tv_name, $docid)
+public function getFilterParam ($param_tv_name, $docid = 0)
 {
+    if (!$docid) {
+        $docid = $this->docid;
+    }
     $filter_param = array();
     $tv_config = isset ($this->params['tv_config']) ? $this->params['tv_config'] : '';
     if ($tv_config != '') {
