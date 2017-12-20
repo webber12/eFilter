@@ -1,19 +1,4 @@
-/**
- * tovarParams
- *
- * plugin for convinient work with eFilter
- *
- * @author      webber (web-ber12@yandex.ru)
- * @category    plugin
- * @version     0.1
- * @license     http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
- * @internal    @events OnDocFormRender
- * @internal    @properties
- * @internal    @installset base, sample
- * @internal    @modx_category Filters
- */
- 
- /*использует общие параметры модуля eLists - не забудьте их подключить в модуле и плагине */
+/*использует общие параметры модуля eLists - не забудьте их подключить в модуле и плагине */
  /*
  предназначен для скрытия/показа только нужных tv из заданных категорий "параметры товара" в зависимости
  от настроек родительской категории по фильтрам и используемым параметрам товара
@@ -34,20 +19,31 @@ if($modx->event->name == 'OnDocFormRender') {
     global $content;
     $product_template_array = explode(',', $product_templates_id);
     if (isset($content['template']) && in_array($content['template'], $product_template_array)) {
-        //узнаем родителя, чтобы грузить конфиг
-        if ($id == '0') {
-            if (isset($_GET['pid'])) {
+        
+		//узнаем родителя, чтобы грузить конфиг tovarparams
+		$pid == '';
+		if (isset($_GET['id']) && (int)$_GET['id'] != '0' && isset($tv_category_tag) && $tv_category_tag != '') {
+			//определяем родителя по первой прикрепленной категории
+			$category = $modx->db->getValue("SELECT value FROM modx_site_tmplvar_contentvalues WHERE tmplvarid={$tv_category_tag} AND contentid=" . (int)$_GET['id'] . " LIMIT 0,1");
+			if ($category) {//категория есть
+				$tmp = explode(',', $category);
+				$pid = $tmp[0];
+			} else {//категории нет, пройдемся по родителю
+				$pid = $modx->db->getValue("SELECT parent FROM " . $modx->getFullTableName('site_content') . " WHERE id={$id} LIMIT 0,1");
+			}
+		} else {
+			if (isset($_GET['pid'])) {
                 $pid = $_GET['pid'];
             }
-            if (isset($content['parent'])) {
+			if (isset($content['parent'])) {
                 $pid = $content['parent'];
             }
             if (isset($_POST['pid'])) {
                 $pid = $_POST['pid'];
             }
-        } else {
-            $pid = $modx->db->getValue("SELECT parent FROM " . $modx->getFullTableName('site_content') . " WHERE id={$id} LIMIT 0,1");
-        }
+		}
+		if ($pid == '') {$pid = '1';}
+		
         
         include_once(MODX_BASE_PATH . 'assets/snippets/eFilter/eFilter.class.php');
         $eFltr = new eFilter($modx, $params);
@@ -91,9 +87,9 @@ if($modx->event->name == 'OnDocFormRender') {
             $output .= '<style>tr.hide_next,tr.hide_next + tr{display:none;}</style>' . "\n";
         }
     }
-    if (isset($content['template']) && in_array($content['template'], explode(',', str_replace(', ', ',', $tv_category_for_tovarparams)))) {
-        $style = file_get_contents(MODX_SITE_URL . 'assets/snippets/eFilter/html/tovarparams_style.tpl');
-        $output .= $modx->parseText($style, array('param_tv_id' => $param_tv_id));
-    }
+	if (isset($content['template']) && in_array($content['template'], explode(',', str_replace(', ', ',', $tv_category_for_tovarparams)))) {
+		$style = file_get_contents(MODX_SITE_URL . 'assets/snippets/eFilter/html/tovarparams_style.tpl');
+		$output .= $modx->parseText($style, array('param_tv_id' => $param_tv_id));
+	}
     $modx->event->output($output);
 }

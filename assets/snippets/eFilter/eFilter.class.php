@@ -68,6 +68,9 @@ public $dl_filter_type;
 //id tv, с помощью которого товары привязываются к категориям с помощью плагина tagSaver
 public $tv_category_tag = 0;
 
+//все продукты категории с учетом тегованных
+public $categoryAllProducts = false;
+
 public function __construct($modx, $params)
 {
     $this->modx = $modx;
@@ -692,7 +695,12 @@ public function makeAllContentIDs ($DLparams)
                 //$this->content_ids = str_replace(' ', '', substr($this->content_ids, 0, -1));
             }
         }
+    } else {//если ничего не искали и у нас есть список всех продуктов категории, их и ставим
+        if ($this->categoryAllProducts) {
+            $this->content_ids = $this->categoryAllProducts;
+        }
     }
+
     $this->content_ids_cnt = $this->content_ids != '' ? count(explode(',', $this->content_ids)) : (!empty($this->fp) ? '0' : '-1');
     if ($this->content_ids_cnt != '-1' && $this->content_ids_cnt != '0') {
         $this->content_ids_cnt_ending = $this->getNumEnding($this->content_ids_cnt, array('товар', 'товара', 'товаров'));
@@ -904,7 +912,13 @@ public function getListFromJson($json = '', $field = 'id', $separator = ',')
 //возвращает список всех дочерних товаров категории плюс товаров, прикрепленных к категории тегом tagSaver через tv с id=$tv_id
 public function getCategoryAllProducts($id, $tv_id)
 {
-    if (!$tv_id) return array();
+    if (!$tv_id) return '';
+    //если хотим искать только по заданным документам, то до вызова [!eFilter!] устанавливаем их спискок в плейсхолдер eFilter_search_ids
+    $search_ids = $this->modx->getPlaceholder("eFilter_search_ids");
+    if ($search_ids && $search_ids != '') {
+        return $search_ids;
+    }
+
     //сначала ищем все товары, вложенные в данную категорию на глубину до 6
     $p = array(
         'parents' => $id,
@@ -952,7 +966,8 @@ public function getCategoryAllProducts($id, $tv_id)
             }
         }
     }
-    return $children;
+    $this->categoryAllProducts = implode(',', array_keys($children));
+    return $this->categoryAllProducts;
 }
 
 public function getNumEnding($number, $endingArray)
@@ -967,7 +982,7 @@ public function getNumEnding($number, $endingArray)
             case (2):
             case (3):
             case (4): $ending = $endingArray[1]; break;
-            default: $ending = $endingArray[2]; break;
+            default: $ending=$endingArray[2];break;
         }
     }
     return $ending;

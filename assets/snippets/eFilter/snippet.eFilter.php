@@ -62,10 +62,10 @@ if (!empty($eFltr->list_tv_ids)) {
 $DLparams = array('parents' => $eFltr->docid, 'depth' => '3', 'addWhereList' => ((isset($eFltr->params['addWhereList']) && !empty($eFltr->params['addWhereList'])) ? $eFltr->params['addWhereList'] . ' AND ' : '') . 'c.template IN(' . $eFltr->params['product_templates_id'] . ')', 'makeUrl' => '0');
 $DLparamsAPI = array('JSONformat' => 'new', 'api' => 'id', 'selectFields' => 'c.id');
 $allProducts = $eFltr->getCategoryAllProducts($eFltr->docid, $eFltr->tv_category_tag);
-if (!empty($allProducts)) {
+if (!empty($allProducts) && $allProducts != '') {
     unset($DLparams['parents']);
     unset($DLparams['depth']);
-    $DLparams['documents'] = implode(',', array_keys($allProducts));
+    $DLparams['documents'] = $allProducts;
 }
 $DLparamsAll = array_merge($DLparams, $DLparamsAPI);
 //это список всех id товаров данной категории, дальше будем вычленять ненужные :)
@@ -112,7 +112,7 @@ $eFltr->setPlaceholders (
         
         //товар-товара-товаров в зависимости от количества и пусто, если ничего не искали
         "eFilter_ids_cnt_ending" => $eFltr->content_ids_cnt_ending,
-
+        
         //форма вывода фильтра - вставить плейсхолдер в нужное место шаблона
         "eFilter_form" => $output,
         

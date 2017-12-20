@@ -24,17 +24,11 @@ $output=<<<OUT
 	table{width:100%;}
 	table td{padding:2px 5px !important;border:solid 1px white;height:38px;vertical-align:middle !important;}
 	table thead td{color:white;height:25px;
-		border: 1px solid #658f1a;
-		background: none repeat scroll 0 0 #66901b;
+		background: none repeat scroll 0 0 #39515D;
 		text-shadow: 0px -1px 0px #2B5F0C;
-		border-radius:5px 5px 0 0;
-		-moz-border-radius:5px 5px 0 0;
-		-webkit-border-radius:5px 5px 0 0;
-		-ms-border-radius:0;
-		background:-moz-linear-gradient(#8aae4b, #66901b);
-		background:-webkit-gradient(linear, 0 0, 0 100%, from(#8aae4b), to(#66901b));
-		background:-o-linear-gradient(#8aae4b, #66901b);
+		padding:5px 5px  !important;
 	}
+	table tbody td{border-right: 1px solid #d4d4d4;border-bottom: 1px solid #d4d4d4;}
 	input[type="text"]{width:300px;margin-bottom:5px !important;}
 	select{width:307px;margin-bottom:5px !important;}
 	input[type="text"].small{width:35px;}
@@ -63,7 +57,7 @@ $output=<<<OUT
             <h2 id="tabs-event_log" class='tab selected'>{$eL->zagol}</h2>
             
         </div>
-        <div class="tab-page panel-container">
+        <div class="tab-page panel-container" style="display:block !important;">
             <div id="tabpanel-event_log">
     <h2>{$eL->zagol}</h2>
 	<div class="action_info">{$eL->info}</div>
