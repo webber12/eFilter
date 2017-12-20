@@ -931,6 +931,7 @@ public function getCategoryAllProducts($id, $tv_id)
     //если хотим искать только по заданным документам, то до вызова [!eFilter!] устанавливаем их спискок в плейсхолдер eFilter_search_ids
     $search_ids = $this->modx->getPlaceholder("eFilter_search_ids");
     if ($search_ids && $search_ids != '') {
+        $this->categoryAllProducts = $search_ids;
         return $search_ids;
     }
 
