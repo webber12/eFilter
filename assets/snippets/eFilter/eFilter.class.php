@@ -912,12 +912,13 @@ public function getListFromJson($json = '', $field = 'id', $separator = ',')
 //возвращает список всех дочерних товаров категории плюс товаров, прикрепленных к категории тегом tagSaver через tv с id=$tv_id
 public function getCategoryAllProducts($id, $tv_id)
 {
-    if (!$tv_id) return '';
     //если хотим искать только по заданным документам, то до вызова [!eFilter!] устанавливаем их спискок в плейсхолдер eFilter_search_ids
     $search_ids = $this->modx->getPlaceholder("eFilter_search_ids");
     if ($search_ids && $search_ids != '') {
         return $search_ids;
     }
+
+    if (!$tv_id) return '';
 
     //сначала ищем все товары, вложенные в данную категорию на глубину до 6
     $p = array(
