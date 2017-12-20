@@ -1,4 +1,4 @@
-.eFiltr{display:inline-block;}
+.eFiltr{display:block;}
 .eFiltr_form{}
 .eFiltr_cat{}
 .eFiltr .fltr_cat_zagol{}
@@ -29,6 +29,12 @@
 .eFiltr .fltr_pattern label img{vertical-align:middle;display:inline-block;}
 .eFiltr .fltr_pattern label.active  img{border:solid 1px #e71b00;}
 .eFiltr .fltr_pattern label.disabled   img{opacity:0.5;cursor:default !important;}
+
+.eFilter_sort_block{}
+.eFilter_sort_block .sorter{margin:0 13px;position:relative;}
+.eFilter_sort_block .sorter.active{font-weight:500;}
+.eFilter_sort_block .sorter.up:after{content:"\f107";font-family:FontAwesome;margin-left:2px;position:absolute;right:-13px;top:center;}
+.eFilter_sort_block .sorter.down:after{content:"\f106";font-family:FontAwesome;margin-left:2px;position:absolute;right:-13px;top:center;}
 
 
 #eFiltr_results_wrapper{position:relative;min-height:64px;}
