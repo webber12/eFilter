@@ -99,18 +99,18 @@ public function getParamTvName($tv_id = '')
     return $this->modx->db->getValue("SELECT `name` FROM " . $this->modx->getFullTableName('site_tmplvars') . " WHERE id = {$tv_id} LIMIT 0,1");
 }
 
-public function getFilterParam ($param_tv_name)
+public function getFilterParam ($param_tv_name, $docid)
 {
     $filter_param = array();
     $tv_config = isset ($this->params['tv_config']) ? $this->params['tv_config'] : '';
     if ($tv_config != '') {
         $filter_param = json_decode($tv_config, true);
     } else {
-        $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid'=>$this->docid, 'tv'=>'1', 'field'=>$param_tv_name));
+        $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid' => $docid, 'tv' => '1', 'field' => $param_tv_name));
         if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}') {//если задано для категории, ее и берем
             $filter_param = json_decode($param_tv_val, true);
         } else {//если не задано, идем к родителю
-            $filter_param = $this->_getParentParam ($this->docid, $param_tv_name);
+            $filter_param = $this->_getParentParam ($docid, $param_tv_name);
         }
     }
     return $filter_param;

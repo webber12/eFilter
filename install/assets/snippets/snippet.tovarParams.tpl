@@ -40,7 +40,7 @@ $tv_list = array();
 $sql = "SELECT a.`id`,a.`name`,a.`caption` FROM " . $modx->getFullTableName('site_tmplvars') . " as a, " . $modx->getFullTableName('site_tmplvar_templates') . " as b WHERE a.`category` IN (" . $param_cat_id . ") AND `a`.`id` = `b`.`tmplvarid` AND `b`.`templateid` IN(" . $params['product_templates_id'] . ")  ORDER BY b.`rank` ASC, a.`caption` ASC";
 
 
-	
+    
 $q = $modx->db->query($sql);
 while($row = $modx->db->getRow($q)){
     if (!isset($tv_list[$row['id']])) {
@@ -53,48 +53,65 @@ while($row = $modx->db->getRow($q)){
 //имя TV в котором содержится конфиг фильтров
 //$param_tv_name = $modx->db->getValue("SELECT name FROM " . $modx->getFullTableName('site_tmplvars') . " WHERE id = {$param_tv_id} LIMIT 0,1");
 //разрешененные для данного типа товара параметры
-$tmp = $eFltr->getFilterParam ( $eFltr->param_tv_name);
+$doc = $modx->documentIdentifier;
+$tmp = $eFltr->getFilterParam ( $eFltr->param_tv_name, $doc);
 if (isset($tmp['fieldValue'])) {
-	foreach ($tmp['fieldValue'] as $k=>$v) {
-		$allowedParams[$v['param_id']] = '1';
-	}
+    foreach ($tmp['fieldValue'] as $k=>$v) {
+        $allowedParams[$v['param_id']] = '1';
+    }
+}
+
+//если тут пусто, проверим первую тегованную категорию из параметра tv_category_tag
+if (isset($tv_category_tag) && $tv_category_tag != '' && empty($allowedParams)) {
+    $q = $modx->db->getValue("SELECT value FROM " . $modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE tmplvarid={$tv_category_tag} AND contentid=" . $modx->documentIdentifier);
+    if ($q) {
+        $cats = explode(',', $q);
+        if (isset($cats[0]) && (int)$cats[0] > 0) {
+            $tmp = $eFltr->getFilterParam ( $eFltr->param_tv_name, (int)$cats[0]);
+            if (isset($tmp['fieldValue'])) {
+                foreach ($tmp['fieldValue'] as $k => $v) {
+                    $allowedParams[$v['param_id']] = '1';
+                }
+            }
+        }
+    }
 }
 
 //оставляем только разрешенные для данного товара параметры в списке
 foreach ($tv_list as $k => $v) {
-	if (!isset($allowedParams[$k])) {
-		unset($tv_list[$k]);
-	}
+    if (!isset($allowedParams[$k])) {
+        unset($tv_list[$k]);
+    }
 }
 
 
 // удаляеи из списка общие исключенные ТВ (в настройках модуля) -
 // (например цена и т.п., которая выводится отдельно и есть у всех
 if (isset($exclude_tvs_from_list) && $exclude_tvs_from_list != '') {
-	$exclude_tvs = explode(',', $exclude_tvs_from_list);
-	foreach($exclude_tvs as $k=>$v){
-		if (isset($tv_list[$v])) {
-			unset($tv_list[$v]);
-		}
-	}
+    $exclude_tvs = explode(',', $exclude_tvs_from_list);
+    foreach($exclude_tvs as $k=>$v){
+        if (isset($tv_list[$v])) {
+            unset($tv_list[$v]);
+        }
+    }
 }
 ///////
 
 
 foreach($tv_list as $tv_id=>$v) {
-	$param_title = $v['caption'];
-	$param_value = '[*' . $v['name'] . '*]';
-	$tovar_params_tpl .= $eFltr->parseTpl(
-		array('[+param_title+]', '[+param_value+]', '[+param_id+]'),
-		array($param_title, $param_value, $tv_id),
-		$paramRow
-	);
+    $param_title = $v['caption'];
+    $param_value = '[*' . $v['name'] . '*]';
+    $tovar_params_tpl .= $eFltr->parseTpl(
+        array('[+param_title+]', '[+param_value+]', '[+param_id+]'),
+        array($param_title, $param_value, $tv_id),
+        $paramRow
+    );
 }
 
 $out = $eFltr->parseTpl(
-	array('[+wrapper+]'),
-	array($tovar_params_tpl),
-	$paramOuter
+    array('[+wrapper+]'),
+    array($tovar_params_tpl),
+    $paramOuter
 );
 
 return $out;
