@@ -37,7 +37,7 @@ $eFltr->docid = $modx->documentObject['parent'];
 
 //получаем общий список тв-параметров из категорий "параметры для товара" - $param_cat_id
 $tv_list = array();
-$sql = "SELECT a.`id`,a.`name`,a.`caption` FROM " . $modx->getFullTableName('site_tmplvars') . " as a, " . $modx->getFullTableName('site_tmplvar_templates') . " as b WHERE a.`category` IN (" . $param_cat_id . ") AND `a`.`id` = `b`.`tmplvarid` AND `b`.`templateid` IN(" . $params['product_templates_id'] . ")  ORDER BY b.`rank` ASC, a.`caption` ASC";
+$sql = "SELECT a.`id`,a.`name`,a.`caption`,a.`elements` FROM " . $modx->getFullTableName('site_tmplvars') . " as a, " . $modx->getFullTableName('site_tmplvar_templates') . " as b WHERE a.`category` IN (" . $param_cat_id . ") AND `a`.`id` = `b`.`tmplvarid` AND `b`.`templateid` IN(" . $params['product_templates_id'] . ")  ORDER BY b.`rank` ASC, a.`caption` ASC";
 
 
     
@@ -46,6 +46,7 @@ while($row = $modx->db->getRow($q)){
     if (!isset($tv_list[$row['id']])) {
         $tv_list[$row['id']]['name'] = $row['name'];
         $tv_list[$row['id']]['caption'] = $row['caption'];
+        $tv_list[$row['id']]['elements'] = $row['elements'];
     }
 }
 
@@ -101,6 +102,8 @@ if (isset($exclude_tvs_from_list) && $exclude_tvs_from_list != '') {
 foreach($tv_list as $tv_id=>$v) {
     $param_title = $v['caption'];
     $param_value = '[*' . $v['name'] . '*]';
+    $param_value = stristr($v['elements'], 'getParamsFromTree') === FALSE ? '[*' . $v['name'] . '*]' : '[[if? &is=`[*' . $v['name'] . '*]:!empty` &then=`[[getParamsFromTree? &ids=`[*' . $v['name'] . '*]`]]`]]';
+
     $tovar_params_tpl .= $eFltr->parseTpl(
         array('[+param_title+]', '[+param_value+]', '[+param_id+]'),
         array($param_title, $param_value, $tv_id),
