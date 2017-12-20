@@ -47,6 +47,9 @@ if($modx->event->name == 'OnDocFormRender') {
 				$pid = $modx->db->getValue("SELECT parent FROM " . $modx->getFullTableName('site_content') . " WHERE id={$id} LIMIT 0,1");
 			}
 		} else {
+			if (isset($_GET['id'])) {
+                $pid = $modx->db->getValue("SELECT parent FROM " . $modx->getFullTableName('site_content') . " WHERE id=" . (int)$_GET['id'] . " LIMIT 0,1");
+            }
 			if (isset($_GET['pid'])) {
                 $pid = $_GET['pid'];
             }
@@ -73,7 +76,7 @@ if($modx->event->name == 'OnDocFormRender') {
 
 
         //разрешененные для данного типа товара параметры
-        $tmp = $eFltr->getFilterParam ($eFltr->param_tv_name);
+        $tmp = $eFltr->getFilterParam ($eFltr->param_tv_name, $pid);
         if (isset($tmp['fieldValue'])) {
             foreach ($tmp['fieldValue'] as $k=>$v) {
                 $allowedParams[$v['param_id']] = '1';
