@@ -1,3 +1,18 @@
+/**
+ * tovarParams
+ *
+ * plugin for convinient work with eFilter
+ *
+ * @author      webber (web-ber12@yandex.ru)
+ * @category    plugin
+ * @version     0.1
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
+ * @internal    @events OnDocFormRender
+ * @internal    @properties
+ * @internal    @installset base, sample
+ * @internal    @modx_category Filters
+ */
+ 
 /*использует общие параметры модуля eLists - не забудьте их подключить в модуле и плагине */
  /*
  предназначен для скрытия/показа только нужных tv из заданных категорий "параметры товара" в зависимости
