@@ -39,8 +39,6 @@ $eFltr->docid = $modx->documentObject['parent'];
 $tv_list = array();
 $sql = "SELECT a.`id`,a.`name`,a.`caption`,a.`elements` FROM " . $modx->getFullTableName('site_tmplvars') . " as a, " . $modx->getFullTableName('site_tmplvar_templates') . " as b WHERE a.`category` IN (" . $param_cat_id . ") AND `a`.`id` = `b`.`tmplvarid` AND `b`.`templateid` IN(" . $params['product_templates_id'] . ")  ORDER BY b.`rank` ASC, a.`caption` ASC";
 
-
-    
 $q = $modx->db->query($sql);
 while($row = $modx->db->getRow($q)){
     if (!isset($tv_list[$row['id']])) {
@@ -51,32 +49,29 @@ while($row = $modx->db->getRow($q)){
 }
 
 //находим разрешенные для данного товара параметры
-//имя TV в котором содержится конфиг фильтров
-//$param_tv_name = $modx->db->getValue("SELECT name FROM " . $modx->getFullTableName('site_tmplvars') . " WHERE id = {$param_tv_id} LIMIT 0,1");
-//разрешененные для данного типа товара параметры
+//сначала ищем в родителе
+$allowedParams = array();
 $doc = $modx->documentIdentifier;
-$tmp = $eFltr->getFilterParam ( $eFltr->param_tv_name, $doc);
-if (isset($tmp['fieldValue'])) {
-    foreach ($tmp['fieldValue'] as $k=>$v) {
-        $allowedParams[$v['param_id']] = '1';
-    }
-}
+$allowedTmp = $eFltr->getFilterParam ($eFltr->param_tv_name);
 
 //если тут пусто, проверим первую тегованную категорию из параметра tv_category_tag
-if (isset($tv_category_tag) && $tv_category_tag != '' && empty($allowedParams)) {
+if (isset($tv_category_tag) && $tv_category_tag != '' && empty($allowedTmp)) {
     $q = $modx->db->getValue("SELECT value FROM " . $modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE tmplvarid={$tv_category_tag} AND contentid=" . $modx->documentIdentifier);
     if ($q) {
         $cats = explode(',', $q);
         if (isset($cats[0]) && (int)$cats[0] > 0) {
-            $tmp = $eFltr->getFilterParam ( $eFltr->param_tv_name, (int)$cats[0]);
-            if (isset($tmp['fieldValue'])) {
-                foreach ($tmp['fieldValue'] as $k => $v) {
-                    $allowedParams[$v['param_id']] = '1';
-                }
-            }
+            $allowedTmp = $eFltr->getFilterParam ( $eFltr->param_tv_name, (int)$cats[0]);
         }
     }
 }
+
+//итоговый массив разрешенных для данного товара параметров
+if (isset($allowedTmp['fieldValue'])) {
+    foreach ($allowedTmp['fieldValue'] as $k=>$v) {
+        $allowedParams[$v['param_id']] = '1';
+    }
+}
+
 
 //оставляем только разрешенные для данного товара параметры в списке
 foreach ($tv_list as $k => $v) {
@@ -84,7 +79,6 @@ foreach ($tv_list as $k => $v) {
         unset($tv_list[$k]);
     }
 }
-
 
 // удаляеи из списка общие исключенные ТВ (в настройках модуля) -
 // (например цена и т.п., которая выводится отдельно и есть у всех
