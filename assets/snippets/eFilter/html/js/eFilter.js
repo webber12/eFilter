@@ -51,7 +51,7 @@
         checkForm : function() {
             var self = this;
             $(document).on("change", this.params.form_selector, function(e) {
-                if (typeof autoSubmit !== 'undefined') {
+                if (typeof autoSubmit !== 'undefined' && autoSubmit == '1') {
                     //self.submitForm();
                     $(document).find(self.params.form).submit();
                 }

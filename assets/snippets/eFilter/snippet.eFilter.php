@@ -12,9 +12,9 @@ $eFltr->modx->regClientStartupScript('assets/snippets/eFilter/html/js/jquery.ui.
 if (isset($params['ajax']) && $params['ajax'] == '1') {
     $eFltr->modx->regClientStartupScript('<script>var eFiltrAjax = "1";</script>', array('plaintext' => true));
 }
-if (!isset($params['autoSubmit']) || $params['autoSubmit'] == '1') {
-    $eFltr->modx->regClientStartupScript('<script>var eFiltrAutoSubmit = "1";</script>', array('plaintext' => true));
-}
+$autoSubmit = isset($params['autoSubmit']) ? $params['autoSubmit'] : '1';
+$eFltr->modx->regClientStartupScript('<script>var eFiltrAutoSubmit = "' . $autoSubmit . '";</script>', array('plaintext' => true));
+
 $eFltr->modx->regClientStartupScript('assets/snippets/eFilter/html/js/eFilter.js');
 
 //получаем значение параметров для категории товара в виде массива
