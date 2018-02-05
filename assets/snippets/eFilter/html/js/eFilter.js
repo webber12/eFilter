@@ -3,7 +3,7 @@
     var autoSubmit = wnd.eFiltrAutoSubmit||1;
     var useAjax = wnd.eFiltrAjax;
     var ajaxMode = wnd.eFiltrAjaxMode||1;
-    var changeState = wnd.eFiltrChangeState||1;
+    var doChangeState = wnd.eFiltrChangeState||1;
     var eFilter = function(options) {
         this.Init(options);
     }
@@ -154,7 +154,7 @@
             $('body').animate({ scrollTop: this.params.result_list_obj.offset().top }, 300);
         },
         changeState : function(state) {
-            if (ajaxMode == '1' && eFiltrChangeState != '0') {
+            if (ajaxMode == '1' && doChangeState != '0') {
                 history.pushState('', '', state);
             }
         }
