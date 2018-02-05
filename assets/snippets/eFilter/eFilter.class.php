@@ -85,6 +85,7 @@ public function __construct($modx, $params)
     $this->docid = isset($this->params['docid']) ? $this->params['docid'] : $this->modx->documentIdentifier;
     $this->cfg = (isset($this->params['cfg']) && $this->params['cfg'] != '') ? $this->params['cfg'] : 'default';
     $this->params['remove_disabled'] = isset($this->params['remove_disabled']) && $this->params['remove_disabled'] != '0' ? '1' : '0';
+    $this->params['btn_text'] = isset($this->params['btn_text']) && $this->params['btn_text'] != '' ? $this->params['btn_text'] : 'Найти';
     $this->zero = isset($this->params['hide_zero']) ? '' : '0';
     $this->pattern_folder = (isset($this->params['pattern_folder']) && $this->params['pattern_folder'] != '') ? $this->params['pattern_folder'] : 'assets/images/pattern/';
     $this->nosort_tv_id = isset($this->params['nosort_tv_id']) ? explode(',', $this->params['nosort_tv_id']) : array();
@@ -594,7 +595,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
     }
     $tpl = $tplFilterForm;
     $resetTpl = $tplFilterReset;
-    $output = $output != '' ? $this->parseTpl(array('[+url+]', '[+wrapper+]'), array($this->modx->makeUrl($this->docid), $output), $tpl) : '';
+    $output = $output != '' ? $this->parseTpl(array('[+url+]', '[+wrapper+]', '[+btn_text+]'), array($this->modx->makeUrl($this->docid), $output, $this->params['btn_text']), $tpl) : '';
     $output .= $output != '' ? $this->parseTpl(array('[+reset_url+]'), array($this->modx->makeUrl($this->modx->documentIdentifier)), $resetTpl) : '';
     return $output;
 }
