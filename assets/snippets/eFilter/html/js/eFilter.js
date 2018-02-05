@@ -2,6 +2,8 @@
 !function(wnd, $, undefined){
     var autoSubmit = wnd.eFiltrAutoSubmit||1;
     var useAjax = wnd.eFiltrAjax;
+    var ajaxMode = wnd.eFiltrAjaxMode||1;
+    var changeState = wnd.eFiltrChangeState||1;
     var eFilter = function(options) {
         this.Init(options);
     }
@@ -10,6 +12,7 @@
         defaults : {
             block : "#eFiltr",
             form : "form#eFiltr",
+            form_btn : ".eFiltr_btn",
             form_selector : "form#eFiltr input, form#eFiltr select",
             result_list : "#eFiltr_results",
             loader : "#eFiltr_results_wrapper .eFiltr_loader"
@@ -21,6 +24,7 @@
                 {
                     block_obj : $(this.params.block),
                     form_obj : $(this.params.form),
+                    form_obj_btn : $(this.params.form_btn),
                     form_selector_obj : $(this.params.form_selector),
                     result_list_obj : $(this.params.result_list),
                     loader_obj : $(this.params.loader)
@@ -29,10 +33,11 @@
             this.checkActions();
         },
         checkActions : function() {
-            this.checkPagination();
             this.bindForm();
             this.checkForm();
+            this.bindFormBtn();
             this.checkSort();
+            this.checkPagination();
         },
         checkPagination : function() {
             var self = this;
@@ -51,7 +56,7 @@
         checkForm : function() {
             var self = this;
             $(document).on("change", this.params.form_selector, function(e) {
-                if (typeof autoSubmit !== 'undefined' && autoSubmit == '1') {
+                if (typeof autoSubmit !== 'undefined' && autoSubmit == '1' && !$(this).hasClass("eFiltr_submitted")) {
                     //self.submitForm();
                     $(document).find(self.params.form).submit();
                 }
@@ -63,12 +68,21 @@
         bindForm : function() {
             var self = this;
             $(document).on("submit", this.params.form, function(e) {
-                if (typeof useAjax !== 'undefined') {
+                if (typeof useAjax !== 'undefined' && !$(this).hasClass("eFiltr_submitted")) {
                     e.preventDefault();
                     var _form = $(this);
                     var data2 = _form.serialize()/* + '&no_ajax_for_star_rating=1'*/;
                     var action = _form.attr("action");
                     self.makeAjax(action, data2, _form, "GET", "all");
+                }
+            })
+        },
+        bindFormBtn : function() {
+            var self = this;
+            $(document).on("click", this.params.form_btn, function(e) {
+                if (ajaxMode == '2') {
+                    e.preventDefault();
+                    $(document).find(self.params.form).addClass("eFiltr_submitted").submit();
                 }
             })
         },
@@ -84,23 +98,31 @@
                 success: function(msg) {
                     self.updateAfterSuccess(msg, _form, updateAll);
                     var state = action + (data2 != '' ? '?' + data2 : '');
-                    history.pushState('', '', state);
+                    self.changeState(state);
                 }
             })
         },
         blurBlocks : function() {
             this.params.form_obj.css({'opacity' : '0.5'});
-            this.params.result_list_obj.css({'opacity' : '0.5'});
+            if (ajaxMode == '1') {
+                this.params.result_list_obj.css({'opacity' : '0.5'});
+            }
         },
         unblurBlocks : function() {
             this.params.form_obj.css({'opacity' : '1'});
-            this.params.result_list_obj.css({'opacity' : '1'});
+            if (ajaxMode == '1') {
+                this.params.result_list_obj.css({'opacity' : '1'});
+            }
         },
         showLoader : function() {
-            this.params.loader_obj.show();
+            if (ajaxMode == '1') {
+                this.params.loader_obj.show();
+            }
         },
         hideLoader : function() {
-            this.params.loader_obj.hide();
+            if (ajaxMode == '1') {
+                this.params.loader_obj.hide();
+            }
         },
         insertResult : function(msg, selector) {
             $(selector).html($(msg).find(selector).html());
@@ -110,7 +132,9 @@
                 afterFilterSend(msg);
             }
             this.hideLoader();
-            this.insertResult(msg, this.params.result_list);
+            if (ajaxMode == '1') {
+                this.insertResult(msg, this.params.result_list);
+            }
             if (typeof updateAll !== 'undefined') {
                 this.insertResult(msg, this.params.form);
             }
@@ -128,6 +152,11 @@
         },
         scrollTop : function() {
             $('body').animate({ scrollTop: this.params.result_list_obj.offset().top }, 300);
+        },
+        changeState : function(state) {
+            if (ajaxMode == '1' && eFiltrChangeState != '0') {
+                history.pushState('', '', state);
+            }
         }
         
     }
