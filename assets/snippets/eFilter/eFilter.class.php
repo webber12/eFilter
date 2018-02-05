@@ -86,6 +86,7 @@ public function __construct($modx, $params)
     $this->cfg = (isset($this->params['cfg']) && $this->params['cfg'] != '') ? $this->params['cfg'] : 'default';
     $this->params['remove_disabled'] = isset($this->params['remove_disabled']) && $this->params['remove_disabled'] != '0' ? '1' : '0';
     $this->params['btn_text'] = isset($this->params['btn_text']) && $this->params['btn_text'] != '' ? $this->params['btn_text'] : 'Найти';
+    $this->params['form_method'] = 'get';
     $this->zero = isset($this->params['hide_zero']) ? '' : '0';
     $this->pattern_folder = (isset($this->params['pattern_folder']) && $this->params['pattern_folder'] != '') ? $this->params['pattern_folder'] : 'assets/images/pattern/';
     $this->nosort_tv_id = isset($this->params['nosort_tv_id']) ? explode(',', $this->params['nosort_tv_id']) : array();
@@ -600,7 +601,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
     $tmp = explode('?', $_SERVER['REQUEST_URI']);
     $form_url = isset($tmp[0]) && !empty($tmp[0]) ? $tmp[0] : $this->modx->makeUrl($this->docid);
 	$form_result_cnt = isset($this->content_ids_cnt) && $this->content_ids_cnt != '' ? $this->parseTpl(array('[+cnt+]', '[+ending+]'), array($this->content_ids_cnt, $this->content_ids_cnt_ending), $this->cntTpl) : '';
-    $output = $output != '' ? $this->parseTpl(array('[+url+]', '[+wrapper+]', '[+btn_text+]', '[+form_result_cnt+]'), array($form_url, $output, $this->params['btn_text'], $form_result_cnt), $tpl) : '';
+    $output = $output != '' ? $this->parseTpl(array('[+url+]', '[+wrapper+]', '[+btn_text+]', '[+form_result_cnt+]', '[+form_method+]'), array($form_url, $output, $this->params['btn_text'], $form_result_cnt, $this->params['form_method']), $tpl) : '';
     $output .= $output != '' ? $this->parseTpl(array('[+reset_url+]'), array($form_url), $resetTpl) : '';
     return $output;
 }
