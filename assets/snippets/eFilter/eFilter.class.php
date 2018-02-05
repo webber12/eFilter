@@ -92,6 +92,8 @@ public function __construct($modx, $params)
     $this->dl_filter_type = isset($this->params['dl_filter_type']) ? $this->params['dl_filter_type'] : 'tvd';
     $this->getFP ();
     $this->prepareGetParams($this->fp);
+    $this->endings = isset($this->params['endings']) && $this->params['endings'] != '' ? explode(',', $this->params['endings']) : array('товар', 'товара', 'товаров');
+    $this->cntTpl = isset($this->params['cnt_tpl']) && $this->params['cnt_tpl'] != '' ? $this->params['cnt_tpl'] : 'Найдено: [+cnt+] [+ending+]';
 }
 
 public function getParamTvName($tv_id = '')
@@ -595,8 +597,11 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
     }
     $tpl = $tplFilterForm;
     $resetTpl = $tplFilterReset;
-    $output = $output != '' ? $this->parseTpl(array('[+url+]', '[+wrapper+]', '[+btn_text+]'), array($this->modx->makeUrl($this->docid), $output, $this->params['btn_text']), $tpl) : '';
-    $output .= $output != '' ? $this->parseTpl(array('[+reset_url+]'), array($this->modx->makeUrl($this->modx->documentIdentifier)), $resetTpl) : '';
+    $tmp = explode('?', $_SERVER['REQUEST_URI']);
+    $form_url = isset($tmp[0]) && !empty($tmp[0]) ? $tmp[0] : $this->modx->makeUrl($this->docid);
+	$form_result_cnt = isset($this->content_ids_cnt) && $this->content_ids_cnt != '' ? $this->parseTpl(array('[+cnt+]', '[+ending+]'), array($this->content_ids_cnt, $this->content_ids_cnt_ending), $this->cntTpl) : '';
+    $output = $output != '' ? $this->parseTpl(array('[+url+]', '[+wrapper+]', '[+btn_text+]', '[+form_result_cnt+]'), array($form_url, $output, $this->params['btn_text'], $form_result_cnt), $tpl) : '';
+    $output .= $output != '' ? $this->parseTpl(array('[+reset_url+]'), array($form_url), $resetTpl) : '';
     return $output;
 }
 
@@ -723,9 +728,9 @@ public function makeAllContentIDs ($DLparams)
 
     $this->content_ids_cnt = $this->content_ids != '' ? count(explode(',', $this->content_ids)) : (!empty($this->fp) ? '0' : '-1');
     if ($this->content_ids_cnt != '-1' && $this->content_ids_cnt != '0') {
-        $this->content_ids_cnt_ending = $this->getNumEnding($this->content_ids_cnt, array('товар', 'товара', 'товаров'));
+        $this->content_ids_cnt_ending = $this->getNumEnding($this->content_ids_cnt, $this->endings);
     } else if ($this->content_ids_cnt == '0') {
-        $this->content_ids_cnt_ending = 'товаров';
+        $this->content_ids_cnt_ending = isset($this->endings[2]) ? $this->endings : 'товаров';
     } else {
         $this->content_ids_cnt_ending = '';
     }
