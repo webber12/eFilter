@@ -1,5 +1,5 @@
 /**
- * tovarParams
+ * eFilterHelper
  *
  * plugin for convinient work with eFilter
  *
@@ -7,7 +7,7 @@
  * @category    plugin
  * @version     0.1
  * @license     http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
- * @internal    @events OnDocFormRender
+ * @internal    @events OnDocFormRender,OnWebPageInit
  * @internal    @properties
  * @internal    @installset base, sample
  * @internal    @modx_category Filters
@@ -17,6 +17,7 @@
  /*
  предназначен для скрытия/показа только нужных tv из заданных категорий "параметры товара" в зависимости
  от настроек родительской категории по фильтрам и используемым параметрам товара
+  а также для установки нужных направлений сортировки на событии onWebPageInit
  */
 
 if(!defined('MODX_BASE_PATH')) die('What are you doing? Get out of here!');
@@ -113,4 +114,41 @@ if($modx->event->name == 'OnDocFormRender') {
         $output .= $modx->parseText($style, array('param_tv_id' => $param_tv_id));
     }
     $modx->event->output($output);
+}
+
+if ($e->name == 'OnWebPageInit') {
+    $docid = $modx->documentIdentifier;    
+    if (isset($_POST['action'])) {
+        $action = $modx->db->escape($_POST['action']);
+        switch ($action) {
+            case 'changesortBy':
+                //ставим в сессию параметры сортировки и вывода
+                $sortBy = ($_POST['sortBy'] && !empty($_POST['sortBy'])) ? $modx->db->escape($_POST['sortBy']) : '';
+                $sortOrder = ($_POST['sortOrder'] && !empty($_POST['sortOrder'])) ? $modx->db->escape($_POST['sortOrder']) : '';
+                $sortDisplay = ($_POST['sortDisplay'] && !empty($_POST['sortDisplay'])) ? $modx->db->escape($_POST['sortDisplay']) : '';
+                if (!empty($sortBy)) {
+                    $_SESSION['sortBy'] = $sortBy;
+                }
+                if (!empty($sortOrder)) {
+                    $_SESSION['sortOrder'] = $sortOrder;
+                }
+                if (!empty($sortDisplay)) {
+                    $_SESSION['sortDisplay'] = $sortDisplay;
+                }
+                $_SESSION['sortDocument'] = $docid;
+                break;
+
+            default:
+                break;
+            
+        }
+    }
+    //срасываем установки сортировки при уходе на другую страницу
+    if (isset($_SESSION['sortDocument']) && $_SESSION['sortDocument'] != $docid) {
+        unset($_SESSION['sortDocument']);
+        unset($_SESSION['sortOrder']);
+        unset($_SESSION['sortBy']);
+        unset($_SESSION['sortDisplay']);
+    }
+    
 }
