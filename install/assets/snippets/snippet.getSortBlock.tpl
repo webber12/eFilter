@@ -48,6 +48,7 @@ $classUpName = isset($param['classUpName']) ? $param['classUpName'] : 'up';
 $classDownName = isset($param['classDownName']) ? $param['classDownName'] : 'down';
 $classSelectedName = isset($param['classSelectedName']) ? $param['classSelectedName'] : 'selected';
 $action_uri = $_SERVER['REQUEST_URI'];
+$jsFileName = isset($jsFileName) && !empty($jsFileName) ? $jsFileName : 'eFSortBlock';
 
 //разбираем конфиг
 $cfg = array();
@@ -113,30 +114,14 @@ $displayBlock .= str_replace(
 //итоговая форма
 $out .= <<<HTML
 <div id="eFilter_sort_block">
-<form action="{$action_uri}" method="post" id="changesortBy">
-    {$sortBlock}
-    {$displayBlock}
-    <input type="hidden" name="action" value="changesortBy">
-    <input type="hidden" name="sortBy" value="{$sortBy}">
-    <input type="hidden" name="sortOrder" value="{$sortOrder}">
-</form>
-<script>
-$(document).ready(function(){
-    $("#eFilter_sort_block").on("click", "a.sort_vid", function(e){
-        e.preventDefault();
-        var sortBy = $(this).data("sortBy");
-        var sortOrder = $(this).data("sortOrder");
-        $("#eFilter_sort_block a.sort_vid").removeClass("active");
-        $(this).addClass("active");
-        $("input[name='sortBy']").val(sortBy);
-        $("input[name='sortOrder']").val(sortOrder);
-        $("#changesortBy").submit();
-    })
-    $("#eFilter_sort_block").on("change", "select[name='sortDisplay']", function(e){
-        e.preventDefault();
-        $("#changesortBy").submit();
-    })
-})
-</script>
+    <form action="{$action_uri}" method="post" id="changesortBy">
+        {$sortBlock}
+        {$displayBlock}
+        <input type="hidden" name="action" value="changesortBy">
+        <input type="hidden" name="sortBy" value="{$sortBy}">
+        <input type="hidden" name="sortOrder" value="{$sortOrder}">
+    </form>
+</div>
 HTML;
+$modx->regClientScript("assets/snippets/eFilter/html/js/" . $jsFileName . ".js");
 return $out;

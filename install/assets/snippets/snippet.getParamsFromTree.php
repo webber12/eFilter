@@ -17,12 +17,17 @@
 //значения tv формировались из дерева сниппетом multiParams
 
 $ids = isset($params['ids']) ? $params['ids'] : '';
+$no_href = isset($nohref) ? true : false;
 $arr = array();
 if ($ids != '') {
 	$ids = str_replace('||', ',', $ids);
-	$q = $modx->db->query("SELECT id,pagetitle FROM modx_site_content WHERE id IN (" . $ids . ") AND published=1 AND deleted=0");
+	$q = $modx->db->query("SELECT id,pagetitle FROM " . $modx->getFullTableName("site_content") . " WHERE id IN (" . $ids . ") AND published=1 AND deleted=0");
 	while ($row = $modx->db->getRow($q)) {
-		$arr[] = '<a href="' . $modx->makeUrl($row['id']) . '">' . $row['pagetitle'] . '</a>';
+		if (!$no_href) {
+			$arr[] = '<a href="' . $modx->makeUrl($row['id']) . '">' . $row['pagetitle'] . '</a>';
+		} else {
+			$arr[] = $row['pagetitle'];
+		}
 	}
 }
 $out = implode(', ', $arr);
