@@ -116,7 +116,7 @@ if($modx->event->name == 'OnDocFormRender') {
     $modx->event->output($output);
 }
 
-if ($e->name == 'OnWebPageInit') {
+if ($modx->event->name == 'OnWebPageInit') {
     $docid = $modx->documentIdentifier;    
     if (isset($_POST['action'])) {
         $action = $modx->db->escape($_POST['action']);
