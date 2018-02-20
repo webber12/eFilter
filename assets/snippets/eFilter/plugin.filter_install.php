@@ -16,7 +16,7 @@ $fields = array('enable_sharedparams' => 1);
  
 $modx->db->update($fields, $M, 'id = "' . $moduleId . '"');
 $snippets = array('eFilter', 'eFilterResult', 'multiParams', 'tovarParams');
-$plugins = array('tovarParams');
+$plugins = array('eFilterHelper');
 foreach ($snippets as $snippet) {
     $snippetId  = $modx->db->getValue($modx->db->select('id', $S, 'name="' . $snippet . '"'));
     if (empty($snippetId)) {
