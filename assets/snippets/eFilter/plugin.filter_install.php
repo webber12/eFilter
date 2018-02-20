@@ -48,9 +48,9 @@ foreach ($plugins as $plugin) {
         continue;
     }
     $fields = array(
-        'module'=>$moduleId,
-        'resource'=>$pluginId,
-        'type'=>30
+        'module' => $moduleId,
+        'resource' => $pluginId,
+        'type' => 30
     );
     $modx->db->insert($fields, $MD);
     $fields = array('moduleguid' => $moduleGuid);
