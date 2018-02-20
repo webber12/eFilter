@@ -7,24 +7,24 @@ $eFltr = new eFilter($modx, $params);
 
 $eFltr->modx->regClientCSS('assets/snippets/eFilter/html/css/eFilter.css');
 $eFltr->modx->regClientCSS('assets/snippets/eFilter/html/css/slider.css');
-$eFltr->modx->regClientStartupScript('assets/snippets/eFilter/html/js/jquery-ui.min.js');
-$eFltr->modx->regClientStartupScript('assets/snippets/eFilter/html/js/jquery.ui.touch-punch.min.js');
+$eFltr->modx->regClientScript('assets/snippets/eFilter/html/js/jquery-ui.min.js');
+$eFltr->modx->regClientScript('assets/snippets/eFilter/html/js/jquery.ui.touch-punch.min.js');
 //вкл ajax
 if (isset($params['ajax']) && $params['ajax'] == '1') {
-    $eFltr->modx->regClientStartupScript('<script>var eFiltrAjax = "1";</script>', array('plaintext' => true));
+    $eFltr->modx->regClientScript('<script>var eFiltrAjax = "1";</script>', array('plaintext' => true));
 }
 //автосабмит формы
 $autoSubmit = isset($params['autoSubmit']) ? $params['autoSubmit'] : '1';
-$eFltr->modx->regClientStartupScript('<script>var eFiltrAutoSubmit = "' . $autoSubmit . '";</script>', array('plaintext' => true));
+$eFltr->modx->regClientScript('<script>var eFiltrAutoSubmit = "' . $autoSubmit . '";</script>', array('plaintext' => true));
 //режим аякс: 1 - полный, 2 - перегружается только форма, а список по кнопке submit без ajax
 if (isset($params['ajax_mode']) && $params['ajax_mode'] != '') {
-    $eFltr->modx->regClientStartupScript('<script>var eFiltrAjaxMode = "' . $params['ajax_mode'] . '";</script>', array('plaintext' => true));
+    $eFltr->modx->regClientScript('<script>var eFiltrAjaxMode = "' . $params['ajax_mode'] . '";</script>', array('plaintext' => true));
 }
 //изменять адрес url после запросов
 if (isset($params['change_state']) && $params['change_state'] != '') {
-    $eFltr->modx->regClientStartupScript('<script>var eFiltrChangeState = "' . $params['change_state'] . '";</script>', array('plaintext' => true));
+    $eFltr->modx->regClientScript('<script>var eFiltrChangeState = "' . $params['change_state'] . '";</script>', array('plaintext' => true));
 }
-$eFltr->modx->regClientStartupScript('assets/snippets/eFilter/html/js/eFilter.js');
+$eFltr->modx->regClientScript('assets/snippets/eFilter/html/js/eFilter.js');
 
 //получаем значение параметров для категории товара в виде массива
 //если у ресурса не задано - смотрим родителя, если у родителя нет- смотрим дедушку
