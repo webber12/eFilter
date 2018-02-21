@@ -84,17 +84,17 @@ public function __construct($modx, $params)
     $this->product_templates_array = explode(',', $this->product_templates_id);
     $this->docid = isset($this->params['docid']) ? $this->params['docid'] : $this->modx->documentIdentifier;
     $this->cfg = (isset($this->params['cfg']) && $this->params['cfg'] != '') ? $this->params['cfg'] : 'default';
-    $this->params['remove_disabled'] = isset($this->params['remove_disabled']) && $this->params['remove_disabled'] != '0' ? '1' : '0';
-    $this->params['btn_text'] = isset($this->params['btn_text']) && $this->params['btn_text'] != '' ? $this->params['btn_text'] : 'Найти';
-    $this->params['form_method'] = 'get';
-    $this->zero = isset($this->params['hide_zero']) ? '' : '0';
+    $this->params['removeDisabled'] = isset($this->params['removeDisabled']) && $this->params['removeDisabled'] != '0' ? '1' : '0';
+    $this->params['btnText'] = isset($this->params['btnText']) && $this->params['btnText'] != '' ? $this->params['btnText'] : 'Найти';
+    $this->params['formMethod'] = 'get';
+    $this->zero = isset($this->params['hideZero']) ? '' : '0';
     $this->pattern_folder = (isset($this->params['pattern_folder']) && $this->params['pattern_folder'] != '') ? $this->params['pattern_folder'] : 'assets/images/pattern/';
-    $this->nosort_tv_id = isset($this->params['nosort_tv_id']) ? explode(',', $this->params['nosort_tv_id']) : array();
+    $this->nosort_tv_id = isset($this->params['nosortTvId']) ? explode(',', $this->params['nosortTvId']) : array();
     $this->dl_filter_type = isset($this->params['dl_filter_type']) ? $this->params['dl_filter_type'] : 'tvd';
     $this->getFP ();
     $this->prepareGetParams($this->fp);
     $this->endings = isset($this->params['endings']) && $this->params['endings'] != '' ? explode(',', $this->params['endings']) : array('товар', 'товара', 'товаров');
-    $this->cntTpl = isset($this->params['cnt_tpl']) && $this->params['cnt_tpl'] != '' ? $this->params['cnt_tpl'] : 'Найдено: [+cnt+] [+ending+]';
+    $this->cntTpl = isset($this->params['cntTpl']) && $this->params['cntTpl'] != '' ? $this->params['cntTpl'] : 'Найдено: [+cnt+] [+ending+]';
 }
 
 public function getParamTvName($tv_id = '')
@@ -109,7 +109,7 @@ public function getFilterParam ($param_tv_name, $docid = 0)
         $docid = $this->docid;
     }
     $filter_param = array();
-    $tv_config = isset ($this->params['tv_config']) ? $this->params['tv_config'] : '';
+    $tv_config = isset ($this->params['tvConfig']) ? $this->params['tvConfig'] : '';
     if ($tv_config != '') {
         $filter_param = json_decode($tv_config, true);
     } else {
@@ -235,7 +235,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             } else {
                                 $count = $this->zero;
                             }
-                            if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                            if ($this->params['removeDisabled'] == '0' || $disabled == '') {
                                 $i++;
                                 $wrapper .= $k != '' ? $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
@@ -276,7 +276,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             } else {
                                 $count = $this->zero;
                             }
-                            if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                            if ($this->params['removeDisabled'] == '0' || $disabled == '') {
                                 $i++;
                                 $wrapper .= $k != '' ? $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
@@ -353,7 +353,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             } else {
                                 $count = $this->zero;
                             }
-                            if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                            if ($this->params['removeDisabled'] == '0' || $disabled == '') {
                                 $i++;
                                 $wrapper .= $k != '' ? $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
@@ -392,7 +392,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             } else {
                                 $count = $this->zero;
                             }
-                            if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                            if ($this->params['removeDisabled'] == '0' || $disabled == '') {
                                 $wrapper .= $k != '' ? $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]'),
                                     array($tv_id, $k, $tv_val_name, $selected, $disabled, $count),
@@ -484,7 +484,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             } else {
                                 $count = $this->zero;
                             }
-                            if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                            if ($this->params['removeDisabled'] == '0' || $disabled == '') {
                                 $i++;
                                 $wrapper .= $k != '' ? $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+label_selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
@@ -530,7 +530,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             } else {
                                 $count = $this->zero;
                             }
-                            if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                            if ($this->params['removeDisabled'] == '0' || $disabled == '') {
                                 $i++;
                                 $wrapper .= $k != '' ? $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+label_selected+]', '[+disabled+]', '[+count+]', '[+pattern_folder+]', '[+iteration+]'),
@@ -574,7 +574,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             } else {
                                 $count = $this->zero;
                             }
-                            if ($this->params['remove_disabled'] == '0' || $disabled == '') {
+                            if ($this->params['removeDisabled'] == '0' || $disabled == '') {
                                 $i++;
                                 $wrapper .= $k != '' ? $this->parseTpl(
                                     array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
@@ -600,8 +600,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
     $resetTpl = $tplFilterReset;
     $tmp = explode('?', $_SERVER['REQUEST_URI']);
     $form_url = isset($tmp[0]) && !empty($tmp[0]) ? $tmp[0] : $this->modx->makeUrl($this->docid);
-	$form_result_cnt = isset($this->content_ids_cnt) && $this->content_ids_cnt != '' ? $this->parseTpl(array('[+cnt+]', '[+ending+]'), array($this->content_ids_cnt, $this->content_ids_cnt_ending), $this->cntTpl) : '';
-    $output = $output != '' ? $this->parseTpl(array('[+url+]', '[+wrapper+]', '[+btn_text+]', '[+form_result_cnt+]', '[+form_method+]'), array($form_url, $output, $this->params['btn_text'], $form_result_cnt, $this->params['form_method']), $tpl) : '';
+    $form_result_cnt = isset($this->content_ids_cnt) && $this->content_ids_cnt != '' ? $this->parseTpl(array('[+cnt+]', '[+ending+]'), array($this->content_ids_cnt, $this->content_ids_cnt_ending), $this->cntTpl) : '';
+    $output = $output != '' ? $this->parseTpl(array('[+url+]', '[+wrapper+]', '[+btn_text+]', '[+form_result_cnt+]', '[+form_method+]'), array($form_url, $output, $this->params['btnText'], $form_result_cnt, $this->params['formMethod']), $tpl) : '';
     $output .= $output != '' ? $this->parseTpl(array('[+reset_url+]'), array($form_url), $resetTpl) : '';
     return $output;
 }

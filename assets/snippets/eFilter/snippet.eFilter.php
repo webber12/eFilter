@@ -17,12 +17,12 @@ if (isset($params['ajax']) && $params['ajax'] == '1') {
 $autoSubmit = isset($params['autoSubmit']) ? $params['autoSubmit'] : '1';
 $eFltr->modx->regClientScript('<script>var eFiltrAutoSubmit = "' . $autoSubmit . '";</script>', array('plaintext' => true));
 //режим аякс: 1 - полный, 2 - перегружается только форма, а список по кнопке submit без ajax
-if (isset($params['ajax_mode']) && $params['ajax_mode'] != '') {
-    $eFltr->modx->regClientScript('<script>var eFiltrAjaxMode = "' . $params['ajax_mode'] . '";</script>', array('plaintext' => true));
+if (isset($params['ajaxMode']) && $params['ajaxMode'] != '') {
+    $eFltr->modx->regClientScript('<script>var eFiltrAjaxMode = "' . $params['ajaxMode'] . '";</script>', array('plaintext' => true));
 }
 //изменять адрес url после запросов
-if (isset($params['change_state']) && $params['change_state'] != '') {
-    $eFltr->modx->regClientScript('<script>var eFiltrChangeState = "' . $params['change_state'] . '";</script>', array('plaintext' => true));
+if (isset($params['changeState']) && $params['changeState'] != '') {
+    $eFltr->modx->regClientScript('<script>var eFiltrChangeState = "' . $params['changeState'] . '";</script>', array('plaintext' => true));
 }
 $eFltr->modx->regClientScript('assets/snippets/eFilter/html/js/eFilter.js');
 
