@@ -60,5 +60,6 @@ foreach ($plugins as $plugin) {
 $pluginId  = $modx->db->getValue($modx->db->select('id', $P, 'name="filter_install"'));
 if (!empty($pluginId)) {
    $modx->db->delete($P, "id = $pluginId");
+   $modx->db->delete($modx->getFullTableName("site_plugin_events"), "pluginid=$pluginId");
 };
 
