@@ -80,7 +80,7 @@ foreach ($tv_list as $k => $v) {
     }
 }
 
-// удаляеи из списка общие исключенные ТВ (в настройках модуля) -
+// удаляем из списка общие исключенные ТВ (в настройках модуля) -
 // (например цена и т.п., которая выводится отдельно и есть у всех
 if (isset($exclude_tvs_from_list) && $exclude_tvs_from_list != '') {
     $exclude_tvs = explode(',', $exclude_tvs_from_list);
@@ -96,7 +96,7 @@ if (isset($exclude_tvs_from_list) && $exclude_tvs_from_list != '') {
 foreach($tv_list as $tv_id=>$v) {
     $param_title = $v['caption'];
     $param_value = '[*' . $v['name'] . '*]';
-    $param_value = stristr($v['elements'], 'getParamsFromTree') === FALSE ? '[*' . $v['name'] . '*]' : '[[if? &is=`[*' . $v['name'] . '*]:!empty` &then=`[[getParamsFromTree? &ids=`[*' . $v['name'] . '*]`]]`]]';
+    $param_value = stristr($v['elements'], 'getParamsFromTree') === FALSE ? '[*' . $v['name'] . '*]' : '[[if? &is=`[*' . $v['name'] . '*]:!empty` &then=`[[multiParams? &action=`showParamsFromTree` &ids=`[*' . $v['name'] . '*]`]]`]]';
 
     $tovar_params_tpl .= $eFltr->parseTpl(
         array('[+param_title+]', '[+param_value+]', '[+param_id+]'),

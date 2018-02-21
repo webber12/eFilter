@@ -64,6 +64,24 @@ switch ($action){
             $out .= $row['pagetitle'] . (strpos($_SERVER['REQUEST_URI'], MGR_DIR) !== FALSE ? ' (' . $row['id'] . ')' : '') . '==' . $row['id'] . '||';
         }
         break;
+
+    case 'showParamsFromTree':
+        $ids = isset($params['ids']) ? $params['ids'] : '';
+        $no_href = isset($nohref) ? true : false;
+        $arr = array();
+        if ($ids != '') {
+            $ids = str_replace('||', ',', $ids);
+            $q = $modx->db->query("SELECT id,pagetitle FROM " . $modx->getFullTableName("site_content") . " WHERE id IN (" . $ids . ") AND published=1 AND deleted=0");
+            while ($row = $modx->db->getRow($q)) {
+                if (!$no_href) {
+                    $arr[] = '<a href="' . $modx->makeUrl($row['id']) . '">' . $row['pagetitle'] . '</a>';
+                } else {
+                    $arr[] = $row['pagetitle'];
+                }
+            }
+        }
+        $out = implode(', ', $arr) . '  ';
+        break;
     
     default:
         $sql = "SELECT title, id FROM " . $modx->getFullTableName('list_value_table') . " WHERE parent={$parent} ORDER BY sort ASC, title ASC";
