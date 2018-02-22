@@ -10,8 +10,7 @@
  * @internal        @type custom_tv
  * @internal        @input_options @INCLUDE assets/tvs/multitv/multitv.customtv.php
  * @internal        @output_widget 
- * @internal        @output_widget_params 
- * @internal        @lock_tv 0
+ * @internal        @output_widget_params
  * @internal        @template_assignments
  * @internal        @modx_category Filters
  * @internal        @installset sample
