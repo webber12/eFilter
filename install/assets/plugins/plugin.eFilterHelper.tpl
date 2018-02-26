@@ -11,7 +11,6 @@
  * @internal    @properties
  * @internal    @installset base, sample
  * @internal    @modx_category Filters
- * @internal    @disabled 1
  */
  
 /*использует общие параметры модуля eLists - не забудьте их подключить в модуле и плагине */
