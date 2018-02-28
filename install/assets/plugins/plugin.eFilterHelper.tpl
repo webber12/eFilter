@@ -33,6 +33,7 @@ $tv_list = array();
 
 if($modx->event->name == 'OnDocFormRender') {
     global $content;
+    global $tvsArray;
     $product_template_array = explode(',', $product_templates_id);
     if (isset($content['template']) && in_array($content['template'], $product_template_array)) {
         
@@ -109,7 +110,8 @@ if($modx->event->name == 'OnDocFormRender') {
             $output .= '<style>tr.hide_next,tr.hide_next + tr{display:none;}</style>' . "\n";
         }
     }
-    if (isset($content['template']) && in_array($content['template'], explode(',', str_replace(', ', ',', $tv_category_for_tovarparams)))) {
+    if (is_array($tvsArray) && isset($tvsArray['tovarparams'])) {
+        //есть tv tovarparams - будем его стилизовать
         $style = file_get_contents(MODX_SITE_URL . 'assets/snippets/eFilter/html/tovarparams_style.tpl');
         $output .= $modx->parseText($style, array('param_tv_id' => $param_tv_id));
     }
