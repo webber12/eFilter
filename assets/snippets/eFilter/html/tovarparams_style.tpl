@@ -5,13 +5,13 @@
     .multitv #tv[+param_tv_id+]list .element select.mtv_fltr_type{max-width:110px;}
     .multitv #tv[+param_tv_id+]list .element input{margin-bottom:0;}
     .multitv #tv[+param_tv_id+]list .element input[type="checkbox"]{vertical-align:middle;display:inline-block;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(4){width:45px;position:relative;vertical-align:middle;display:inline-block;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(4):before{content:"в списке";position:absolute;top:-20px;left:0;font-size:12px;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(6){width:45px;position:relative;vertical-align:middle;display:inline-block;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(4){width:50px;position:relative;vertical-align:middle;display:inline-block;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(4):before{content:"в списке";position:absolute;top:-20px;left:0;font-size:12px;white-space:nowrap;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(6){width:50px;position:relative;vertical-align:middle;display:inline-block;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(6):before{content:"фильтр";position:absolute;top:-20px;left:0;font-size:12px;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(10){width:45px;position:relative;vertical-align:middle;display:inline-block;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(10){width:50px;position:relative;vertical-align:middle;display:inline-block;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(10):before{content:"множ.";position:absolute;top:-20px;left:0;font-size:12px;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(12){width:45px;position:relative;vertical-align:middle;display:inline-block;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(12){width:50px;position:relative;vertical-align:middle;display:inline-block;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(12):before{content:"ссылка";position:absolute;top:-20px;left:0;font-size:12px;}
     .multitv #tv[+param_tv_id+]list .element input.mtv_cat_name{width:140px;vertical-align:middle;display:inline-block;position:relative;}
     .multitv #tv[+param_tv_id+]list .element input.mtv_fltr_name{width:140px;vertical-align:middle;display:inline-block;}
