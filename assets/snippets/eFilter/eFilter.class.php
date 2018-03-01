@@ -90,7 +90,7 @@ public function __construct($modx, $params)
     $this->zero = isset($this->params['hideZero']) ? '' : '0';
     $this->pattern_folder = (isset($this->params['pattern_folder']) && $this->params['pattern_folder'] != '') ? $this->params['pattern_folder'] : 'assets/images/pattern/';
     $this->nosort_tv_id = isset($this->params['nosortTvId']) ? explode(',', $this->params['nosortTvId']) : array();
-    $this->dl_filter_type = isset($this->params['dl_filter_type']) ? $this->params['dl_filter_type'] : 'tvd';
+    $this->dl_filter_type = isset($this->params['DLFilterType']) ? $this->params['DLFilterType'] : 'tvd';
     $this->getFP ();
     $this->prepareGetParams($this->fp);
     $this->endings = isset($this->params['endings']) && $this->params['endings'] != '' ? explode(',', $this->params['endings']) : array('товар', 'товара', 'товаров');
