@@ -1,16 +1,17 @@
 <style>
     .multitv #tv[+param_tv_id+]list .element{}
     .multitv #tv[+param_tv_id+]list .element>div{display:inline-block;width:100%;vertical-align:middle;padding-top:20px;}
-    .multitv #tv[+param_tv_id+]list .element select{vertical-align:middle;display:inline-block;position:relative;}
+    .multitv #tv[+param_tv_id+]list .element select{vertical-align:middle;display:inline-block;position:relative;max-width:160px;}
+    .multitv #tv[+param_tv_id+]list .element select.mtv_fltr_type{max-width:110px;}
     .multitv #tv[+param_tv_id+]list .element input{margin-bottom:0;}
     .multitv #tv[+param_tv_id+]list .element input[type="checkbox"]{vertical-align:middle;display:inline-block;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(4){width:55px;position:relative;vertical-align:middle;display:inline-block;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(4){width:45px;position:relative;vertical-align:middle;display:inline-block;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(4):before{content:"в списке";position:absolute;top:-20px;left:0;font-size:12px;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(6){width:50px;position:relative;vertical-align:middle;display:inline-block;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(6){width:45px;position:relative;vertical-align:middle;display:inline-block;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(6):before{content:"фильтр";position:absolute;top:-20px;left:0;font-size:12px;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(10){width:55px;position:relative;vertical-align:middle;display:inline-block;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(10){width:45px;position:relative;vertical-align:middle;display:inline-block;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(10):before{content:"множ.";position:absolute;top:-20px;left:0;font-size:12px;}
-    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(12){width:50px;position:relative;vertical-align:middle;display:inline-block;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(12){width:45px;position:relative;vertical-align:middle;display:inline-block;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(12):before{content:"ссылка";position:absolute;top:-20px;left:0;font-size:12px;}
     .multitv #tv[+param_tv_id+]list .element input.mtv_cat_name{width:140px;vertical-align:middle;display:inline-block;position:relative;}
     .multitv #tv[+param_tv_id+]list .element input.mtv_fltr_name{width:140px;vertical-align:middle;display:inline-block;}
@@ -41,7 +42,7 @@
           position: absolute;
           top: -4px;
           left: 0;
-          width: 50px;
+          width: 45px;
           height: 26px;
           border-radius: 13px;
           background: #CDD1DA;
@@ -63,7 +64,7 @@
           background: #9FD468;
     }
     .multitv #tv[+param_tv_id+]list .element input[type="checkbox"]:checked + span:after {
-          left: 26px;
+          left: 22px;
     }
     .multitv #tv[+param_tv_id+]list .element input[type="checkbox"]:focus + span:before {
           box-shadow: 0 0 0 3px rgba(255,255,0,.5);
