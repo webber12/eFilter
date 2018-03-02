@@ -129,11 +129,14 @@ if (!empty($params)) {
 }
 //Найдено [+count+], показано с [+eFRes_from+] по [+eFRes_to+]
 $DL_id = isset($params['id']) && !empty($params['id']) ? $params['id'] . '.' : '';
-$count = $modx->getPlaceholder($DL_id . 'count');
-$display = $modx->getPlaceholder($DL_id . 'display');
-$current = $modx->getPlaceholder($DL_id . 'current');
-$from = ($current - 1) * $params['display'] + 1;
-$to = $from - 1 + $display;
+if ($count == '0') { 
+    $from = $to = 0;
+} else {
+    $display = $modx->getPlaceholder($DL_id . 'display');
+    $current = $modx->getPlaceholder($DL_id . 'current');
+    $from = ($current - 1) * $params['display'] + 1;
+    $to = $from - 1 + $display;
+}
 $modx->setPlaceholder("eFRes_from", $from);
 $modx->setPlaceholder("eFRes_to", $to);
 
