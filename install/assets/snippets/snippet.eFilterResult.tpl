@@ -112,19 +112,29 @@ $params['display'] = $display;
 if ($display == 'all') unset($params['display']);
 
 if ($ids) {
-	$params['documents'] = $ids;
-	unset($params['parents']);
-	unset($params['depth']);
+    $params['documents'] = $ids;
+    unset($params['parents']);
+    unset($params['depth']);
 } else {
-	$params['parents'] = $pid;
+    $params['parents'] = $pid;
 }
 $params['addWhereList'] = 'c.template IN(' . $product_templates_id . ')';
 if (!empty($tv_list)) {
-	$params['tvList'] = $params['tvList'] == '' ? implode(',', $tv_list) : $params['tvList'] . ',' . implode(',', $tv_list);
-	$params['renderTV'] = $params['renderTV'] == '' ? implode(',', $tv_list) : $params['renderTV'] . ',' . implode(',', $tv_list);
+    $params['tvList'] = $params['tvList'] == '' ? implode(',', $tv_list) : $params['tvList'] . ',' . implode(',', $tv_list);
+    $params['renderTV'] = $params['renderTV'] == '' ? implode(',', $tv_list) : $params['renderTV'] . ',' . implode(',', $tv_list);
 }
 $params['tvSortType'] = 'UNSIGNED';
 if (!empty($params)) {
-	$out .= $modx->runSnippet("DocLister", $params);
+    $out .= $modx->runSnippet("DocLister", $params);
 }
+//Найдено [+count+], показано с [+eFRes_from+] по [+eFRes_to+]
+$DL_id = isset($params['id']) && !empty($params['id']) ? $params['id'] . '.' : '';
+$count = $modx->getPlaceholder($DL_id . 'count');
+$display = $modx->getPlaceholder($DL_id . 'display');
+$current = $modx->getPlaceholder($DL_id . 'current');
+$from = ($current - 1) * $params['display'] + 1;
+$to = $from - 1 + $display;
+$modx->setPlaceholder("eFRes_from", $from);
+$modx->setPlaceholder("eFRes_to", $to);
+
 return $out;
