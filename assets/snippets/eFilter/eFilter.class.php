@@ -958,6 +958,12 @@ public function getCategoryAllProducts($id, $tv_id)
         'debug' => '0',
         'addWhereList' => 'template IN (' . $this->product_templates_id . ')'
     );
+    $add_where = '';
+    $filter_ids = $this->modx->getPlaceholder("eFilter_filter_ids");
+    if ($filter_ids && $filter_ids != '') {
+        $p['addWhereList'] .= ' AND c.id IN (' . $filter_ids . ') ';
+        $add_where = ' AND b.doc_id IN (' . $filter_ids . ') ';
+    }
     $json = $this->modx->runSnippet("DocLister", $p);
     $children = array();
     if ($json && !empty($json)) {
@@ -970,7 +976,7 @@ public function getCategoryAllProducts($id, $tv_id)
         }
     }
     //затем берем id всех товаров, привязанных к этой категории через tv category id=$tv_id
-    $sql = "SELECT a.*, b.* FROM " . $this->modx->getFullTableName("tags") . " a, " . $this->modx->getFullTableName("site_content_tags") . " b WHERE b.tv_id = " . $tv_id . " AND a.id = b.tag_id AND a.name='" . $id . "'";
+    $sql = "SELECT a.*, b.* FROM " . $this->modx->getFullTableName("tags") . " a, " . $this->modx->getFullTableName("site_content_tags") . " b WHERE b.tv_id = " . $tv_id . " AND a.id = b.tag_id AND a.name='" . $id . "'" . $add_where;
     $q = $this->modx->db->query($sql);
     $tmp_docs = array();
     while ($row = $this->modx->db->getRow($q)) {
@@ -986,7 +992,7 @@ public function getCategoryAllProducts($id, $tv_id)
             $tmp_parents[] = $row['id'];
         }
         if (!empty($tmp_parents)) {
-            $sql = "SELECT a.*, b.* FROM " . $this->modx->getFullTableName("tags") . " a, " . $this->modx->getFullTableName("site_content_tags") . " b WHERE b.tv_id = " . $tv_id . " AND a.id = b.tag_id AND a.name IN (" . implode(",", $tmp_parents) . ")";
+            $sql = "SELECT a.*, b.* FROM " . $this->modx->getFullTableName("tags") . " a, " . $this->modx->getFullTableName("site_content_tags") . " b WHERE b.tv_id = " . $tv_id . " AND a.id = b.tag_id AND a.name IN (" . implode(",", $tmp_parents) . ")" . $add_where;
             $q = $this->modx->db->query($sql);
             $tmp_docs = array();
             while ($row = $this->modx->db->getRow($q)) {
