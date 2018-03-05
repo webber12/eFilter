@@ -19,7 +19,7 @@ public $filter_cats = array();
 //массив заданных фильтров tv_id -> array (fltr_type,fltr_name,fltr_many)
 public $filters = array();
 
-//массив id tv входящих в заданный фильтр 
+//массив id tv входящих в заданный фильтр
 public $filter_tvs = array();
 
 //массив id TV, входящих в список вывода для DocLister
@@ -183,12 +183,12 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
     } else {
         include(dirname(__FILE__).'/config/config.default.php');
     }
-    
+
     $output = '';
     $fc = 0;
     foreach ($filter_cats as $cat_name => $tmp) {
         $output .= '<div class="eFiltr_cat eFiltr_cat' . $fc . '">';
-        if (count($filter_cats) > 1) {$output .= $this->parseTpl(array('[+cat_name+]'), array($cat_name), $filterCatName);}
+        if (count($filter_cats) > 1 && !empty($cat_name)) {$output .= $this->parseTpl(array('[+cat_name+]'), array($cat_name), $filterCatName);}
         $tv_elements = $this->getDefaultTVValues($tmp);
         foreach ($tmp as $tv_id => $tmp2) {
             if (isset($filter_values_full[$tv_id])) {
@@ -244,14 +244,14 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 ) : '';
                             }
                         }
-                        
+
                         $output .= $this->parseTpl(
                             array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
                             array($tv_id, $filters[$tv_id]['name'], $wrapper),
                             $tplOuter
                         );
                         break;
-                        
+
                     case '2': //селекты
                         $tplRow = $tplRowSelect;
                         $tplOuter = $tplOuterSelect;
@@ -291,7 +291,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tplOuter
                         );
                         break;
-                        
+
                     case '3': //диапазон
                         //исходя из запроса $_GET
                         $minval = '';
@@ -300,14 +300,14 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         //т.е. реальный доступный диапазон значений "от и до"
                         $minvalcurr = '';
                         $maxvalcurr = '';
-                        
+
                         if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '') {
                             $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(" . $this->curr_filter_values[$tv_id]['content_ids'] . ") AND tmplvarid = {$tv_id}");
                             $minmax = $this->modx->db->getRow($q);
                             $minvalcurr = $minmax['min'];
                             $maxvalcurr = $minmax['max'];
                         }
-                        
+
                         $tplRow = $tplRowInterval;
                         $tplOuter = $tplOuterInterval;
                         $minvalcurr = isset($this->fp[$tv_id]['min']) && (int)$this->fp[$tv_id]['min'] != 0 && (int)$this->fp[$tv_id]['min'] >= (int)$minvalcurr ? (int)$this->fp[$tv_id]['min'] : $minvalcurr;
@@ -415,7 +415,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         //т.е. реальный доступный диапазон значений "от и до"
                         $minvalcurr = '';
                         $maxvalcurr = '';
-                        
+
                         if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '') {
                             $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(".$this->curr_filter_values[$tv_id]['content_ids'].") AND tmplvarid = {$tv_id}");
                             $minmax = $this->modx->db->getRow($q);
@@ -436,7 +436,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $minvalcurr = $minvalcurr - 1;
                             $maxvalcurr = $maxvalcurr + 1;
                         }
-                        
+
                         $tplRow = $tplRowSlider;
                         $tplOuter = $tplOuterSlider;
                         /*$minvalcurr = isset($this->fp[$tv_id]['min']) && (int)$this->fp[$tv_id]['min'] != 0 && (int)$this->fp[$tv_id]['min'] >= (int)$minvalcurr ? (int)$this->fp[$tv_id]['min'] : $minvalcurr;
@@ -493,14 +493,14 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 ) : '';
                             }
                         }
-                        
+
                         $output .= $this->parseTpl(
                             array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
                             array($tv_id, $filters[$tv_id]['name'], $wrapper),
                             $tplOuter
                         );
                         break;
-                    
+
                     case '8'://Паттерны
                         $tplRow = $tplRowPattern;
                         $tplOuter = $tplOuterPattern;
@@ -539,14 +539,14 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 ) : '';
                             }
                         }
-                        
+
                         $output .= $this->parseTpl(
                             array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
                             array($tv_id, $filters[$tv_id]['name'], $wrapper),
                             $tplOuter
                         );
                         break;
-                    
+
                     default: //по умолчанию - чекбоксы
                         $tplRow = $tplRowCheckbox;
                         $tplOuter = $tplOuterCheckbox;
@@ -555,7 +555,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
                                 $tv_val_name = '<a href="' . $this->modx->makeUrl($k) . '">' . $tv_val_name . '</a>';
-                            }                          
+                            }
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
@@ -681,7 +681,7 @@ public function makeAllContentIDs ($DLparams)
             foreach ($f as $tvid => $v) {
                 $tvid = (int)$tvid;
                 $oper = 'eq';
-                
+
                 if (isset($v['min']) || isset($v['max'])) {//если параметр - диапазон
                     if (isset($v['min']) && (int)$v['min'] != 0 ) {
                         $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'] . ';';
@@ -701,7 +701,7 @@ public function makeAllContentIDs ($DLparams)
                             $oper = 'in';
                         }
                     } else {
-                        $val = ($v == '0' || $v == '') ? '' : $v; 
+                        $val = ($v == '0' || $v == '') ? '' : $v;
                     }
                     if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
                         if ($this->filters[$tvid]['many'] == '1') {
@@ -749,7 +749,7 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                     if ($tvid != $fid) {
                         $tvid = (int)$tvid;
                         $oper = 'eq';
-                        
+
                         if (isset($v['min']) || isset($v['max'])) { //если параметр - диапазон
                             if (isset($v['min']) && (int)$v['min'] != 0 ) {
                                 $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'].';';
@@ -769,7 +769,7 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                                     $oper = 'in';
                                 }
                             } else {
-                                $val = ($v == '0' || $v == '') ? '' : $v; 
+                                $val = ($v == '0' || $v == '') ? '' : $v;
                             }
                             if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
                                 if ($this->filters[$tvid]['many'] == '1') {$oper = 'containsOne';}
@@ -815,7 +815,7 @@ public function prepareGetParams ($fp)
     if (isset($fp['f']) && is_array($fp['f'])) {
         $tmp = $fp['f'];
     } else {
-        //расшифровываем GET-строку формата f16=значение1,значение2&f17=значение3,значение4&f18=minmax~100,300 и преобразуем ее в обычный стандартный массив для обработки eFilter, 
+        //расшифровываем GET-строку формата f16=значение1,значение2&f17=значение3,значение4&f18=minmax~100,300 и преобразуем ее в обычный стандартный массив для обработки eFilter,
         // array(
         //    "16" => array("значение1", "значение2"),
         //    "17" => array("значение3", "значение4"),
@@ -858,10 +858,10 @@ public function prepareGetParamsOld ($fp)
 {
     $out = array();
     if (is_scalar($fp) && $fp != '') {
-        //расшифровываем GET-строку формата f=1~значение1,значение2||2~значение3,значение4||3~100,300~minmax и преобразуем ее в обычный массив $f, 
+        //расшифровываем GET-строку формата f=1~значение1,значение2||2~значение3,значение4||3~100,300~minmax и преобразуем ее в обычный массив $f,
         //где 1,2,3 - id соответствующих тв для фильтрации, значение1,значение2 - из значения через запятую
         //значения изначально должны быть url-кодированными, например через метод js encodeURIComponent
-        //на выходе получим нужный нам массив 
+        //на выходе получим нужный нам массив
         //$f = array(
         //    "1" => array("значение1", "значение2"),
         //    "2" => array("значение3", "значение4"),
@@ -986,7 +986,7 @@ public function getCategoryAllProducts($id, $tv_id)
     while ($row = $this->modx->db->getRow($q)) {
         $children[$row['doc_id']] = '1';
     }
-    
+
     //а также - товары, прикрепленные ко всем дочерним "категориям" относительно текущей категории (через tv "категория")
     $childs = $this->modx->getChildIds($id);
     if (!empty($childs)) {
