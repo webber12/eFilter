@@ -12,6 +12,8 @@ public $eBlock=''; //тут будет главный инфоблок в зав
 public $info=''; //информационная надпись в случае удачного/неудачного действия
 public $zagol='Список параметров';
 public $list_catagory_table='';
+public $tv_table=''; //Таблица ТВшек
+public $tvList=''; //Список ТВшек
 public $list_value_table='';
 public $type=array(//доступные типы полей в форме
 				"1"=>"Строка",
@@ -26,7 +28,7 @@ public $type=array(//доступные типы полей в форме
 			);
 public $form_info;
 public $pole_info;
-			
+
 
 public function __construct($modx){
 	$this->modx=$modx;
@@ -34,6 +36,7 @@ public function __construct($modx){
 	$this->moduleurl='index.php?a=112&id='.$this->moduleid;
 	$this->list_catagory_table=$this->modx->getFullTableName('list_catagory_table');
 	$this->list_value_table=$this->modx->getFullTableName('list_value_table');
+	$this->tvTable=$this->modx->getFullTableName('site_tmplvars');
 	$this->theme=$this->modx->config['manager_theme'];
 	$this->iconfolder='media/style/'.$this->theme.'/images/icons/';
 }
@@ -98,6 +101,9 @@ public function delForm($id){
 	else{$this->info='<p class="info error">Не удалось удалить параметр</p>';}
 }
 
+public function updateTv(){
+
+}
 
 public function addField($fields,$table){
 	$query=$this->modx->db->insert($fields,$table);
@@ -133,7 +139,7 @@ public function makeActions(){
 	if(isset($_POST['delform1'])){//удаление формы
 		$this->delForm((int)$_POST['delform1']);
 	}
-	
+
 	if(isset($_POST['delpole1'])){//удаление поля
 		$this->delField((int)$_POST['delpole1']);
 	}
@@ -162,10 +168,10 @@ public function makeActions(){
 			$flds=array(
 				'title'=>$title
 			);
-			
+
 			$this->updateForm($flds, $this->list_catagory_table, "id=" . (int)$_GET['fid']);
 		}
-		
+
 		//обновляем информацию о форме для вывода
 		$this->form_info=$this->getRow($this->list_catagory_table, (int)$_GET['fid']);
 	}
@@ -175,12 +181,12 @@ public function makeActions(){
 	if(isset($_GET['fid'])&&isset($_GET['action'])&&$_GET['action']=='pole'&&!isset($_GET['pid'])){
 		$this->info_type=3;
 		$this->zagol='Список значений параметра';
-		
+
 		if(isset($_POST['sortpole'])){//сортируем поля
-		
+
 			$this->sortFields($_POST['sortpole']);
 		}
-		
+
 		$parent=(int)$_GET['fid'];
 		if(isset($_POST['action'])&&$_POST['action']=='newField'){//добавляем новое поле
 			$title=$this->escape($_POST['title']);
@@ -215,13 +221,24 @@ public function makeActions(){
 			$flds=array(
 				'title'=>$title
 			);
-			
+
 			$this->updateField($flds,$this->list_value_table,"id=".(int)$_GET['pid']);
 		}
-		
+
 		//обновляем информацию о поле для вывода
 		$this->pole_info=$this->getRow($this->list_value_table,(int)$_GET['pid']);
 	}
+
+		//Обновляем TV
+	if(isset($_GET['fid'])&&isset($_GET['action'])&&$_GET['action']=='insertTv'&&isset($_GET['tvId'])){
+			//$this->modx->logEvent(1,1,$_GET['action'],$_GET['tvId']);
+		$where = "id=".(int)$_GET['tvId'];
+		$string = '@EVAL return $modx->runSnippet("multiParams", array("parent"=>"' . (int)$_GET['fid'] . '"));';
+		$this->modx->logEvent(1,1,$string ,$where);
+		// element
+		// $fields=
+		 $this->updateForm(array('elements'=>$string),$this->tvTable,$where);
+	}	
 }
 
 
@@ -230,10 +247,11 @@ public function getFormList(){
 	$form_list=$this->modx->db->query("SELECT * FROM ".$this->list_catagory_table." ORDER BY sort ASC");
 	$formRows='';
 	$out='';
+	$this->getTvList();
 	while($row=$this->modx->db->getRow($form_list)){
 		$formRows.=$this->parseTpl(
-			array('[+id+]', '[+title+]', '[+moduleurl+]', '[+iconfolder+]', '[+code+]'),
-			array($row['id'], $row['title'], $this->moduleurl, $this->iconfolder, '@EVAL return $modx->runSnippet("multiParams", array("parent"=>"' . $row['id'] . '"));'),
+			array('[+id+]', '[+title+]', '[+moduleurl+]', '[+iconfolder+]', '[+code+]','[+tvList+]'),
+			array($row['id'], $row['title'], $this->moduleurl, $this->iconfolder, '@EVAL return $modx->runSnippet("multiParams", array("parent"=>"' . $row['id'] . '"));', $this->tvList),
 			$formRowTpl
 		);
 	}
@@ -287,28 +305,44 @@ public function getFieldEdit(){
 	return $out;
 }
 
+public function getTvList(){
+	include('config/config.php');
+	$query = $this->modx->db->query("SELECT id,name,caption FROM". $this->tvTable." WHERE category =10");
+	while ($row = $this->modx->db->getRow($query)){
+	 $out.=$this->parseTpl(
+			array('[+tvId+]','[+tvName+]','[+tvCaption+]'),
+			array($row['id'], $row['name'],$row['caption']),
+			$tvRowTpl
+		);
+	}
+	$this->tvList = $out;
+	return;
+}
+
+
+
 public function show(){
 	//блок вывода списка форм
 	switch ($this->info_type){
 		case '1':
 			$this->eBlock .= $this->getFormList();
 		break;
-		
+
 		case '2':
 			$this->eBlock .= $this->getFormEdit();
 		break;
-		
+
 		case '3':
 			$this->eBlock .= $this->getFieldList();
 		break;
-		
+
 		case '4':
 			$this->eBlock .= $this->getFieldEdit();
 		break;
-		
+
 		default:
 			$this->eBlock .= $this->getFormList();
-		break;		
+		break;
 	}
 }
 
