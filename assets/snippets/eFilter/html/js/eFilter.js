@@ -151,7 +151,8 @@
             this.showLoader();
         },
         scrollTop : function() {
-            $('body').animate({ scrollTop: this.params.result_list_obj.offset().top }, 300);
+            var t = this.params.result_list_obj.offset().top >= 100 ? this.params.result_list_obj.offset().top - 100 : 0;
+            $('html,body').animate({ scrollTop: t }, 300);
         },
         changeState : function(state) {
             if (ajaxMode == '1' && doChangeState != '0') {
