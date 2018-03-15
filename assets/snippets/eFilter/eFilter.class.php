@@ -95,6 +95,7 @@ public function __construct($modx, $params)
     $this->prepareGetParams($this->fp);
     $this->endings = isset($this->params['endings']) && $this->params['endings'] != '' ? explode(',', $this->params['endings']) : array('товар', 'товара', 'товаров');
     $this->cntTpl = isset($this->params['cntTpl']) && $this->params['cntTpl'] != '' ? $this->params['cntTpl'] : 'Найдено: [+cnt+] [+ending+]';
+    $this->active_block_class = isset($this->params['activeBlockClass']) ? $this->params['activeBlockClass'] : ' active ';
 }
 
 public function getParamTvName($tv_id = '')
@@ -113,7 +114,9 @@ public function getFilterParam ($param_tv_name, $docid = 0)
     if ($tv_config != '') {
         $filter_param = json_decode($tv_config, true);
     } else {
-        $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid' => $docid, 'tv' => '1', 'field' => $param_tv_name));
+        $tv = $this->modx->getTemplateVar($param_tv_name, '*', $docid);
+        $param_tv_val = $tv['value'] != '' ? $tv['value'] : $tv['defaultText'];
+        //$param_tv_val = $this->modx->runSnippet("DocInfo", array('docid' => $docid, 'tv' => '1', 'field' => $param_tv_name));
         if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}') {//если задано для категории, ее и берем
             $filter_param = json_decode($param_tv_val, true);
         } else {//если не задано, идем к родителю
@@ -127,7 +130,9 @@ public function _getParentParam ($docid, $param_tv_name) {
     $filter_param = array();
     $parent = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$docid} AND parent != 0 LIMIT 0,1");
     if ($parent) {
-        $param_tv_val = $this->modx->runSnippet("DocInfo", array('docid' => $parent, 'tv' => '1', 'field' => $param_tv_name));
+        $tv = $this->modx->getTemplateVar($param_tv_name, '*', $docid);
+        $param_tv_val = $tv['value'] != '' ? $tv['value'] : $tv['defaultText'];
+        //$param_tv_val = $this->modx->runSnippet("DocInfo", array('docid' => $parent, 'tv' => '1', 'field' => $param_tv_name));
         if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}' && $param_tv_val != '[]') {
             $filter_param = json_decode($param_tv_val, true);
         }  else {
@@ -212,6 +217,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowCheckbox;
                         $tplOuter = $tplOuterCheckbox;
                         $i = 0;
+                        $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
@@ -227,6 +233,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 }
                                 if ($flag) {
                                     $selected = 'checked="checked" ';
+                                    $active_block_class = $this->active_block_class;
                                 }
                             }
                             $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
@@ -246,8 +253,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         }
 
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -256,6 +263,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowSelect;
                         $tplOuter = $tplOuterSelect;
                         $i = 0;
+                        $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
@@ -268,6 +276,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 }
                                 if ($flag) {
                                     $selected = 'selected="selected" ';
+                                    $active_block_class = $this->active_block_class;
                                 }
                             }
                             $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
@@ -286,8 +295,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             }
                         }
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -300,6 +309,9 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         //т.е. реальный доступный диапазон значений "от и до"
                         $minvalcurr = '';
                         $maxvalcurr = '';
+
+                        $active_block_class = '';
+                        
 
                         if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '') {
                             $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(" . $this->curr_filter_values[$tv_id]['content_ids'] . ") AND tmplvarid = {$tv_id}");
@@ -320,8 +332,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tplRow
                         );
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -330,6 +342,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowRadio;
                         $tplOuter = $tplOuterRadio;
                         $i = 0;
+                        $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
@@ -345,6 +358,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 }
                                 if ($flag) {
                                     $selected = 'checked="checked" ';
+                                    $active_block_class = $this->active_block_class;
                                 }
                             }
                             $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
@@ -363,8 +377,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             }
                         }
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -372,6 +386,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                     case '5': //мультиселекты
                         $tplRow = $tplRowMultySelect;
                         $tplOuter = $tplOuterMultySelect;
+                        $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             $selected = '  ';
@@ -384,6 +399,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 }
                                 if ($flag) {
                                     $selected = 'selected="selected" ';
+                                    $active_block_class = $this->active_block_class;
                                 }
                             }
                             $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
@@ -401,8 +417,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             }
                         }
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -415,6 +431,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         //т.е. реальный доступный диапазон значений "от и до"
                         $minvalcurr = '';
                         $maxvalcurr = '';
+
+                        $active_block_class = '';
 
                         if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '') {
                             $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(".$this->curr_filter_values[$tv_id]['content_ids'].") AND tmplvarid = {$tv_id}");
@@ -449,8 +467,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tplRow
                         );
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -459,6 +477,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowColors;
                         $tplOuter = $tplOuterColors;
                         $i = 0;
+                        $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
@@ -476,6 +495,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 if ($flag) {
                                     $selected = 'checked="checked" ';
                                     $label_selected = 'active';
+                                    $active_block_class = $this->active_block_class;
                                 }
                             }
                             $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
@@ -495,8 +515,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         }
 
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -505,6 +525,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowPattern;
                         $tplOuter = $tplOuterPattern;
                         $i = 0;
+                        $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
@@ -522,6 +543,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 if ($flag) {
                                     $selected = 'checked="checked" ';
                                     $label_selected = 'active';
+                                    $active_block_class = $this->active_block_class;
                                 }
                             }
                             $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
@@ -541,8 +563,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         }
 
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -551,6 +573,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplRow = $tplRowCheckbox;
                         $tplOuter = $tplOuterCheckbox;
                         $i = 0;
+                        $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
@@ -566,6 +589,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 }
                                 if ($flag) {
                                     $selected = 'checked="checked" ';
+                                    $active_block_class = $this->active_block_class;
                                 }
                             }
                             $disabled = (!empty($filter_values) && !isset($filter_values[$tv_id][$k]) ? 'disabled' : '');
@@ -584,8 +608,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             }
                         }
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper),
+                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -941,6 +965,10 @@ public function getCategoryAllProducts($id, $tv_id)
     //если хотим искать только по заданным документам, то до вызова [!eFilter!] устанавливаем их спискок в плейсхолдер eFilter_search_ids
     $search_ids = $this->modx->getPlaceholder("eFilter_search_ids");
     if ($search_ids && $search_ids != '') {
+        $filter_ids = $this->modx->getPlaceholder("eFilter_filter_ids");
+        if ($filter_ids && $filter_ids != '') {//если еще и установили ограничитель списка id в плейсхолдер eFilter_filter_ids 
+            $search_ids = implode(',', array_intersect(explode(',', $search_ids), explode(',', $filter_ids)));
+        }
         $this->categoryAllProducts = $search_ids;
         return $search_ids;
     }
