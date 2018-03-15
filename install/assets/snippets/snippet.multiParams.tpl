@@ -46,6 +46,7 @@ if ($firstEmpty) {
 switch ($action){
     case 'getParamsToMultiTV' :
         $tmp = array_merge(array_map('trim', explode(',', $param_cat_id)), array_map('trim', explode(',', $param_cat_id_common)));
+        $tmp = array_diff($tmp, array(''));
         $sql = "SELECT `id`,`caption` FROM " . $modx->getFullTableName('site_tmplvars') . " WHERE `category` IN (" . implode(',', $tmp) . ") ORDER BY `rank` ASC, `caption` ASC";
         $q = $modx->db->query($sql);
         while($row = $modx->db->getRow($q)){
