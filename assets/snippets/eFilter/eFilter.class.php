@@ -96,6 +96,7 @@ public function __construct($modx, $params)
     $this->endings = isset($this->params['endings']) && $this->params['endings'] != '' ? explode(',', $this->params['endings']) : array('товар', 'товара', 'товаров');
     $this->cntTpl = isset($this->params['cntTpl']) && $this->params['cntTpl'] != '' ? $this->params['cntTpl'] : 'Найдено: [+cnt+] [+ending+]';
     $this->active_block_class = isset($this->params['activeBlockClass']) ? $this->params['activeBlockClass'] : ' active ';
+    $this->hideEmptyBlock = isset($this->params['hideEmptyBlock']) ? true : false;
 }
 
 public function getParamTvName($tv_id = '')
@@ -251,7 +252,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 ) : '';
                             }
                         }
-                        
+                        if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
                             array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
                             array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
@@ -294,6 +295,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 ) : '';
                             }
                         }
+                        if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
                             array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
                             array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
@@ -374,6 +376,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 ) : '';
                             }
                         }
+                        if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
                             array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
                             array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
@@ -414,6 +417,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 ) : '';
                             }
                         }
+                        if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
                             array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
                             array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
@@ -510,7 +514,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 ) : '';
                             }
                         }
-                        
+                        if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
                             array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
                             array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
@@ -558,7 +562,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 ) : '';
                             }
                         }
-                        
+                        if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
                             array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
                             array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
@@ -604,6 +608,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 ) : '';
                             }
                         }
+                        if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
                             array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
                             array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
