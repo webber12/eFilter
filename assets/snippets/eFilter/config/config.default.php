@@ -17,7 +17,7 @@ $tplFilterReset = '<div class="eFiltr_reset"><a href="[+reset_url+]">Сброс�
 $filterCatName = '<div class="fltr_cat_zagol">[+cat_name+]</div>';
 
 //класс категории фильтра
-$filterCatClass = 'efilter_category';
+$filterCatClass = '';
 
 //чекбоксы
 $tplRowCheckbox = '
