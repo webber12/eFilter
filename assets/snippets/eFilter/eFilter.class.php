@@ -192,9 +192,12 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
     
     $output = '';
     $fc = 0;
+    $categoryWrapper = '';
+    $isEmpty = true;
     foreach ($filter_cats as $cat_name => $tmp) {
-        $output .= '<div class="eFiltr_cat eFiltr_cat' . $fc . ' ' . $filterCatClass . '">';
-        if (count($filter_cats) > 1) {$output .= $this->parseTpl(array('[+cat_name+]'), array($cat_name), $filterCatName);}
+        //$output .= '<div class="eFiltr_cat eFiltr_cat' . $fc . ' ' . $filterCatClass . '">';
+        //if (count($filter_cats) > 1) {$output .= $this->parseTpl(array('[+cat_name+]'), array($cat_name), $filterCatName);}
+        $output = '';
         $tv_elements = $this->getDefaultTVValues($tmp);
         foreach ($tmp as $tv_id => $tmp2) {
             if (isset($filter_values_full[$tv_id])) {
@@ -619,16 +622,25 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
 
             }
         }
+        if ($output != '') {//есть, как минимум, одна непустая категория, т.е. фильтр надо выводить
+            $isEmpty = false;
+        }
+        $categoryWrapper .= $this->parseTpl(
+            array('[+cat_name+]', '[+iteration+]', '[+wrapper+]'),
+            array($cat_name, $fc, $output),
+            $tplOuterCategory
+        );
         $fc++;
-        $output .= '</div>';
+        //$output .= '</div>';
     }
+    $output = $categoryWrapper;
     $tpl = $tplFilterForm;
     $resetTpl = $tplFilterReset;
     $tmp = explode('?', $_SERVER['REQUEST_URI']);
     $form_url = isset($tmp[0]) && !empty($tmp[0]) ? $tmp[0] : $this->modx->makeUrl($this->docid);
     $form_result_cnt = isset($this->content_ids_cnt) && $this->content_ids_cnt != '' ? $this->parseTpl(array('[+cnt+]', '[+ending+]'), array($this->content_ids_cnt, $this->content_ids_cnt_ending), $this->cntTpl) : '';
-    $output = $output != '' ? $this->parseTpl(array('[+url+]', '[+wrapper+]', '[+btn_text+]', '[+form_result_cnt+]', '[+form_method+]'), array($form_url, $output, $this->params['btnText'], $form_result_cnt, $this->params['formMethod']), $tpl) : '';
-    $output .= $output != '' ? $this->parseTpl(array('[+reset_url+]'), array($form_url), $resetTpl) : '';
+    $output = !$isEmpty ? $this->parseTpl(array('[+url+]', '[+wrapper+]', '[+btn_text+]', '[+form_result_cnt+]', '[+form_method+]'), array($form_url, $output, $this->params['btnText'], $form_result_cnt, $this->params['formMethod']), $tpl) : '';
+    $output .= !$isEmpty ? $this->parseTpl(array('[+reset_url+]'), array($form_url), $resetTpl) : '';
     return $output;
 }
 

@@ -159,3 +159,8 @@ $tplOuterPattern = '
 	</div>
 ';
 
+$tplOuterCategory = '<div class="eFiltr_cat eFiltr_cat[+iteration+]">
+                        <div class="fltr_cat_zagol">[+cat_name+]</div>
+                        [+wrapper+]
+                    </div>';
+
