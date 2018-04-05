@@ -157,6 +157,9 @@
         changeState : function(state) {
             if (ajaxMode == '1' && doChangeState != '0') {
                 history.pushState('', '', state);
+                if ($("#changesortBy").length > 0) {
+                    $("#changesortBy").attr("action", state);
+                }
             }
         }
         
