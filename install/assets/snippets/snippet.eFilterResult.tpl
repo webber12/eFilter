@@ -25,25 +25,34 @@ $ids = $modx->getPlaceholder('eFilter_ids');
 
 //фиксим DocLister - при пустом списке documents и пустом фильтре - отдавать все
 //при пустом списке documents и НЕ пустом фильтре - ничего не отдавать
-if($ids == '' && (isset($_GET))) {
-	$ids = $modx->config['site_start'];
-	$f = $_GET;
-	foreach($f as $k => $val){
-		if (preg_match("/^f(\d+)/i", $k, $matches)) {
-			if($val != '0' && $val != '') {$ids = '2';}
+if ($ids == '' && !empty($_GET)) {
+	$isFilterActive = false;
+	
+	if (isset($_GET['f']) && is_array($_GET['f'])) {
+		foreach ($_GET['f'] as $k => $v) {
+			if ($isFilterActive) {
+				break;
+			}
+			
+			foreach ($v as $val) {
+				if (!empty($val)) {
+					$isFilterActive = true;
+					break;
+				}
+			}
+		}
+	} else {
+		foreach ($_GET as $k => $v) {
+			if (!empty($v) && is_scalar($v) && preg_match('/^f\d+/i', $k)) {
+				$isFilterActive = true;
+				break;
+			}
 		}
 	}
-	if ($ids == $modx->config['site_start']) {$ids = '';}	
-}
-if($ids == '' && (isset($_GET['f']))) {
-	$ids = $modx->config['site_start'];
-	$f = $_GET['f'];
-	foreach($f as $k=>$v){
-		foreach ($v as $val) {
-			if($val != '0' && $val != '') {$ids = '2';}
-		}
+	
+	if ($isFilterActive) {
+		$ids = PHP_INT_MAX;
 	}
-	if ($ids == $modx->config['site_start']) {$ids = '';}	
 }
 
 //получаем из плейсхолдера список ТВ для вывода в список
