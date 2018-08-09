@@ -317,7 +317,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $active_block_class = '';
                         
                         if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '') {
-                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(" . $this->curr_filter_values[$tv_id]['content_ids'] . ") AND tmplvarid = {$tv_id}");
+                            $content_ids = $this->curr_filter_values[$tv_id]['content_ids'] == 'all' ? $this->content_ids : $this->curr_filter_values[$tv_id]['content_ids'];
+                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(" . $content_ids . ") AND tmplvarid = {$tv_id}");
                             $minmax = $this->modx->db->getRow($q);
                             $minvalcurr = $minmax['min'];
                             $maxvalcurr = $minmax['max'];
@@ -439,7 +440,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $active_block_class = '';
                         
                         if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '') {
-                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(".$this->curr_filter_values[$tv_id]['content_ids'].") AND tmplvarid = {$tv_id}");
+                            $content_ids = $this->curr_filter_values[$tv_id]['content_ids'] == 'all' ? $this->content_ids : $this->curr_filter_values[$tv_id]['content_ids'];
+                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(" . $content_ids . ") AND tmplvarid = {$tv_id}");
                             $minmax = $this->modx->db->getRow($q);
                             $minvalcurr = $minmax['min'];
                             $maxvalcurr = $minmax['max'];
@@ -679,7 +681,8 @@ public function getFilterFutureValues ($curr_filter_values, $filter_tv_ids = '')
     if (!empty($curr_filter_values)) {//берем только если есть какие-то документы
         foreach ($curr_filter_values as $tv_id => $v) {
             if (isset($v['content_ids']) && $v['content_ids'] != '') {
-                $sql = "SELECT * FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN (" . $v['content_ids'] . ") " . ($filter_tv_ids != '' ? " AND tmplvarid ={$tv_id}" : "");
+                $content_ids = $v['content_ids'] == 'all' ? $this->content_ids : $v['content_ids'];
+                $sql = "SELECT * FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN (" . $content_ids . ") " . ($filter_tv_ids != '' ? " AND tmplvarid ={$tv_id}" : "");
                 $q = $this->modx->db->query($sql);
                 while ($row = $this->modx->db->getRow($q)) {
                     if (strpos($row['value'], '||') === false) {
@@ -778,59 +781,65 @@ public function makeAllContentIDs ($DLparams)
 
 public function makeCurrFilterValuesContentIDs ($DLparams)
 {
+    $content_ids_json = false;
     if (!empty($this->fp)) {//разбираем фильтры из строки GET и считаем возможные значения и количество для этих фильтров без учета одного из них (выбранного)
         $f = $this->fp;
         if (is_array($f)) {
             foreach ($this->filter_tv_names as $fid =>$name) {
                 $fltr = '';
-                foreach ($f as $tvid => $v) {
-                    if ($tvid != $fid) {
-                        $tvid = (int)$tvid;
-                        $oper = 'eq';
+                if (isset($f[$fid])) {
+                    foreach ($f as $tvid => $v) {
+                        if ($tvid != $fid) {
+                            $tvid = (int)$tvid;
+                            $oper = 'eq';
                         
-                        if (isset($v['min']) || isset($v['max'])) { //если параметр - диапазон
-                            if (isset($v['min']) && (int)$v['min'] != 0 ) {
-                                $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'].';';
-                            }
-                            if (isset($v['max']) && (int)$v['max'] != 0 ) {
-                                $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':elt:' . (int)$v['max'].';';
-                            }
-                        } else {//если значение/значения, но не диапазон
-                            if (is_array($v)) {
-                                foreach($v as $k1 => $v1) {
-                                    if ($v1 == '0') {
-                                        unset($v[$k1]);
+                            if (isset($v['min']) || isset($v['max'])) { //если параметр - диапазон
+                                if (isset($v['min']) && (int)$v['min'] != 0 ) {
+                                    $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'] . ';';
+                                }
+                                if (isset($v['max']) && (int)$v['max'] != 0 ) {
+                                    $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':elt:' . (int)$v['max'] . ';';
+                                }
+                            } else {//если значение/значения, но не диапазон
+                                if (is_array($v)) {
+                                    foreach($v as $k1 => $v1) {
+                                        if ($v1 == '0') {
+                                            unset($v[$k1]);
+                                        }
                                     }
+                                    $val = implode(',', $v);
+                                    if (count($v) > 1) {
+                                        $oper = 'in';
+                                    }
+                                } else {
+                                    $val = ($v == '0' || $v == '') ? '' : $v; 
                                 }
-                                $val = implode(',', $v);
-                                if (count($v) > 1) {
-                                    $oper = 'in';
+                                if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
+                                    if ($this->filters[$tvid]['many'] == '1') {$oper = 'containsOne';}
+                                    $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
+                                    $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val.';';
                                 }
-                            } else {
-                                $val = ($v == '0' || $v == '') ? '' : $v; 
-                            }
-                            if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
-                                if ($this->filters[$tvid]['many'] == '1') {$oper = 'containsOne';}
-                                $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
-                                $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val.';';
                             }
                         }
                     }
+                    $fltr = substr($fltr, 0 , -1);
                 }
-                $fltr = substr($fltr, 0 , -1);
                 if ($fltr != '') {
                     $fltr = 'AND(' . $fltr . ')';
                     $DLparams['filters'] = $fltr;
-                    //$tmp_content_ids = $this->modx->runSnippet("DocLister", $DLparams);
-                    //$this->curr_filter_values[$fid]['content_ids'] = str_replace(' ', '', substr($tmp_content_ids, 0, -1));
                     $_ = $this->modx->runSnippet("DocLister", $DLparams);
                     $this->curr_filter_values[$fid]['content_ids'] = $this->getListFromJson($_);
                 } else {
-                    unset($DLparams['filters']);
-                    //$tmp_content_ids = $this->modx->runSnippet("DocLister", $DLparams);
-                    //$this->curr_filter_values[$fid]['content_ids'] = str_replace(' ', '', substr($tmp_content_ids, 0, -1));
-                    $_ = $this->modx->runSnippet("DocLister", $DLparams);
-                    $this->curr_filter_values[$fid]['content_ids'] = $this->getListFromJson($_);
+                    if (isset($f[$fid])) {
+                        unset($DLparams['filters']);
+                        if (!$content_ids_json) {
+                            $_ = $this->modx->runSnippet("DocLister", $DLparams);
+                            $content_ids_json = $this->getListFromJson($_);
+                        }
+                        $this->curr_filter_values[$fid]['content_ids'] = $content_ids_json;
+                    } else {
+                        $this->curr_filter_values[$fid]['content_ids'] = 'all';
+                    }
                 }
             }
         }
