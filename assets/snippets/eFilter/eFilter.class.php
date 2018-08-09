@@ -781,7 +781,7 @@ public function makeAllContentIDs ($DLparams)
 
 public function makeCurrFilterValuesContentIDs ($DLparams)
 {
-    $content_ids_json = false;
+    $content_ids_list = false;
     if (!empty($this->fp)) {//разбираем фильтры из строки GET и считаем возможные значения и количество для этих фильтров без учета одного из них (выбранного)
         $f = $this->fp;
         if (is_array($f)) {
@@ -832,11 +832,11 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                 } else {
                     if (isset($f[$fid])) {
                         unset($DLparams['filters']);
-                        if (!$content_ids_json) {
+                        if (!$content_ids_list) {
                             $_ = $this->modx->runSnippet("DocLister", $DLparams);
-                            $content_ids_json = $this->getListFromJson($_);
+                            $content_ids_list = $this->getListFromJson($_);
                         }
-                        $this->curr_filter_values[$fid]['content_ids'] = $content_ids_json;
+                        $this->curr_filter_values[$fid]['content_ids'] = $content_ids_list;
                     } else {
                         $this->curr_filter_values[$fid]['content_ids'] = 'all';
                     }
