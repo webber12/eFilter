@@ -760,6 +760,10 @@ public function makeAllContentIDs ($DLparams)
                 $_ = $this->modx->runSnippet("DocLister", $DLparams);
                 $this->content_ids = $this->getListFromJson($_);
                 //$this->content_ids = str_replace(' ', '', substr($this->content_ids, 0, -1));
+            } else {
+                if ($this->categoryAllProducts) {
+                    $this->content_ids = $this->categoryAllProducts;
+                }
             }
         }
     } else {//если ничего не искали и у нас есть список всех продуктов категории, их и ставим
