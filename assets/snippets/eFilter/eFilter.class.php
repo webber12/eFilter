@@ -460,6 +460,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $minvalcurr = $minvalcurr - 1;
                             $maxvalcurr = $maxvalcurr + 1;
                         }
+                        $maxvalcurr = $maxvalcurr != '' ? ceil($maxvalcurr + 0.1) : '';
                         
                         $tplRow = $tplRowSlider;
                         $tplOuter = $tplOuterSlider;
@@ -467,6 +468,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $maxvalcurr = isset($this->fp[$tv_id]['max']) && (int)$this->fp[$tv_id]['max'] != 0 && (int)$this->fp[$tv_id]['max'] <= (int)$maxvalcurr  ? (int)$this->fp[$tv_id]['max'] : $maxvalcurr;*/
                         $minval = isset($this->fp[$tv_id]['min']) && (int)$this->fp[$tv_id]['min'] != 0 ? (int)$this->fp[$tv_id]['min'] : $minval;
                         $maxval = isset($this->fp[$tv_id]['max']) && (int)$this->fp[$tv_id]['max'] != 0 ? (int)$this->fp[$tv_id]['max'] : $maxval;
+                        $maxval = $maxval != '' ? ceil($maxval + 0.1) : '';
                         $wrapper .= $this->parseTpl(
                             array('[+tv_id+]', '[+minval+]', '[+maxval+]', '[+minvalcurr+]', '[+maxvalcurr+]'),
                             array($tv_id, $minval, $maxval, $minvalcurr, $maxvalcurr),
