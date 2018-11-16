@@ -835,7 +835,7 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                     $DLparams['filters'] = $fltr;
                     $_ = $this->modx->runSnippet("DocLister", $DLparams);
                     $this->curr_filter_values[$fid]['content_ids'] = $this->getListFromJson($_);
-                } else {
+                /*} else {
                     if (isset($f[$fid])) {
                         unset($DLparams['filters']);
                         if (!$content_ids_list) {
@@ -845,6 +845,25 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                         $this->curr_filter_values[$fid]['content_ids'] = $content_ids_list;
                     } else {
                         $this->curr_filter_values[$fid]['content_ids'] = 'all';
+                    }*/
+                } else {
+                    unset($DLparams['filters']);
+                    if (isset($f[$fid])) {
+                        if (!$content_ids_list) {
+                            $_ = $this->modx->runSnippet("DocLister", $DLparams);
+                            $content_ids_list = $this->getListFromJson($_);
+                        }
+                        $this->curr_filter_values[$fid]['content_ids'] = $content_ids_list;
+                    } else {
+                        if (isset($this->content_ids) && $this->content_ids != '') {
+                            $this->curr_filter_values[$fid]['content_ids'] = 'all';
+                        } else {
+                            if (!$content_ids_list) {
+                                $_ = $this->modx->runSnippet("DocLister", $DLparams);
+                                $content_ids_list = $this->getListFromJson($_);
+                            }
+                            $this->curr_filter_values[$fid]['content_ids'] = $content_ids_list;
+                        }
                     }
                 }
             }
