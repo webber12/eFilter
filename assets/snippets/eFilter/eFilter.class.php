@@ -663,7 +663,7 @@ public function getFilterValues ($content_ids, $filter_tv_ids = '')
                     $filter_values[$row['tmplvarid']][$v]['count'] = 1;
                 }
             } else {
-                $tmp = explode("||", $row['value']);
+                $tmp = array_map('trim', explode("||", $row['value']));
                 foreach ($tmp as $v) {
                     if (isset($filter_values[$row['tmplvarid']][$v]['count'])) {
                         $filter_values[$row['tmplvarid']][$v]['count'] += 1;
@@ -695,7 +695,7 @@ public function getFilterFutureValues ($curr_filter_values, $filter_tv_ids = '')
                             $filter_values[$row['tmplvarid']][$v]['count'] = 1;
                         }
                     } else {
-                        $tmp = explode("||", $row['value']);
+                        $tmp = array_map('trim', explode("||", $row['value']));
                         foreach ($tmp as $v) {
                             if (isset($filter_values[$row['tmplvarid']][$v]['count'])) {
                                 $filter_values[$row['tmplvarid']][$v]['count'] += 1;
