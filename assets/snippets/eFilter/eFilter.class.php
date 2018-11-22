@@ -734,9 +734,11 @@ public function makeAllContentIDs ($DLparams)
                     }
                 } else {//если значение/значения, но не диапазон
                     if (is_array($v)) {
-                        foreach($v as $k1 => $v1) {
-                            if ($v1 == '0') {
-                            unset($v[$k1]);
+                        if (!isset($this->params['allowZero'])) {
+                            foreach($v as $k1 => $v1) {
+                                if ($v1 == '0') {
+                                    unset($v[$k1]);
+                                }
                             }
                         }
                         $val = implode(',', $v);
@@ -808,9 +810,11 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                                 }
                             } else {//если значение/значения, но не диапазон
                                 if (is_array($v)) {
-                                    foreach($v as $k1 => $v1) {
-                                        if ($v1 == '0') {
-                                            unset($v[$k1]);
+                                    if (!isset($this->params['allowZero'])) {
+                                        foreach($v as $k1 => $v1) {
+                                            if ($v1 == '0') {
+                                                unset($v[$k1]);
+                                            }
                                         }
                                     }
                                     $val = implode(',', $v);
