@@ -750,7 +750,12 @@ public function makeAllContentIDs ($DLparams)
                     }
                     if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
                         if ($this->filters[$tvid]['many'] == '1') {
-                            $oper = 'containsOne';
+                            if (isset($this->params['useRegexp'])) {
+                                $oper = 'regexp';
+                                $val = '[[:<:]]' . str_replace(array(',', '||'), '[[:>:]]|[[:<:]]', $val) . '[[:>:]]';
+                            } else {
+                                $oper = 'containsOne';
+                            }
                         }
                         $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
                         $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val . ';';
@@ -825,7 +830,14 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                                     $val = ($v == '0' || $v == '') ? '' : $v; 
                                 }
                                 if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
-                                    if ($this->filters[$tvid]['many'] == '1') {$oper = 'containsOne';}
+                                    if ($this->filters[$tvid]['many'] == '1') {
+                                        if (isset($this->params['useRegexp'])) {
+                                            $oper = 'regexp';
+                                            $val = '[[:<:]]' . str_replace(array(',', '||'), '[[:>:]]|[[:<:]]', $val) . '[[:>:]]';
+                                        } else {
+                                            $oper = 'containsOne';
+                                        }
+                                    }
                                     $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
                                     $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val.';';
                                 }
