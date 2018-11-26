@@ -97,6 +97,7 @@ public function __construct($modx, $params)
     $this->cntTpl = isset($this->params['cntTpl']) && $this->params['cntTpl'] != '' ? $this->params['cntTpl'] : 'Найдено: [+cnt+] [+ending+]';
     $this->active_block_class = isset($this->params['activeBlockClass']) ? $this->params['activeBlockClass'] : ' active ';
     $this->hideEmptyBlock = isset($this->params['hideEmptyBlock']) ? true : false;
+    $this->setCommaAsSeparator();
 }
 
 public function getParamTvName($tv_id = '')
@@ -655,6 +656,11 @@ public function getFilterValues ($content_ids, $filter_tv_ids = '')
         $sql = "SELECT * FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN (" . $content_ids . ") " . ($filter_tv_ids != '' ? " AND tmplvarid IN (" . $filter_tv_ids . ")" : "");
         $q = $this->modx->db->query($sql);
         while ($row = $this->modx->db->getRow($q)) {
+            if ($this->commaAsSeparator) {
+                if ($this->commaAsSeparator === true || (is_array($this->commaAsSeparator) && in_array($row['tmplvarid'], $this->commaAsSeparator))) {
+                    $row['value'] = str_replace(',', '||', $row['value']);
+                }
+            }
             if (strpos($row['value'], '||') === false) {
                 $v = $row['value'];
                 if (isset($filter_values[$row['tmplvarid']][$v]['count'])) {
@@ -687,6 +693,11 @@ public function getFilterFutureValues ($curr_filter_values, $filter_tv_ids = '')
                 $sql = "SELECT * FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN (" . $content_ids . ") " . ($filter_tv_ids != '' ? " AND tmplvarid ={$tv_id}" : "");
                 $q = $this->modx->db->query($sql);
                 while ($row = $this->modx->db->getRow($q)) {
+                    if ($this->commaAsSeparator) {
+                        if ($this->commaAsSeparator === true || (is_array($this->commaAsSeparator) && in_array($row['tmplvarid'], $this->commaAsSeparator))) {
+                            $row['value'] = str_replace(',', '||', $row['value']);
+                        }
+                    }
                     if (strpos($row['value'], '||') === false) {
                         $v = $row['value'];
                         if (isset($filter_values[$row['tmplvarid']][$v]['count'])) {
@@ -1112,6 +1123,20 @@ public function getNumEnding($number, $endingArray)
         }
     }
     return $ending;
+}
+
+public function setCommaAsSeparator()
+{
+    $this->commaAsSeparator = false;
+    if (isset($this->params['commaAsSeparator'])) {
+        $commaAsSeparator = trim($this->params['commaAsSeparator']);
+        if ($commaAsSeparator == "all") {
+            $this->commaAsSeparator = true;
+        } else {
+            $this->commaAsSeparator = array_map('trim', explode(',', $commaAsSeparator));
+        }
+    }
+    return $this;
 }
 
 }
