@@ -1047,13 +1047,26 @@ public function getCategoryAllProducts($id, $tv_id)
         $this->categoryAllProducts = $search_ids;
         return $search_ids;
     }
-
-    if (!$tv_id) return '';
-
     //сначала ищем все товары, вложенные в данную категорию на глубину до 6
+    $children = $this->getCategoryProductsChildren($id);
+
+    //привязанные к категории товары через MultiCategories - http://modx.im/blog/addons/5700.html
+    $children = $this->getCategoryProductsMultiCategories($id, $children);
+
+    if (!empty($tv_id)) {
+        //привязанные к категории товары через TagSaver
+        $children = $this->getCategoryProductsTagSaver($id, $tv_id, $children);
+    }
+    
+    $this->categoryAllProducts = implode(',', array_keys($children));
+    return $this->categoryAllProducts;
+}
+
+public function getCategoryProductsChildren($id, $children = array(), $depth = 6)
+{
     $p = array(
         'parents' => $id,
-        'depth' => '6',
+        'depth' => $depth,
         'JSONformat' => 'new',
         'api' => 'id',
         'selectFields' => 'c.id',
@@ -1061,14 +1074,11 @@ public function getCategoryAllProducts($id, $tv_id)
         'debug' => '0',
         'addWhereList' => 'template IN (' . $this->product_templates_id . ')'
     );
-    $add_where = '';
     $filter_ids = $this->modx->getPlaceholder("eFilter_filter_ids");
-    if ($filter_ids && $filter_ids != '') {
+    if (!empty($filter_ids)) {
         $p['addWhereList'] .= ' AND c.id IN (' . $filter_ids . ') ';
-        $add_where = ' AND b.doc_id IN (' . $filter_ids . ') ';
     }
     $json = $this->modx->runSnippet("DocLister", $p);
-    $children = array();
     if ($json && !empty($json)) {
         $arr = json_decode($json, TRUE);
         if (!empty($arr) && isset($arr['rows'])) {
@@ -1078,33 +1088,48 @@ public function getCategoryAllProducts($id, $tv_id)
             }
         }
     }
-    //затем берем id всех товаров, привязанных к этой категории через tv category id=$tv_id
-    $sql = "SELECT a.*, b.* FROM " . $this->modx->getFullTableName("tags") . " a, " . $this->modx->getFullTableName("site_content_tags") . " b WHERE b.tv_id = " . $tv_id . " AND a.id = b.tag_id AND a.name='" . $id . "'" . $add_where;
-    $q = $this->modx->db->query($sql);
-    $tmp_docs = array();
-    while ($row = $this->modx->db->getRow($q)) {
-        $children[$row['doc_id']] = '1';
+    return $children;
+}
+
+public function getCategoryProductsTagSaver($id, $tv_id, $children = array())
+{
+    //доп.условие, если задан сторонний ограничитель в плейсхолдере ранее
+    $add_where = '';
+    $filter_ids = $this->modx->getPlaceholder("eFilter_filter_ids");
+    if (!empty($filter_ids)) {
+        $add_where = ' AND b.doc_id IN (' . $filter_ids . ') ';
     }
-    
+
+    //берем id всех товаров, привязанных к этой категории через tv category id=$tv_id
+    $tmp_parents = array($id);
+        
     //а также - товары, прикрепленные ко всем дочерним "категориям" относительно текущей категории (через tv "категория")
-    $childs = $this->modx->getChildIds($id);
+    //нужны только папки, потому берем только из кэша
+    $aliaslistingfolder = $this->modx->config['aliaslistingfolder'];
+    $this->modx->config['aliaslistingfolder'] = '0';
+    $childs = $this->modx->getChildIds($id, 5);
+    $this->modx->config['aliaslistingfolder'] = $aliaslistingfolder;
     if (!empty($childs)) {
-        $q1 = $this->modx->db->query("SELECT id FROM " . $this->modx->getFullTableName("site_content") . " WHERE id IN (" . implode(',', array_values($childs)) . ") AND deleted=0 AND published=1 AND isfolder=1");
+        //исключаем случайные "товары-папки" и кэшированные "непапки"
+        $q1 = $this->modx->db->query("SELECT id FROM " . $this->modx->getFullTableName("site_content") . " WHERE id IN (" . implode(',', array_values($childs)) . ") AND deleted=0 AND published=1 AND isfolder=1 AND template NOT IN (" . $this->product_templates_id . ")");
         $tmp_parents = array();
         while($row = $this->modx->db->getRow($q1)) {
             $tmp_parents[] = $row['id'];
         }
-        if (!empty($tmp_parents)) {
-            $sql = "SELECT a.*, b.* FROM " . $this->modx->getFullTableName("tags") . " a, " . $this->modx->getFullTableName("site_content_tags") . " b WHERE b.tv_id = " . $tv_id . " AND a.id = b.tag_id AND a.name IN (" . implode(",", $tmp_parents) . ")" . $add_where;
-            $q = $this->modx->db->query($sql);
-            $tmp_docs = array();
-            while ($row = $this->modx->db->getRow($q)) {
-                $children[$row['doc_id']] = '1';
-            }
-        }
     }
-    $this->categoryAllProducts = implode(',', array_keys($children));
-    return $this->categoryAllProducts;
+    //собираем все прикрепленные к данным папкам товары
+    $sql = "SELECT a.*, b.* FROM " . $this->modx->getFullTableName("tags") . " a, " . $this->modx->getFullTableName("site_content_tags") . " b WHERE b.tv_id = " . $tv_id . " AND a.id = b.tag_id AND a.name IN (" . implode(",", $tmp_parents) . ")" . $add_where;
+    $q = $this->modx->db->query($sql);
+    while ($row = $this->modx->db->getRow($q)) {
+        $children[$row['doc_id']] = '1';
+    }
+    return $children;
+}
+
+public function getCategoryProductsMultiCategories($id, $children = array())
+{
+    //TODO
+    return $children;
 }
 
 public function getNumEnding($number, $endingArray)

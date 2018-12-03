@@ -76,16 +76,16 @@ if ($filter_ids && $filter_ids != '') {
 }
 $DLparamsAPI = array('JSONformat' => 'new', 'api' => 'id', 'selectFields' => 'c.id');
 $allProducts = $eFltr->getCategoryAllProducts($eFltr->docid, $eFltr->tv_category_tag);
-if (!empty($allProducts) && $allProducts != '') {
-    unset($DLparams['parents']);
-    unset($DLparams['depth']);
-    $DLparams['documents'] = $allProducts;
-}
+if (empty($allProducts)) return;//если документов нет, то и делать ничего дальше не нужно
+
+unset($DLparams['parents']);
+unset($DLparams['depth']);
+$DLparams['documents'] = $allProducts;
 $DLparamsAll = array_merge($DLparams, $DLparamsAPI);
+
 //это список всех id товаров данной категории, дальше будем вычленять ненужные :)
 $_ = $eFltr->modx->runSnippet("DocLister", $DLparamsAll);
 $eFltr->content_ids_full = $eFltr->getListFromJson($_);
-
 
 //получаем $eFltr->content_ids
 //это пойдет в плейсхолдер (список documents через запятую
@@ -108,11 +108,9 @@ $eFltr->filter_values_full = $eFltr->getFilterValues ($eFltr->content_ids_full, 
 //количество считаем исходя из сформированного списка подходящих документов из массива $eFltr->curr_filter_values
 $eFltr->filter_values = $eFltr->getFilterFutureValues ($eFltr->curr_filter_values, $eFltr->filter_tv_ids);
 
-
 //выводим блок фильтров (доступных после фильтрации)
 //итоговый фильтр на вывод
 $output = $eFltr->renderFilterBlock ($eFltr->filter_cats, $eFltr->filter_values_full, $eFltr->filter_values, $eFltr->filters, $eFltr->cfg);
-
 
 //устанавливаем плейсхолдеры
 $eFltr->setPlaceholders (
@@ -143,4 +141,3 @@ $eFltr->setPlaceholders (
         "eFilter_tv_elements" => $eFltr->list_tv_elements
     )
 );
-
