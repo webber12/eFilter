@@ -25,25 +25,25 @@ $ids = $modx->getPlaceholder('eFilter_ids');
 
 //фиксим DocLister - при пустом списке documents и пустом фильтре - отдавать все
 //при пустом списке documents и НЕ пустом фильтре - ничего не отдавать
-if($ids == '' && (isset($_GET))) {
-	$ids = $modx->config['site_start'];
-	$f = $_GET;
-	foreach($f as $k => $val){
-		if (preg_match("/^f(\d+)/i", $k, $matches)) {
-			if($val != '0' && $val != '') {$ids = '2';}
-		}
-	}
-	if ($ids == $modx->config['site_start']) {$ids = '';}	
+if(empty($ids) && (isset($_GET))) {
+    $ids = $modx->config['site_start'];
+    $f = $_GET;
+    foreach($f as $k => $val){
+        if (preg_match("/^f(\d+)/i", $k, $matches)) {
+            if ($val != '0' && $val != '') {$ids = '4294967295';}
+        }
+    }
+    if ($ids == $modx->config['site_start']) {$ids = '';}    
 }
-if($ids == '' && (isset($_GET['f']))) {
-	$ids = $modx->config['site_start'];
-	$f = $_GET['f'];
-	foreach($f as $k=>$v){
-		foreach ($v as $val) {
-			if($val != '0' && $val != '') {$ids = '2';}
-		}
-	}
-	if ($ids == $modx->config['site_start']) {$ids = '';}	
+if(empty($ids) && (isset($_GET['f']))) {
+    $ids = $modx->config['site_start'];
+    $f = $_GET['f'];
+    foreach($f as $k=>$v){
+        foreach ($v as $val) {
+            if ($val != '0' && $val != '') {$ids = '4294967295';}
+        }
+    }
+    if ($ids == $modx->config['site_start']) {$ids = '';}    
 }
 
 //получаем из плейсхолдера список ТВ для вывода в список
@@ -54,15 +54,15 @@ $tv_names = $modx->getPlaceholder('eFilter_tv_names');
 // удаляеи из списка общие исключенные ТВ (в настройках модуля) -
 // (например цена и т.п., которая выводится отдельно и есть у всех
 if (isset($exclude_tvs_from_list) && $exclude_tvs_from_list != '') {
-	$exclude_tvs = explode(',', $exclude_tvs_from_list);
-	foreach($exclude_tvs as $k=>$v){
-		if (isset($tv_names[$v])) {
-			unset($tv_names[$v]);
-		}
-		if (isset($tv_list[$v])) {
-			unset($tv_list[$v]);
-		}
-	}
+    $exclude_tvs = explode(',', $exclude_tvs_from_list);
+    foreach($exclude_tvs as $k => $v){
+        if (isset($tv_names[$v])) {
+            unset($tv_names[$v]);
+        }
+        if (isset($tv_list[$v])) {
+            unset($tv_list[$v]);
+        }
+    }
 }
 ///////
 
@@ -77,18 +77,18 @@ $paramOuter = isset($paramOuter) ? $paramOuter : '<div class="eFilter_list_param
 
 $tovar_params_tpl = '';
 foreach($tv_names as $tv_id=>$tv_name) {
-	$param_value = '[+tv.' . $tv_list[$tv_id] . '+]';
-	$tovar_params_tpl .= str_replace(
-		array('[+param_title+]', '[+param_value+]', '[+param_id+]'),
-		array($tv_name, $param_value, $tv_id),
-		$paramRow
-	);
+    $param_value = '[+tv.' . $tv_list[$tv_id] . '+]';
+    $tovar_params_tpl .= str_replace(
+        array('[+param_title+]', '[+param_value+]', '[+param_id+]'),
+        array($tv_name, $param_value, $tv_id),
+        $paramRow
+    );
 }
 
 $tovar_params_wrapper = str_replace(
-	array('[+wrapper+]'),
-	array($tovar_params_tpl),
-	$paramOuter
+    array('[+wrapper+]'),
+    array($tovar_params_tpl),
+    $paramOuter
 );
 
 $tovarChunkName = isset($params['tpl']) && !empty($params['tpl']) ? $params['tpl'] : $tovarChunkName;
@@ -111,7 +111,7 @@ $params['orderBy'] = $sortBy . ' ' . $sortOrder;
 $params['display'] = $display;
 if ($display == 'all') unset($params['display']);
 
-if ($ids) {
+if (!empty($ids)) {
     $params['documents'] = $ids;
     unset($params['parents']);
     unset($params['depth']);
