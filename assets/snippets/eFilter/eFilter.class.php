@@ -1112,7 +1112,6 @@ public function getCategoryProductsTagSaver($id, $tv_id, $children = array())
     if (!empty($childs)) {
         //исключаем случайные "товары-папки" и кэшированные "непапки"
         $q1 = $this->modx->db->query("SELECT id FROM " . $this->modx->getFullTableName("site_content") . " WHERE id IN (" . implode(',', array_values($childs)) . ") AND deleted=0 AND published=1 AND isfolder=1 AND template NOT IN (" . $this->product_templates_id . ")");
-        $tmp_parents = array();
         while($row = $this->modx->db->getRow($q1)) {
             $tmp_parents[] = $row['id'];
         }
