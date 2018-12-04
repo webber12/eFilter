@@ -200,8 +200,15 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
         //if (count($filter_cats) > 1) {$output .= $this->parseTpl(array('[+cat_name+]'), array($cat_name), $filterCatName);}
         $output = '';
         $tv_elements = $this->getDefaultTVValues($tmp);
+        $tv_types = $this->getTVNames(implode(',', array_keys($tmp)), 'type');
         foreach ($tmp as $tv_id => $tmp2) {
             if (isset($filter_values_full[$tv_id])) {
+                if (!empty($tv_types) && $tv_types[$tv_id] == 'custom_tv:selector') {
+                    $selector_elements = $this->modx->db->query("SELECT id,pagetitle FROM " . $this->modx->getFullTableName("site_content") . " WHERE id IN (" . implode(",", array_keys($filter_values_full[$tv_id])) . ") AND published=1 AND deleted=0");
+                    while ($selector_elements_row = $this->modx->db->getRow($selector_elements)) {
+                        $tv_elements[$tv_id][$selector_elements_row['id']] = $selector_elements_row['pagetitle'];
+                    }
+                }
                 if (in_array($tv_id, $this->nosort_tv_id) || (isset($this->nosort_tv_id[0]) && $this->nosort_tv_id[0] == 'all')) {
                     $sort_tmp = array();
                     foreach($tv_elements[$tv_id] as $k => $v) {
@@ -994,7 +1001,7 @@ public function getDefaultTVValues($array = array())
     $out = array();
     $tvs = implode(",", array_keys($array));
     if ($tvs != '') {
-        $elements = $this->getTVNames($tv_ids = $tvs, $field = 'elements');
+        $elements = $this->getTVNames($tvs, 'elements');
         foreach ($elements as $tv_id => $element) {
             if (stristr($element, "@EVAL")) {
                 $element = trim(substr($element, 6));
