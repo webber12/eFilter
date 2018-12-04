@@ -204,7 +204,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
         foreach ($tmp as $tv_id => $tmp2) {
             if (isset($filter_values_full[$tv_id])) {
                 if (!empty($tv_types) && $tv_types[$tv_id] == 'custom_tv:selector') {
-                    $selector_elements = $this->modx->db->query("SELECT id,pagetitle FROM " . $this->modx->getFullTableName("site_content") . " WHERE id IN (" . implode(",", array_keys($filter_values_full[$tv_id])) . ") AND published=1 AND deleted=0");
+                    $selector_elements = $this->modx->db->query("SELECT id,pagetitle FROM " . $this->modx->getFullTableName("site_content") . " WHERE id IN (" . implode(",", array_keys($filter_values_full[$tv_id])) . ") AND published=1 AND deleted=0 ORDER BY menuindex ASC");
                     while ($selector_elements_row = $this->modx->db->getRow($selector_elements)) {
                         $tv_elements[$tv_id][$selector_elements_row['id']] = $selector_elements_row['pagetitle'];
                     }
