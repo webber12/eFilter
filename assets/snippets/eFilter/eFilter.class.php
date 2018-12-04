@@ -1087,11 +1087,11 @@ public function getCategoryProductsChildren($id, $children = array(), $depth = 6
     }
     $json = $this->modx->runSnippet("DocLister", $p);
     if ($json && !empty($json)) {
-        $arr = json_decode($json, TRUE);
+        $arr = json_decode($json, true);
         if (!empty($arr) && isset($arr['rows'])) {
             $tmp2 = array();
             foreach ($arr['rows'] as $v) {
-                $children[$v['id']] = '1';
+                $children[$v['id']] = 1;
             }
         }
     }
@@ -1127,14 +1127,19 @@ public function getCategoryProductsTagSaver($id, $tv_id, $children = array())
     $sql = "SELECT a.*, b.* FROM " . $this->modx->getFullTableName("tags") . " a, " . $this->modx->getFullTableName("site_content_tags") . " b WHERE b.tv_id = " . $tv_id . " AND a.id = b.tag_id AND a.name IN (" . implode(",", $tmp_parents) . ")" . $add_where;
     $q = $this->modx->db->query($sql);
     while ($row = $this->modx->db->getRow($q)) {
-        $children[$row['doc_id']] = '1';
+        $children[$row['doc_id']] = 1;
     }
     return $children;
 }
 
 public function getCategoryProductsMultiCategories($id, $children = array())
 {
-    //TODO
+    if (isset($this->params['useMultiCategories'])) {
+        $q = $this->modx->db->query("SELECT * FROM " . $this->modx->getFullTableName("site_content_categories") . " WHERE category={$id}");
+        while ($row = $this->modx->db->getRow($q)) {
+            $children[$row['doc']] = 1;
+        }
+    }
     return $children;
 }
 
