@@ -79,7 +79,7 @@ public function __construct($modx, $params)
     $this->param_tv_id_simple = $this->params['param_tv_id_simple'];
     $this->tv_category_tag = isset($this->params['tv_category_tag']) && (int)$this->params['tv_category_tag'] > 0 ? (int)$this->params['tv_category_tag'] : 0;
     $this->param_tv_name = $this->getParamTvName();
-    $this->param_tv_name_simple = $this->getParamTvName($this->param_tv_id_simple);
+    //$this->param_tv_name_simple = $this->getParamTvName($this->param_tv_id_simple);
     $this->product_templates_id = $this->params['product_templates_id'];
     $this->product_templates_array = explode(',', $this->product_templates_id);
     $this->docid = isset($this->params['docid']) ? $this->params['docid'] : $this->modx->documentIdentifier;
