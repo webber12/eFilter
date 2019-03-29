@@ -35,7 +35,7 @@ if($modx->event->name == 'OnDocFormRender') {
     global $content;
     global $tvsArray;
     $product_template_array = explode(',', $product_templates_id);
-    if (isset($content['template']) && in_array($content['template'], $product_template_array)) {
+    if ((isset($content['template']) && in_array($content['template'], $product_template_array)) || !empty($tvsArray['tovarparams'])) {
         
         include_once(MODX_BASE_PATH . 'assets/snippets/eFilter/eFilter.class.php');
         $eFltr = new eFilter($modx, $params);
@@ -61,6 +61,9 @@ if($modx->event->name == 'OnDocFormRender') {
             $pid = $_POST['pid'];
         }
         if ($pid == '') {$pid = '1';}
+        if (!empty($tvsArray['tovarparams']) && isset($content['id'])) {
+            $pid = $content['id'];
+        }
         $eFltr->docid = $pid;
         //разрешенные для данного типа товара параметры
         $allowedTmp = $eFltr->getFilterParam ($eFltr->param_tv_name);

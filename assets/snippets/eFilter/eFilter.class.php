@@ -71,6 +71,9 @@ public $tv_category_tag = 0;
 //все продукты категории с учетом тегованных
 public $categoryAllProducts = false;
 
+//имя тв seocategory
+public $seocategorytv = 'seocategory';
+
 public function __construct($modx, $params)
 {
     $this->modx = $modx;
@@ -98,6 +101,9 @@ public function __construct($modx, $params)
     $this->active_block_class = isset($this->params['activeBlockClass']) ? $this->params['activeBlockClass'] : ' active ';
     $this->hideEmptyBlock = isset($this->params['hideEmptyBlock']) ? true : false;
     $this->setCommaAsSeparator();
+    if (!empty(trim($this->params['seocategorytv']))) {
+        $this->seocategorytv = $this->params['seocategorytv'];
+    }
 }
 
 public function getParamTvName($tv_id = '')
@@ -146,6 +152,7 @@ public function _getParentParam ($docid, $param_tv_name) {
 
 public function makeFilterArrays()
 {
+    $this->common_filter_tvs = $this->common_filter_names = $this->common_filter_cats = $this->common_filters = array();
     foreach ($this->filter_param['fieldValue'] as $k => $v) {
         if ($v['fltr_yes'] == '1'){
             $this->filter_tvs[] = $v['param_id'];
@@ -159,6 +166,13 @@ public function makeFilterArrays()
         if ($v['list_yes'] == '1'){
             $this->list_tv_ids[] = $v['param_id'];
         }
+        $this->common_filter_tvs[] = $v['param_id'];
+        $this->common_filter_names[$v['fltr_name']] = $v['param_id'];
+        $this->common_filter_cats[$v['cat_name']][$v['param_id']] = '1';
+        $this->common_filters[$v['param_id']]['type'] = $v['fltr_type'];
+        $this->common_filters[$v['param_id']]['name'] = $v['fltr_name'];
+        $this->common_filters[$v['param_id']]['many'] = $v['fltr_many'];
+        $this->common_filters[$v['param_id']]['href'] = $v['fltr_href'];
     }
 }
 
@@ -1044,6 +1058,12 @@ public function getListFromJson($json = '', $field = 'id', $separator = ',')
 //возвращает список всех дочерних товаров категории плюс товаров, прикрепленных к категории тегом tagSaver через tv с id=$tv_id
 public function getCategoryAllProducts($id, $tv_id)
 {
+    $seocat = false;
+    if (!empty($this->modx->documentObject[$this->seocategorytv][1])) {
+        //берем товары, которые принадлежат категории, указанной в tv с именем $this->seocategorytv
+        $id = $this->modx->documentObject[$this->seocategorytv][1];
+        $seocat = true;
+    }
     //если хотим искать только по заданным документам, то до вызова [!eFilter!] устанавливаем их спискок в плейсхолдер eFilter_search_ids
     $search_ids = $this->modx->getPlaceholder("eFilter_search_ids");
     if ($search_ids && $search_ids != '') {
@@ -1064,7 +1084,9 @@ public function getCategoryAllProducts($id, $tv_id)
         //привязанные к категории товары через TagSaver
         $children = $this->getCategoryProductsTagSaver($id, $tv_id, $children);
     }
-    
+    if ($seocat && !empty($children)) {
+        $children = $this->getSeoChildren($children);
+    }
     $this->categoryAllProducts = implode(',', array_keys($children));
     return $this->categoryAllProducts;
 }
@@ -1173,6 +1195,51 @@ public function setCommaAsSeparator()
         }
     }
     return $this;
+}
+
+public function getSeoChildren($children)
+{
+    $out = array();
+    $common_tv_names = $this->getTVNames (implode(',', array_keys($this->common_filters)));
+    $tvs = $this->modx->getTemplateVarOutput(array_keys($this->common_filters), $this->modx->documentIdentifier);
+    $seoFilters = array();
+    foreach ($this->common_filters as $k => $v) {
+        $seo_tv_name = !empty($common_tv_names[$k]) ? $common_tv_names[$k] : '';
+        if (empty($seo_tv_name) || empty($tvs[$seo_tv_name])) continue;
+        switch ($v['type']) {
+            case '3':case '6':
+                //диапазон-слайдер
+                $minmax = array_map('trim', explode('-', $tvs[$seo_tv_name]));
+                if (!empty($minmax[0])) {
+                    $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':>=:' . $minmax[0];
+                }
+                if (!empty($minmax[1])) {
+                    $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':<=:' . $minmax[1];
+                }
+                break;
+            default:
+                if (empty($v['many'])) {
+                    $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':=:' . $tvs[$seo_tv_name];
+                } else {
+                    if (isset($this->params['useRegexp'])) {
+                        $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':regexp:' . '[[:<:]]' . str_replace(array(',', '||'), '[[:>:]]|[[:<:]]', $tvs[$seo_tv_name]) . '[[:>:]]';
+                    } else {
+                        $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':containsOne:' . str_replace('||', ',', $tvs[$seo_tv_name]);
+                    }
+                }
+                break;
+        }
+    }
+    if (!empty($seoFilters)) {
+        $DLparams = array('api' => 'id', 'JSONformat' => 'new', 'documents' => implode(',', array_keys($children)), 'sortType' => 'doclist', 'filters' => 'AND(' . implode(';', $seoFilters) . ')');
+        //print_r($DLparams);
+        $seo_dl = $this->modx->runSnippet("DocLister", $DLparams);
+        $ids = $this->getListFromJson($seo_dl);
+        if (!empty($ids)) {
+            $out = array_flip(explode(',', $ids));
+        }
+    }
+    return $out;
 }
 
 }
