@@ -61,7 +61,7 @@ if($modx->event->name == 'OnDocFormRender') {
             $pid = $_POST['pid'];
         }
         if ($pid == '') {$pid = '1';}
-        if (!empty($tvsArray['tovarparams']) && isset($content['id'])) {
+        if (!empty($tvsArray['tovarparams']) && !empty($content['id'])) {
             $pid = $content['id'];
         }
         $eFltr->docid = $pid;
