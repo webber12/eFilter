@@ -136,15 +136,17 @@ public function getFilterParam ($param_tv_name, $docid = 0)
 
 public function _getParentParam ($docid, $param_tv_name) {
     $filter_param = array();
-    $parent = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$docid} AND parent != 0 LIMIT 0,1");
-    if ($parent) {
+    $parent = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$docid} /*AND parent != 0*/ LIMIT 0,1");
+    if ($parent || $parent == '0') {
         $tv = $this->modx->getTemplateVar($param_tv_name, '*', $docid);
         $param_tv_val = $tv['value'] != '' ? $tv['value'] : $tv['defaultText'];
         //$param_tv_val = $this->modx->runSnippet("DocInfo", array('docid' => $parent, 'tv' => '1', 'field' => $param_tv_name));
         if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}' && $param_tv_val != '[]') {
             $filter_param = json_decode($param_tv_val, true);
         }  else {
-            $filter_param = $this->_getParentParam ($parent, $param_tv_name);
+            if ($parent) {
+                $filter_param = $this->_getParentParam ($parent, $param_tv_name);
+            }
         }
     }
     return $filter_param;
@@ -1232,7 +1234,7 @@ public function getSeoChildren($children)
     }
     if (!empty($seoFilters)) {
         $DLparams = array('api' => 'id', 'JSONformat' => 'new', 'documents' => implode(',', array_keys($children)), 'sortType' => 'doclist', 'filters' => 'AND(' . implode(';', $seoFilters) . ')');
-        //print_r($DLparams);
+        print_r($DLparams);
         $seo_dl = $this->modx->runSnippet("DocLister", $DLparams);
         $ids = $this->getListFromJson($seo_dl);
         if (!empty($ids)) {
