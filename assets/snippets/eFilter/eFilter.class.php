@@ -1234,7 +1234,6 @@ public function getSeoChildren($children)
     }
     if (!empty($seoFilters)) {
         $DLparams = array('api' => 'id', 'JSONformat' => 'new', 'documents' => implode(',', array_keys($children)), 'sortType' => 'doclist', 'filters' => 'AND(' . implode(';', $seoFilters) . ')');
-        print_r($DLparams);
         $seo_dl = $this->modx->runSnippet("DocLister", $DLparams);
         $ids = $this->getListFromJson($seo_dl);
         if (!empty($ids)) {
