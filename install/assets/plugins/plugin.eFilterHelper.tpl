@@ -115,7 +115,7 @@ if($modx->event->name == 'OnDocFormRender') {
     }
     if (is_array($tvsArray) && isset($tvsArray['tovarparams'])) {
         //есть tv tovarparams - будем его стилизовать
-        $style = file_get_contents(MODX_SITE_URL . 'assets/snippets/eFilter/html/tovarparams_style.tpl');
+        $style = file_get_contents(MODX_BASE_PATH . 'assets/snippets/eFilter/html/tovarparams_style.tpl');
         $output .= $modx->parseText($style, array('param_tv_id' => $param_tv_id));
     }
     $modx->event->output($output);
