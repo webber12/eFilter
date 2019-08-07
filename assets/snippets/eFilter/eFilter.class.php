@@ -1159,7 +1159,16 @@ public function getCategoryProductsTagSaver($id, $tv_id, $children = array())
 public function getCategoryProductsMultiCategories($id, $children = array())
 {
     if (isset($this->params['useMultiCategories'])) {
-        $q = $this->modx->db->query("SELECT * FROM " . $this->modx->getFullTableName("site_content_categories") . " WHERE category={$id}");
+        $categories = array();
+        //добавляем дочерние категории
+        $childs = $this->modx->getChildIds($id, 5);
+        if (!empty($childs)) {
+            $categories = array_values($childs);
+        }
+        //и саму категорию
+        $categories[] = $id;
+        //берем все товары данных мультикатегорий
+        $q = $this->modx->db->query("SELECT * FROM " . $this->modx->getFullTableName("site_content_categories") . " WHERE category IN (" . implode(',', $categories) . ")");
         while ($row = $this->modx->db->getRow($q)) {
             $children[$row['doc']] = 1;
         }
