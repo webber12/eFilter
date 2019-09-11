@@ -665,7 +665,11 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
     $tpl = $tplFilterForm;
     $resetTpl = $tplFilterReset;
     $tmp = explode('?', $_SERVER['REQUEST_URI']);
-    $form_url = (isset($tmp[0]) && !empty($tmp[0]) && !isset($this->params['submitDocPage'])) ? $tmp[0] : $this->modx->makeUrl($this->docid);
+    if (!empty($this->params['submitPage']) && is_numeric($this->params['submitPage'])) {
+        $form_url = $this->modx->makeUrl($this->params['submitPage']);
+    } else {
+        $form_url = (isset($tmp[0]) && !empty($tmp[0]) && !isset($this->params['submitDocPage'])) ? $tmp[0] : $this->modx->makeUrl($this->docid);
+    }
     $form_result_cnt = isset($this->content_ids_cnt) && $this->content_ids_cnt != '' ? $this->parseTpl(array('[+cnt+]', '[+ending+]'), array($this->content_ids_cnt, $this->content_ids_cnt_ending), $this->cntTpl) : '';
     $output = !$isEmpty ? $this->parseTpl(array('[+url+]', '[+wrapper+]', '[+btn_text+]', '[+form_result_cnt+]', '[+form_method+]'), array($form_url, $output, $this->params['btnText'], $form_result_cnt, $this->params['formMethod']), $tpl) : '';
     $output .= !$isEmpty ? $this->parseTpl(array('[+reset_url+]'), array($form_url), $resetTpl) : '';
