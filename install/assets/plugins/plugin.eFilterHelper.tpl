@@ -113,7 +113,8 @@ if($modx->event->name == 'OnDocFormRender') {
             $output .= '<style>tr.hide_next,tr.hide_next + tr{display:none;}</style>' . "\n";
         }
     }
-    if (is_array($tvsArray) && isset($tvsArray['tovarparams'])) {
+    $isTovarParams = $modx->db->getValue("SELECT COUNT(*) FROM " . $modx->getFullTableName("site_tmplvar_templates") . " WHERE tmplvarid={$param_tv_id} AND templateid={$template}");
+    if (!empty($isTovarParams)) {
         //есть tv tovarparams - будем его стилизовать
         $style = file_get_contents(MODX_BASE_PATH . 'assets/snippets/eFilter/html/tovarparams_style.tpl');
         $output .= $modx->parseText($style, array('param_tv_id' => $param_tv_id));
