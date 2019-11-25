@@ -101,13 +101,15 @@ if($modx->event->name == 'OnDocFormRender') {
         //скрипт скрытия всех "запрещенных ТВ"
         //т.к. managermanager почти у всех и он уже подключил jquery, то обращаемся смело к нему
         if (!empty($disallowedParams)) {
-            $output .= '<script type="text/javascript">$j(document).ready(function(){';
+            $output .= '<script type="text/javascript">jQuery(document).ready(function(){';
             foreach ($disallowedParams as $k => $v) {
-                $output .= '$j(".sectionBody").find("#tv' . $k . '").parents("tr").addClass("hide_next");';
+                $output .= 'jQuery(".sectionBody").find("#tv' . $k . '").parents("tr").addClass("hide_next");';
                 //фикс чекбоксов
-                $output .= '$j(".sectionBody").find("input[name=\'tv' . $k . '[]\']").parents("tr").addClass("hide_next");';
+                $output .= 'jQuery(".sectionBody").find("input[name=\'tv' . $k . '[]\']").parents("tr").addClass("hide_next");';
                 //фикс радио
-                $output .= '$j(".sectionBody").find("input[name=\'tv' . $k . '\']").parents("tr").addClass("hide_next");';
+                $output .= 'jQuery(".sectionBody").find("input[name=\'tv' . $k . '\']").parents("tr").addClass("hide_next");';
+                //фикс templatesEdit3
+                $output .= 'jQuery(".sectionBody").find("#tv' . $k . '").closest(".row.form-row").hide();';
             }
             $output .= '})</script>';
             $output .= '<style>tr.hide_next,tr.hide_next + tr{display:none;}</style>' . "\n";
