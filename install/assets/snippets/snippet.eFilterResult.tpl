@@ -123,7 +123,7 @@ if (!empty($tv_list)) {
     $params['tvList'] = $params['tvList'] == '' ? implode(',', $tv_list) : $params['tvList'] . ',' . implode(',', $tv_list);
     $params['renderTV'] = $params['renderTV'] == '' ? implode(',', $tv_list) : $params['renderTV'] . ',' . implode(',', $tv_list);
 }
-$params['tvSortType'] = 'UNSIGNED';
+$params['tvSortType'] = !empty($params['tvSortType']) ? $params['tvSortType'] : 'UNSIGNED';
 if (!empty($params)) {
     $out .= $modx->runSnippet("DocLister", $params);
 }
