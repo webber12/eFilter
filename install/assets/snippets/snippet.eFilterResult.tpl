@@ -47,9 +47,9 @@ if(empty($ids) && (isset($_GET['f']))) {
 }
 
 //получаем из плейсхолдера список ТВ для вывода в список
-$tv_list = $modx->getPlaceholder('eFilter_tv_list');
+$tv_list = $modx->getPlaceholder('eFilter_tv_list') ?: [];
 //..и их имена из кэпшн
-$tv_names = $modx->getPlaceholder('eFilter_tv_names');
+$tv_names = $modx->getPlaceholder('eFilter_tv_names') ?: [];
 
 // удаляеи из списка общие исключенные ТВ (в настройках модуля) -
 // (например цена и т.п., которая выводится отдельно и есть у всех
