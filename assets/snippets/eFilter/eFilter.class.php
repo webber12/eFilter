@@ -235,7 +235,10 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                     $filter_values_full[$tv_id] = $sort_tmp;
                     unset($sort_tmp);
                 } else {
-                    uksort($filter_values_full[$tv_id], create_function('$a,$b', 'return is_numeric($a) && is_numeric($b) ? ($a-$b) : strcasecmp(strtolower($a), strtolower($b));'));
+                    uksort($filter_values_full[$tv_id], function( $a,$b ) { 
+                                                        return is_numeric($a) && is_numeric($b) ? ($a-$b) : strcasecmp(strtolower($a), strtolower($b)); 
+                                                        }
+                    );
                 }
                 $wrapper = '';
                 $count = '';
