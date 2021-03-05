@@ -109,7 +109,7 @@ public function __construct($modx, $params)
 public function getParamTvName($tv_id = '')
 {
     $tv_id = !empty($tv_id) ? $tv_id : $this->param_tv_id;
-    return $this->modx->db->getValue("SELECT `name` FROM " . $this->modx->getFullTableName('site_tmplvars') . " WHERE id = {$tv_id} LIMIT 0,1");
+    return $this->modx->db->getValue($this->modx->db->query("SELECT `name` FROM " . $this->modx->getFullTableName('site_tmplvars') . " WHERE id = {$tv_id} LIMIT 0,1"));
 }
 
 public function getFilterParam ($param_tv_name, $docid = 0)
@@ -136,7 +136,7 @@ public function getFilterParam ($param_tv_name, $docid = 0)
 
 public function _getParentParam ($docid, $param_tv_name) {
     $filter_param = array();
-    $parent = $this->modx->db->getValue("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$docid} /*AND parent != 0*/ LIMIT 0,1");
+    $parent = $this->modx->db->getValue($this->modx->db->query("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$docid} /*AND parent != 0*/ LIMIT 0,1"));
     if ($parent || $parent == '0') {
         $tv = $this->modx->getTemplateVar($param_tv_name, '*', $docid);
         $param_tv_val = $tv['value'] != '' ? $tv['value'] : $tv['defaultText'];
