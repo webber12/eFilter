@@ -257,7 +257,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id], true)) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -300,7 +300,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id], true)) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -382,7 +382,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id], true)) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -424,7 +424,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id], true)) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -522,7 +522,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $label_selected = '';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id], true)) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -570,7 +570,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $label_selected = '';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id], true)) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -617,7 +617,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id], true)) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
