@@ -284,8 +284,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         }
                         if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
+                            array('[+tv_id+]', '[+tv_name+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $this->filter_tv_names[$tv_id] ?? '', $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -327,8 +327,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         }
                         if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
+                            array('[+tv_id+]', '[+tv_name+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $this->filter_tv_names[$tv_id] ?? '', $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -363,8 +363,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tplRow
                         );
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
+                            array('[+tv_id+]', '[+tv_name+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $this->filter_tv_names[$tv_id] ?? '', $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -401,7 +401,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             if ($this->params['removeDisabled'] == '0' || $disabled == '') {
                                 $i++;
                                 $wrapper .= ($k != '' || ($k == '0' && isset($this->params['allowZero']))) ? $this->parseTpl(
-                                    array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
+                                    array('[+tv_id+]', '[+tv_name+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
                                     array($tv_id, $k, $tv_val_name, $selected, $disabled, $count, $i),
                                     $tplRow
                                 ) : '';
@@ -410,7 +410,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
                             array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
+                            array($tv_id, $this->filter_tv_names[$tv_id] ?? '', $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -450,8 +450,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         }
                         if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
+                            array('[+tv_id+]', '[+tv_name+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $this->filter_tv_names[$tv_id] ?? '', $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -502,8 +502,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tplRow
                         );
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
+                            array('[+tv_id+]', '[+tv_name+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $this->filter_tv_names[$tv_id] ?? '', $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -550,8 +550,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         }
                         if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
+                            array('[+tv_id+]', '[+tv_name+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $this->filter_tv_names[$tv_id] ?? '', $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -598,8 +598,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         }
                         if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
+                            array('[+tv_id+]', '[+tv_name+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $this->filter_tv_names[$tv_id] ?? '', $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
@@ -644,8 +644,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         }
                         if ($this->hideEmptyBlock && $wrapper == '') break;
                         $output .= $this->parseTpl(
-                            array('[+tv_id+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
-                            array($tv_id, $filters[$tv_id]['name'], $wrapper, $active_block_class),
+                            array('[+tv_id+]', '[+tv_name+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $this->filter_tv_names[$tv_id] ?? '', $filters[$tv_id]['name'], $wrapper, $active_block_class),
                             $tplOuter
                         );
                         break;
