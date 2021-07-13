@@ -1112,6 +1112,7 @@ public function getCategoryProductsChildren($id, $children = array(), $depth = 6
         'debug' => '0',
         'addWhereList' => 'template IN (' . $this->product_templates_id . ')'
     );
+    $p['showParent'] = $this->params['showParent'] ? 1 : 0;
     $filter_ids = $this->modx->getPlaceholder("eFilter_filter_ids");
     if (!empty($filter_ids)) {
         $p['addWhereList'] .= ' AND c.id IN (' . $filter_ids . ') ';
