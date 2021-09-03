@@ -19,7 +19,7 @@ public $filter_cats = array();
 //массив заданных фильтров tv_id -> array (fltr_type,fltr_name,fltr_many)
 public $filters = array();
 
-//массив id tv входящих в заданный фильтр 
+//массив id tv входящих в заданный фильтр
 public $filter_tvs = array();
 
 //массив id TV, входящих в список вывода для DocLister
@@ -206,7 +206,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
     } else {
         include(dirname(__FILE__).'/config/config.default.php');
     }
-    
+
     $output = '';
     $fc = 0;
     $categoryWrapper = '';
@@ -237,8 +237,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                     $filter_values_full[$tv_id] = $sort_tmp;
                     unset($sort_tmp);
                 } else {
-                    uksort($filter_values_full[$tv_id], function( $a,$b ) { 
-                                                        return is_numeric($a) && is_numeric($b) ? ($a-$b) : strcasecmp(strtolower($a), strtolower($b)); 
+                    uksort($filter_values_full[$tv_id], function( $a,$b ) {
+                                                        return is_numeric($a) && is_numeric($b) ? ($a-$b) : strcasecmp(strtolower($a), strtolower($b));
                                                         }
                     );
                 }
@@ -259,7 +259,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -291,7 +291,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tplOuter
                         );
                         break;
-                        
+
                     case '2': //селекты
                         $tplRow = $tplRowSelect;
                         $tplOuter = $tplOuterSelect;
@@ -302,7 +302,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -334,7 +334,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tplOuter
                         );
                         break;
-                        
+
                     case '3': //диапазон
                         //исходя из запроса $_GET
                         $minval = '';
@@ -344,7 +344,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $minvalcurr = '';
                         $maxvalcurr = '';
                         $active_block_class = '';
-                        
+
                         if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '') {
                             $content_ids = $this->curr_filter_values[$tv_id]['content_ids'] == 'all' ? $this->content_ids : $this->curr_filter_values[$tv_id]['content_ids'];
                             $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(" . $content_ids . ") AND tmplvarid = {$tv_id}");
@@ -352,7 +352,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $minvalcurr = $minmax['min'];
                             $maxvalcurr = $minmax['max'];
                         }
-                        
+
                         $tplRow = $tplRowInterval;
                         $tplOuter = $tplOuterInterval;
                         $minvalcurr = isset($this->fp[$tv_id]['min']) && (int)$this->fp[$tv_id]['min'] != 0 && (int)$this->fp[$tv_id]['min'] >= (int)$minvalcurr ? (int)$this->fp[$tv_id]['min'] : $minvalcurr;
@@ -384,7 +384,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -426,7 +426,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -467,7 +467,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $minvalcurr = '';
                         $maxvalcurr = '';
                         $active_block_class = '';
-                        
+
                         if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '') {
                             $content_ids = $this->curr_filter_values[$tv_id]['content_ids'] == 'all' ? $this->content_ids : $this->curr_filter_values[$tv_id]['content_ids'];
                             $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(" . $content_ids . ") AND tmplvarid = {$tv_id}");
@@ -490,7 +490,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $maxvalcurr = $maxvalcurr + 1;
                         }
                         $maxvalcurr = $maxvalcurr != '' ? ceil($maxvalcurr) : '';
-                        
+
                         $tplRow = $tplRowSlider;
                         $tplOuter = $tplOuterSlider;
                         /*$minvalcurr = isset($this->fp[$tv_id]['min']) && (int)$this->fp[$tv_id]['min'] != 0 && (int)$this->fp[$tv_id]['min'] >= (int)$minvalcurr ? (int)$this->fp[$tv_id]['min'] : $minvalcurr;
@@ -524,7 +524,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $label_selected = '';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -557,7 +557,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tplOuter
                         );
                         break;
-                    
+
                     case '8'://Паттерны
                         $tplRow = $tplRowPattern;
                         $tplOuter = $tplOuterPattern;
@@ -572,7 +572,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $label_selected = '';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -605,7 +605,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tplOuter
                         );
                         break;
-                    
+
                     default: //по умолчанию - чекбоксы
                         $tplRow = $tplRowCheckbox;
                         $tplOuter = $tplOuterCheckbox;
@@ -615,11 +615,11 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
                             if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
                                 $tv_val_name = '<a href="' . $this->modx->makeUrl($k) . '">' . $tv_val_name . '</a>';
-                            }                          
+                            }
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
-                                if (is_array($this->fp[$tv_id]) && in_array($k, $this->fp[$tv_id])) {
+                                if (is_array($this->fp[$tv_id]) && in_array(strval($k), $this->fp[$tv_id], true)) {
                                     $flag = true;
                                 } else {
                                     $flag =  ($this->fp[$tv_id] == $k) ? true : false;
@@ -767,7 +767,7 @@ public function makeAllContentIDs ($DLparams)
             foreach ($f as $tvid => $v) {
                 $tvid = (int)$tvid;
                 $oper = 'eq';
-                
+
                 if (isset($v['min']) || isset($v['max'])) {//если параметр - диапазон
                     if (isset($v['min']) && (int)$v['min'] != 0 ) {
                         $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'] . ';';
@@ -789,7 +789,7 @@ public function makeAllContentIDs ($DLparams)
                             $oper = 'in';
                         }
                     } else {
-                        $val = ($v == '0' || $v == '') ? '' : $v; 
+                        $val = ($v == '0' || $v == '') ? '' : $v;
                     }
                     if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
                         if ($this->filters[$tvid]['many'] == '1') {
@@ -848,7 +848,7 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                         if ($tvid != $fid) {
                             $tvid = (int)$tvid;
                             $oper = 'eq';
-                        
+
                             if (isset($v['min']) || isset($v['max'])) { //если параметр - диапазон
                                 if (isset($v['min']) && (int)$v['min'] != 0 ) {
                                     $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'] . ';';
@@ -870,7 +870,7 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                                         $oper = 'in';
                                     }
                                 } else {
-                                    $val = ($v == '0' || $v == '') ? '' : $v; 
+                                    $val = ($v == '0' || $v == '') ? '' : $v;
                                 }
                                 if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
                                     if ($this->filters[$tvid]['many'] == '1') {
@@ -946,7 +946,7 @@ public function prepareGetParams ($fp)
     if (isset($fp['f']) && is_array($fp['f'])) {
         $tmp = $fp['f'];
     } else {
-        //расшифровываем GET-строку формата f16=значение1,значение2&f17=значение3,значение4&f18=minmax~100,300 и преобразуем ее в обычный стандартный массив для обработки eFilter, 
+        //расшифровываем GET-строку формата f16=значение1,значение2&f17=значение3,значение4&f18=minmax~100,300 и преобразуем ее в обычный стандартный массив для обработки eFilter,
         // array(
         //    "16" => array("значение1", "значение2"),
         //    "17" => array("значение3", "значение4"),
@@ -989,10 +989,10 @@ public function prepareGetParamsOld ($fp)
 {
     $out = array();
     if (is_scalar($fp) && $fp != '') {
-        //расшифровываем GET-строку формата f=1~значение1,значение2||2~значение3,значение4||3~100,300~minmax и преобразуем ее в обычный массив $f, 
+        //расшифровываем GET-строку формата f=1~значение1,значение2||2~значение3,значение4||3~100,300~minmax и преобразуем ее в обычный массив $f,
         //где 1,2,3 - id соответствующих тв для фильтрации, значение1,значение2 - из значения через запятую
         //значения изначально должны быть url-кодированными, например через метод js encodeURIComponent
-        //на выходе получим нужный нам массив 
+        //на выходе получим нужный нам массив
         //$f = array(
         //    "1" => array("значение1", "значение2"),
         //    "2" => array("значение3", "значение4"),
@@ -1079,7 +1079,7 @@ public function getCategoryAllProducts($id, $tv_id)
     $search_ids = $this->modx->getPlaceholder("eFilter_search_ids");
     if ($search_ids && $search_ids != '') {
         $filter_ids = $this->modx->getPlaceholder("eFilter_filter_ids");
-        if ($filter_ids && $filter_ids != '') {//если еще и установили ограничитель списка id в плейсхолдер eFilter_filter_ids 
+        if ($filter_ids && $filter_ids != '') {//если еще и установили ограничитель списка id в плейсхолдер eFilter_filter_ids
             $search_ids = implode(',', array_intersect(explode(',', $search_ids), explode(',', $filter_ids)));
         }
         $this->categoryAllProducts = $search_ids;
@@ -1142,7 +1142,7 @@ public function getCategoryProductsTagSaver($id, $tv_id, $children = array())
 
     //берем id всех товаров, привязанных к этой категории через tv category id=$tv_id
     $tmp_parents = array($id);
-        
+
     //а также - товары, прикрепленные ко всем дочерним "категориям" относительно текущей категории (через tv "категория")
     //нужны только папки, потому берем только из кэша
     $aliaslistingfolder = $this->modx->config['aliaslistingfolder'];
