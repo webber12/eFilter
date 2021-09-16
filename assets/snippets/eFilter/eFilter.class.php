@@ -351,6 +351,16 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $minmax = $this->modx->db->getRow($q);
                             $minvalcurr = $minmax['min'];
                             $maxvalcurr = $minmax['max'];
+                        } else if (isset($this->content_ids_full) && $this->content_ids_full != '') {
+                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE tmplvarid = {$tv_id} AND contentid IN (" . $this->content_ids_full . ")");
+                            $minmax = $this->modx->db->getRow($q);
+                            $minvalcurr = $minmax['min'];
+                            $maxvalcurr = $minmax['max'];
+                        } else { //фикс если ничего не выбрано - берем просто мин и макс цену
+                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE tmplvarid = {$tv_id}");
+                            $minmax = $this->modx->db->getRow($q);
+                            $minvalcurr = $minmax['min'];
+                            $maxvalcurr = $minmax['max'];
                         }
                         
                         $tplRow = $tplRowInterval;
