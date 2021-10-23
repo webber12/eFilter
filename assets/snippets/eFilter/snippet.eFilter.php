@@ -17,7 +17,7 @@ if (isset($params['ajax']) && $params['ajax'] == '1') {
 $autoSubmit = isset($params['autoSubmit']) ? $params['autoSubmit'] : '1';
 $eFltr->modx->regClientScript('<script>var eFiltrAutoSubmit = "' . $autoSubmit . '";</script>', array('plaintext' => true));
 // задержка автосабмита формы
-$autoSubmitDelay = isset($params['autoSubmitDelay']) ? $params['autoSubmitDelay'] : '1';
+$autoSubmitDelay = isset($params['autoSubmitDelay']) ? $params['autoSubmitDelay'] : '100';
 $eFltr->modx->regClientScript('<script>var eFiltrAutoSubmitDelay = "' . $autoSubmitDelay . '";</script>', array('plaintext' => true));
 
 //режим аякс: 1 - полный, 2 - перегружается только форма, а список по кнопке submit без ajax
