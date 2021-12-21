@@ -79,7 +79,7 @@ public function __construct($modx, $params)
     $this->modx = $modx;
     $this->params = $params;
     $this->param_tv_id = $this->params['param_tv_id'];
-    $this->param_tv_id_simple = $this->params['param_tv_id_simple'];
+    //$this->param_tv_id_simple = $this->params['param_tv_id_simple'];
     $this->tv_category_tag = isset($this->params['tv_category_tag']) && (int)$this->params['tv_category_tag'] > 0 ? (int)$this->params['tv_category_tag'] : 0;
     $this->param_tv_name = $this->getParamTvName();
     //$this->param_tv_name_simple = $this->getParamTvName($this->param_tv_id_simple);
@@ -101,7 +101,7 @@ public function __construct($modx, $params)
     $this->active_block_class = isset($this->params['activeBlockClass']) ? $this->params['activeBlockClass'] : ' active ';
     $this->hideEmptyBlock = isset($this->params['hideEmptyBlock']) ? true : false;
     $this->setCommaAsSeparator();
-    if (!empty(trim($this->params['seocategorytv']))) {
+    if (!empty($this->params['seocategorytv'])) {
         $this->seocategorytv = $this->params['seocategorytv'];
     }
 }
