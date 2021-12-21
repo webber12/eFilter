@@ -123,7 +123,7 @@ public function getFilterParam ($param_tv_name, $docid = 0)
         $filter_param = json_decode($tv_config, true);
     } else {
         $tv = $this->modx->getTemplateVar($param_tv_name, '*', $docid);
-        $param_tv_val = $tv['value'] != '' ? $tv['value'] : $tv['defaultText'];
+        $param_tv_val = $tv['value'] != '' ? $tv['value'] : ($tv['defaultText'] ?? '');
         //$param_tv_val = $this->modx->runSnippet("DocInfo", array('docid' => $docid, 'tv' => '1', 'field' => $param_tv_name));
         if ($param_tv_val != '' && $param_tv_val != '[]' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}') {//если задано для категории, ее и берем
             $filter_param = json_decode($param_tv_val, true);
@@ -139,7 +139,7 @@ public function _getParentParam ($docid, $param_tv_name) {
     $parent = $this->modx->db->getValue($this->modx->db->query("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$docid} /*AND parent != 0*/ LIMIT 0,1"));
     if ($parent || $parent == '0') {
         $tv = $this->modx->getTemplateVar($param_tv_name, '*', $docid);
-        $param_tv_val = $tv['value'] != '' ? $tv['value'] : $tv['defaultText'];
+        $param_tv_val = $tv['value'] != '' ? $tv['value'] : ($tv['defaultText'] ?? '');
         //$param_tv_val = $this->modx->runSnippet("DocInfo", array('docid' => $parent, 'tv' => '1', 'field' => $param_tv_name));
         if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}' && $param_tv_val != '[]') {
             $filter_param = json_decode($param_tv_val, true);
