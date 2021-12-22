@@ -470,20 +470,20 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         
                         if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '') {
                             $content_ids = $this->curr_filter_values[$tv_id]['content_ids'] == 'all' ? $this->content_ids : $this->curr_filter_values[$tv_id]['content_ids'];
-                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(" . $content_ids . ") AND tmplvarid = {$tv_id}");
+                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS DECIMAL( 9, 2 )) ) as min, MAX( CAST( `value` AS DECIMAL( 9, 2 )) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(" . $content_ids . ") AND tmplvarid = {$tv_id}");
                             $minmax = $this->modx->db->getRow($q);
-                            $minvalcurr = $minmax['min'];
-                            $maxvalcurr = $minmax['max'];
+                            $minvalcurr = floor($minmax['min']);
+                            $maxvalcurr = ceil($minmax['max']);
                         } else if (isset($this->content_ids_full) && $this->content_ids_full != '') {
-                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE tmplvarid = {$tv_id} AND contentid IN (" . $this->content_ids_full . ")");
+                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS DECIMAL( 9, 2 )) ) as min, MAX( CAST( `value` AS DECIMAL( 9, 2 )) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE tmplvarid = {$tv_id} AND contentid IN (" . $this->content_ids_full . ")");
                             $minmax = $this->modx->db->getRow($q);
-                            $minvalcurr = $minmax['min'];
-                            $maxvalcurr = $minmax['max'];
+                            $minvalcurr = floor($minmax['min']);
+                            $maxvalcurr = ceil($minmax['max']);
                         } else { //фикс если ничего не выбрано - берем просто мин и макс цену
-                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE tmplvarid = {$tv_id}");
+                            $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS DECIMAL( 9, 2 )) ) as min, MAX( CAST( `value` AS DECIMAL( 9, 2 )) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE tmplvarid = {$tv_id}");
                             $minmax = $this->modx->db->getRow($q);
-                            $minvalcurr = $minmax['min'];
-                            $maxvalcurr = $minmax['max'];
+                            $minvalcurr = floor($minmax['min']);
+                            $maxvalcurr = ceil($minmax['max']);
                         }
                         if ($minvalcurr == $maxvalcurr) { //фикс - если цена одинаковая то делаем мин.диапазон
                             $minvalcurr = $minvalcurr - 1;
