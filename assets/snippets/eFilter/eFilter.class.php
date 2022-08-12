@@ -104,6 +104,7 @@ public function __construct($modx, $params)
     if (!empty($this->params['seocategorytv'])) {
         $this->seocategorytv = $this->params['seocategorytv'];
     }
+    $this->changeInterval = isset($this->params['changeInterval']);
 }
 
 public function getParamTvName($tv_id = '')
@@ -468,7 +469,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $maxvalcurr = '';
                         $active_block_class = '';
                         
-                        if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '') {
+                        if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '' && $this->changeInterval) {
                             $content_ids = $this->curr_filter_values[$tv_id]['content_ids'] == 'all' ? $this->content_ids : $this->curr_filter_values[$tv_id]['content_ids'];
                             $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS DECIMAL( 9, 2 )) ) as min, MAX( CAST( `value` AS DECIMAL( 9, 2 )) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(" . $content_ids . ") AND tmplvarid = {$tv_id}");
                             $minmax = $this->modx->db->getRow($q);
