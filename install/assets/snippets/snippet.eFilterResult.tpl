@@ -12,7 +12,7 @@
  * @internal    @installset base, sample
  */
  
- //импортировать общие параметры из модуля eLists
+//импортировать общие параметры из модуля eLists
  //использует для работы сниппет DocLister и выводит список товаров, при этом заменяя плейсхолдер [+params+] на список параметров товара, отмеченных для вывода в список
  //использует общие параметры из модуля eLists, также параметры $paramRow и $paramOuter для вывода параметров товара
  //доп.информация черпается из плейсхолдеров, установленных сниппетом [!eFilter!] который должен вызываться раньше
@@ -91,9 +91,13 @@ $tovar_params_wrapper = str_replace(
     $paramOuter
 );
 
-$tovarChunkName = isset($params['tpl']) && !empty($params['tpl']) ? $params['tpl'] : $tovarChunkName;
-$tovarChunk = $modx->getChunk($tovarChunkName);
-$tovarChunk = '@CODE:' . str_replace('[+params+]', $tovar_params_wrapper, $tovarChunk);
+$tovarChunkName = $params['tpl'] ?? ($tovarChunkName ?? '');
+if(!empty($tovarChunkName)) {
+	$tovarChunk = $modx->getChunk($tovarChunkName);
+	$tovarChunk = '@CODE:' . str_replace('[+params+]', $tovar_params_wrapper, $tovarChunk);
+} else {
+	$tovarChunk = '@CODE:[+pagetitle+]';
+}
 $params['tpl'] = $tovarChunk;
 ///////конец замены чанка вывода товаров
 
@@ -104,9 +108,9 @@ $params['ownerTPL'] = isset($ownerTPL) ? $ownerTPL :'@CODE: <div id="eFiltr_resu
 
 //параметры сортировки и вывода из сессии
 $docid = isset($docid) ? (int)$docid : $modx->documentIdentifier;
-$display = isset($_SESSION['sortDisplay']) ? $modx->db->escape($_SESSION['sortDisplay']) : ($params['display'] ? $params['display'] : '12');
-$sortBy = isset($_SESSION['sortBy']) ? $modx->db->escape($_SESSION['sortBy']) : ($params['sortBy'] ? $params['sortBy'] : 'menuindex');
-$sortOrder = isset($_SESSION['sortOrder']) ? $modx->db->escape($_SESSION['sortOrder']) : ($params['sortOrder'] ? $params['sortOrder'] : 'DESC');
+$display = isset($_SESSION['sortDisplay']) ? $modx->db->escape($_SESSION['sortDisplay']) : ($params['display'] ?? 12);
+$sortBy = isset($_SESSION['sortBy']) ? $modx->db->escape($_SESSION['sortBy']) : ($params['sortBy'] ?? 'menuindex');
+$sortOrder = isset($_SESSION['sortOrder']) ? $modx->db->escape($_SESSION['sortOrder']) : ($params['sortOrder'] ?? 'DESC');
 $params['orderBy'] = $sortBy . ' ' . $sortOrder;
 $params['display'] = $display;
 if ($display == 'all') unset($params['display']);
@@ -121,7 +125,11 @@ if (!empty($ids)) {
 $params['addWhereList'] = 'c.template IN(' . $product_templates_id . ')';
 if (!empty($tv_list)) {
     $params['tvList'] = $params['tvList'] == '' ? implode(',', $tv_list) : $params['tvList'] . ',' . implode(',', $tv_list);
-    $params['renderTV'] = $params['renderTV'] == '' ? implode(',', $tv_list) : $params['renderTV'] . ',' . implode(',', $tv_list);
+	if(!empty($params['renderTV'])) {
+		$params['renderTV'] .= ',' . implode(',', $tv_list);
+	} else {
+		$params['renderTV'] = implode(',', $tv_list);
+	}
 }
 $params['tvSortType'] = !empty($params['tvSortType']) ? $params['tvSortType'] : 'UNSIGNED';
 if (!empty($params)) {
@@ -129,7 +137,7 @@ if (!empty($params)) {
 }
 //Найдено [+count+], показано с [+eFRes_from+] по [+eFRes_to+]
 $DL_id = isset($params['id']) && !empty($params['id']) ? $params['id'] . '.' : '';
-if ($count == '0') { 
+if (!isset($count) || $count == '0') { 
     $from = $to = 0;
 } else {
     $display = $modx->getPlaceholder($DL_id . 'display');

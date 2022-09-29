@@ -140,7 +140,7 @@ public function _getParentParam ($docid, $param_tv_name) {
     $parent = $this->modx->db->getValue($this->modx->db->query("SELECT parent FROM " . $this->modx->getFullTableName('site_content') . " WHERE id = {$docid} /*AND parent != 0*/ LIMIT 0,1"));
     if ($parent || $parent == '0') {
         $tv = $this->modx->getTemplateVar($param_tv_name, '*', $docid);
-        $param_tv_val = $tv['value'] != '' ? $tv['value'] : ($tv['defaultText'] ?? '');
+        $param_tv_val = !empty($tv['value']) ? $tv['value'] : ($tv['defaultText'] ?? '');
         //$param_tv_val = $this->modx->runSnippet("DocInfo", array('docid' => $parent, 'tv' => '1', 'field' => $param_tv_name));
         if ($param_tv_val != '' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}' && $param_tv_val != '[]') {
             $filter_param = json_decode($param_tv_val, true);
@@ -345,7 +345,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $minvalcurr = '';
                         $maxvalcurr = '';
                         $active_block_class = '';
-                        
+
                         if (isset($this->curr_filter_values[$tv_id]['content_ids']) && $this->curr_filter_values[$tv_id]['content_ids'] != '') {
                             $content_ids = $this->curr_filter_values[$tv_id]['content_ids'] == 'all' ? $this->content_ids : $this->curr_filter_values[$tv_id]['content_ids'];
                             $q = $this->modx->db->query("SELECT MIN( CAST( `value` AS UNSIGNED) ) as min, MAX( CAST( `value` AS UNSIGNED) ) as max FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN(" . $content_ids . ") AND tmplvarid = {$tv_id}");
@@ -353,7 +353,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $minvalcurr = $minmax['min'];
                             $maxvalcurr = $minmax['max'];
                         }
-                        
+
                         $tplRow = $tplRowInterval;
                         $tplOuter = $tplOuterInterval;
                         $minvalcurr = isset($this->fp[$tv_id]['min']) && (int)$this->fp[$tv_id]['min'] != 0 && (int)$this->fp[$tv_id]['min'] >= (int)$minvalcurr ? (int)$this->fp[$tv_id]['min'] : $minvalcurr;
@@ -491,6 +491,9 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $maxvalcurr = $maxvalcurr + 1;
                         }
                         $maxvalcurr = $maxvalcurr != '' ? ceil($maxvalcurr) : '';
+
+                        if(empty($minval)) { $minval = $minvalcurr; }
+                        if(empty($maxval)) { $maxval = $maxvalcurr; }
                         
                         $tplRow = $tplRowSlider;
                         $tplOuter = $tplOuterSlider;
