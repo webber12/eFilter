@@ -609,6 +609,38 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             $tplOuter
                         );
                         break;
+
+                    case '9'://одиночный чекбокс
+                        $tplRow = $tplRowSingleCheckbox;
+                        $tplOuter = $tplOuterSingleCheckbox;
+                        $active_block_class = '';
+                        $selected = '';
+                        $count = 0;
+                        if(empty($this->fp)) {
+                            foreach ($filter_values_full[$tv_id] as $k => $v) {
+                                $count += $v['count'] ?? 0;
+                            }
+                        } else {
+                            foreach ($filter_values[$tv_id] as $k => $v) {
+                                $count += $v['count'] ?? 0;
+                            }
+                        }
+                        if (!empty($this->fp[$tv_id])) {
+                            $selected = 'checked="checked" ';
+                            $active_block_class = $this->active_block_class;
+                        }
+                        $disabled = empty($count) ? 'disabled' : '';
+                        $wrapper = $this->parseTpl(
+                            array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
+                            array($tv_id, 1, $this->params['singleCheckboxTitle'] ?? 'есть', $selected, $disabled, $count, 1),
+                            $tplRow
+                        );
+                        $output .= $this->parseTpl(
+                            array('[+tv_id+]', '[+tv_name+]', '[+name+]', '[+wrapper+]', '[+active_block_class+]'),
+                            array($tv_id, $this->filter_tv_names[$tv_id] ?? '', $filters[$tv_id]['name'], $wrapper, $active_block_class),
+                            $tplOuter
+                        );
+                        break;
                     
                     default: //по умолчанию - чекбоксы
                         $tplRow = $tplRowCheckbox;
@@ -772,41 +804,51 @@ public function makeAllContentIDs ($DLparams)
                 $tvid = (int)$tvid;
                 $oper = 'eq';
                 
-                if (isset($v['min']) || isset($v['max'])) {//если параметр - диапазон
-                    if (isset($v['min']) && (int)$v['min'] != 0 ) {
-                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'] . ';';
-                    }
-                    if (isset($v['max']) && (int)$v['max'] != 0 ) {
-                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':elt:' . (int)$v['max'] . ';';
-                    }
-                } else {//если значение/значения, но не диапазон
-                    if (is_array($v)) {
-                        if (!isset($this->params['allowZero'])) {
-                            foreach($v as $k1 => $v1) {
-                                if ($v1 == '0') {
-                                    unset($v[$k1]);
+                switch(true) {
+
+                    case $this->filters[$tvid]['type'] == '9':
+                        //одиночный чекбокс
+                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':isnotnull:;';
+                        break;
+
+                    case (isset($v['min']) || isset($v['max'])):
+                        if (isset($v['min']) && (int)$v['min'] != 0 ) {
+                            $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'] . ';';
+                        }
+                        if (isset($v['max']) && (int)$v['max'] != 0 ) {
+                            $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':elt:' . (int)$v['max'] . ';';
+                        }
+                        break;
+
+                    default:
+                        if (is_array($v)) {
+                            if (!isset($this->params['allowZero'])) {
+                                foreach($v as $k1 => $v1) {
+                                    if ($v1 == '0') {
+                                        unset($v[$k1]);
+                                    }
                                 }
                             }
-                        }
-                        $val = implode(',', $v);
-                        if (count($v) > 1) {
-                            $oper = 'in';
-                        }
-                    } else {
-                        $val = ($v == '0' || $v == '') ? '' : $v; 
-                    }
-                    if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
-                        if ($this->filters[$tvid]['many'] == '1') {
-                            if (isset($this->params['useRegexp'])) {
-                                $oper = 'regexp';
-                                $val = '[[:<:]]' . str_replace(array(',', '||'), '[[:>:]]|[[:<:]]', $val) . '[[:>:]]';
-                            } else {
-                                $oper = 'containsOne';
+                            $val = implode(',', $v);
+                            if (count($v) > 1) {
+                                $oper = 'in';
                             }
+                        } else {
+                            $val = ($v == '0' || $v == '') ? '' : $v;
                         }
-                        $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
-                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val . ';';
-                    }
+                        if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
+                            if ($this->filters[$tvid]['many'] == '1') {
+                                if (isset($this->params['useRegexp'])) {
+                                    $oper = 'regexp';
+                                    $val = '[[:<:]]' . str_replace(array(',', '||'), '[[:>:]]|[[:<:]]', $val) . '[[:>:]]';
+                                } else {
+                                    $oper = 'containsOne';
+                                }
+                            }
+                            $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
+                            $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val . ';';
+                        }
+                        break;
                 }
             }
             $fltr = substr($fltr, 0 , -1);
@@ -853,41 +895,51 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                             $tvid = (int)$tvid;
                             $oper = 'eq';
                         
-                            if (isset($v['min']) || isset($v['max'])) { //если параметр - диапазон
-                                if (isset($v['min']) && (int)$v['min'] != 0 ) {
-                                    $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'] . ';';
-                                }
-                                if (isset($v['max']) && (int)$v['max'] != 0 ) {
-                                    $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':elt:' . (int)$v['max'] . ';';
-                                }
-                            } else {//если значение/значения, но не диапазон
-                                if (is_array($v)) {
-                                    if (!isset($this->params['allowZero'])) {
-                                        foreach($v as $k1 => $v1) {
-                                            if ($v1 == '0') {
-                                                unset($v[$k1]);
+                            switch(true) {
+
+                                case $this->filters[$tvid]['type'] == '9':
+                                    //одиночный чекбокс
+                                    $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':isnotnull:;';
+                                    break;
+
+                                case (isset($v['min']) || isset($v['max'])):
+                                    if (isset($v['min']) && (int)$v['min'] != 0 ) {
+                                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'] . ';';
+                                    }
+                                    if (isset($v['max']) && (int)$v['max'] != 0 ) {
+                                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':elt:' . (int)$v['max'] . ';';
+                                    }
+                                    break;
+
+                                default:
+                                    if (is_array($v)) {
+                                        if (!isset($this->params['allowZero'])) {
+                                            foreach($v as $k1 => $v1) {
+                                                if ($v1 == '0') {
+                                                    unset($v[$k1]);
+                                                }
                                             }
                                         }
-                                    }
-                                    $val = implode(',', $v);
-                                    if (count($v) > 1) {
-                                        $oper = 'in';
-                                    }
-                                } else {
-                                    $val = ($v == '0' || $v == '') ? '' : $v; 
-                                }
-                                if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
-                                    if ($this->filters[$tvid]['many'] == '1') {
-                                        if (isset($this->params['useRegexp'])) {
-                                            $oper = 'regexp';
-                                            $val = '[[:<:]]' . str_replace(array(',', '||'), '[[:>:]]|[[:<:]]', $val) . '[[:>:]]';
-                                        } else {
-                                            $oper = 'containsOne';
+                                        $val = implode(',', $v);
+                                        if (count($v) > 1) {
+                                            $oper = 'in';
                                         }
+                                    } else {
+                                        $val = ($v == '0' || $v == '') ? '' : $v;
                                     }
-                                    $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
-                                    $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val.';';
-                                }
+                                    if ($tvid != 0 && isset($this->filter_tv_names[$tvid]) && $val != '') {
+                                        if ($this->filters[$tvid]['many'] == '1') {
+                                            if (isset($this->params['useRegexp'])) {
+                                                $oper = 'regexp';
+                                                $val = '[[:<:]]' . str_replace(array(',', '||'), '[[:>:]]|[[:<:]]', $val) . '[[:>:]]';
+                                            } else {
+                                                $oper = 'containsOne';
+                                            }
+                                        }
+                                        $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
+                                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val.';';
+                                    }
+                                    break;
                             }
                         }
                     }
