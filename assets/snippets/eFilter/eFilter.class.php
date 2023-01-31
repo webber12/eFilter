@@ -60,7 +60,10 @@ public $fp = array();
 public $zero = '';
 
 //список id, значения которых не нужно сортировать
-public $nosort_tv_id = array();
+public $nosort_tv_id = [];
+
+//список id tv, вывод которых нужно сортировать по количеству элементов
+public $sort_by_count_tv_id = [];
 
 //тип фильтра для DocLister. По умолчанию - tvd
 public $dl_filter_type;
@@ -92,7 +95,8 @@ public function __construct($modx, $params)
     $this->params['formMethod'] = 'get';
     $this->zero = isset($this->params['hideZero']) ? '' : '0';
     $this->pattern_folder = (isset($this->params['pattern_folder']) && $this->params['pattern_folder'] != '') ? $this->params['pattern_folder'] : 'assets/images/pattern/';
-    $this->nosort_tv_id = isset($this->params['nosortTvId']) ? explode(',', $this->params['nosortTvId']) : array();
+    $this->nosort_tv_id = isset($this->params['nosortTvId']) ? explode(',', $this->params['nosortTvId']) : [];
+    $this->sort_by_count_tv_id = isset($this->params['sortByCountTvId']) ? explode(',', $this->params['sortByCountTvId']) : [];
     $this->dl_filter_type = isset($this->params['DLFilterType']) ? $this->params['DLFilterType'] : 'tvd';
     $this->getFP ();
     $this->prepareGetParams($this->fp);
@@ -228,7 +232,12 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tv_elements[$tv_id][$selector_elements_row['id']] = $selector_elements_row['pagetitle'];
                     }
                 }
-                if (in_array($tv_id, $this->nosort_tv_id) || (isset($this->nosort_tv_id[0]) && $this->nosort_tv_id[0] == 'all')) {
+                if (in_array($tv_id, $this->sort_by_count_tv_id) || (isset($this->sort_by_count_tv_id[0]) && $this->sort_by_count_tv_id[0] == 'all')) {
+                    uasort($filter_values_full[$tv_id], function( $a,$b ) {
+                        if($a['count'] == $b['count']) return 0;
+                        return (int)$a['count'] > (int)$b['count'] ? -1 : 1;
+                    });
+                } else if (in_array($tv_id, $this->nosort_tv_id) || (isset($this->nosort_tv_id[0]) && $this->nosort_tv_id[0] == 'all')) {
                     $sort_tmp = array();
                     foreach($tv_elements[$tv_id] as $k => $v) {
                       if ( $filter_values_full[$tv_id][$k] ) {
