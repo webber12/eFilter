@@ -233,10 +233,34 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                     }
                 }
                 if (in_array($tv_id, $this->sort_by_count_tv_id) || (isset($this->sort_by_count_tv_id[0]) && $this->sort_by_count_tv_id[0] == 'all')) {
-                    uasort($filter_values_full[$tv_id], function( $a,$b ) {
-                        if($a['count'] == $b['count']) return 0;
+                    //сортируем все возможные значения по максимально возможному количеству
+                    uasort($filter_values_full[$tv_id], function ($a, $b) {
+                        if ($a['count'] == $b['count']) return 0;
                         return (int)$a['count'] > (int)$b['count'] ? -1 : 1;
                     });
+                    //если какие-то значения выбраны и есть динамическая сортировка,
+                    //применяем сортировку по данным количествам
+                    if(!empty($filter_values[$tv_id]) && !empty($this->params['sortByCountDynamic'])) {
+                        uasort($filter_values[$tv_id], function( $a,$b ) {
+                            if($a['count'] == $b['count']) return 0;
+                            return (int)$a['count'] > (int)$b['count'] ? -1 : 1;
+                        });
+                        $filter_values_full[$tv_id][2650] = [ 'count' => 0 ];
+                        $tmp_sort = [];
+                        //сначала собираем те, что есть в $filter_values[$tv_id] в порядке их следования
+                        foreach($filter_values[$tv_id] as $k => $v) {
+                            if(isset($filter_values_full[$tv_id][$k])) {
+                                $tmp_sort[$k] = $v;
+                            }
+                        }
+                        //затем все остальные из исходных значений в порядке их следования
+                        foreach($filter_values_full[$tv_id] as $k => $v) {
+                            if(!isset($filter_values[$tv_id][$k])) {
+                                $tmp_sort[$k] = $v;
+                            }
+                        }
+                        $filter_values_full[$tv_id] = $tmp_sort;
+                    }
                 } else if (in_array($tv_id, $this->nosort_tv_id) || (isset($this->nosort_tv_id[0]) && $this->nosort_tv_id[0] == 'all')) {
                     $sort_tmp = array();
                     foreach($tv_elements[$tv_id] as $k => $v) {
