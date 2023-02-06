@@ -1360,7 +1360,7 @@ public function translate($str, $default = null)
             $translation = $this->modx->runSnippet("lang", [ "a" => $str ]);
             break;
         case !empty($this->params['blang']):
-            $translation = $this->modx->getConfig($str);
+            $translation = $this->modx->getConfig('__' . $str);
             break;
         case !empty($this->params['translator']) && is_callable($this->params['translator']):
             $translation = call_user_func($this->params['translator'], $str, $default);
