@@ -1363,13 +1363,13 @@ public function translate($str, $default = null)
             $translation = $this->modx->getConfig($str);
             break;
         case !empty($this->params['translator']) && is_callable($this->params['translator']):
-            $translation = call_user_func($this->params['translator'], [ 'str' => $str ]);
+            $translation = call_user_func($this->params['translator'], $str, $default);
             break;
         default:
             $translation = $str;
             break;
     }
-    return $translation;
+    return is_null($translation) ? ($default ?: $str) : $translation;
 }
 
 }
