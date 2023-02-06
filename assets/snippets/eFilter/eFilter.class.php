@@ -225,6 +225,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
         $tv_captions = $this->getTVNames(implode(',', array_keys($tmp)), 'caption');
         foreach ($tmp as $tv_id => $tmp2) {
             $filters[$tv_id]['name'] = $filters[$tv_id]['name'] ?: ($tv_captions[$tv_id] ?: '');
+            $filters[$tv_id]['name'] = $this->translate($filters[$tv_id]['name']);
             if (isset($filter_values_full[$tv_id])) {
                 if (!empty($tv_types) && $tv_types[$tv_id] == 'custom_tv:selector') {
                     $selector_elements = $this->modx->db->query("SELECT id,pagetitle FROM " . $this->modx->getFullTableName("site_content") . " WHERE id IN (" . implode(",", array_keys($filter_values_full[$tv_id])) . ") AND published=1 AND deleted=0 ORDER BY menuindex ASC");
@@ -286,7 +287,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $i = 0;
                         $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
+                            $tv_val_name = $this->translate($tv_elements[$tv_id][$k] ?? $k);
                             if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
                                 $tv_val_name = '<a href="' . $this->modx->makeUrl($k) . '">' . $tv_val_name . '</a>';
                             }
@@ -332,7 +333,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $i = 0;
                         $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
+                            $tv_val_name = $this->translate($tv_elements[$tv_id][$k] ?? $k);
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
@@ -411,7 +412,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $i = 0;
                         $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
+                            $tv_val_name = $this->translate($tv_elements[$tv_id][$k] ?? $k);
                             if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
                                 $tv_val_name = '<a href="' . $this->modx->makeUrl($k) . '">' . $tv_val_name . '</a>';
                             }
@@ -456,7 +457,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $tplOuter = $tplOuterMultySelect;
                         $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
+                            $tv_val_name = $this->translate($tv_elements[$tv_id][$k] ?? $k);
                             $selected = '  ';
                             if (isset ($this->fp[$tv_id])) {
                                 $flag = false;
@@ -553,7 +554,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $i = 0;
                         $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
+                            $tv_val_name = $this->translate($tv_elements[$tv_id][$k] ?? $k);
                             if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
                                 $tv_val_name = '<a href="' . $this->modx->makeUrl($k) . '">' . $tv_val_name . '</a>';
                             }
@@ -601,7 +602,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $i = 0;
                         $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
+                            $tv_val_name = $this->translate($tv_elements[$tv_id][$k] ?? $k);
                             if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
                                 $tv_val_name = '<a href="' . $this->modx->makeUrl($k) . '">' . $tv_val_name . '</a>';
                             }
@@ -681,7 +682,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $i = 0;
                         $active_block_class = '';
                         foreach ($filter_values_full[$tv_id] as $k => $v) {
-                            $tv_val_name = isset($tv_elements[$tv_id][$k]) ? $tv_elements[$tv_id][$k] : $k;
+                            $tv_val_name = $this->translate($tv_elements[$tv_id][$k] ?? $k);
                             if ($filters[$tv_id]['href'] == '1' && is_int($k)) {
                                 $tv_val_name = '<a href="' . $this->modx->makeUrl($k) . '">' . $tv_val_name . '</a>';
                             }                          
@@ -729,7 +730,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
         }
         $categoryWrapper .= $this->parseTpl(
             array('[+cat_name+]', '[+iteration+]', '[+wrapper+]'),
-            array($cat_name, $fc, $output),
+            array($this->translate($cat_name), $fc, $output),
             $tplOuterCategory
         );
         $fc++;
@@ -1348,6 +1349,27 @@ public function getSeoChildren($children)
         }
     }
     return $out;
+}
+
+public function translate($str, $default = null)
+{
+    $str = trim($str);
+    if(empty($str)) return;
+    switch(true) {
+        case !empty($this->params['evobabel']):
+            $translation = $this->modx->runSnippet("lang", [ "a" => $str ]);
+            break;
+        case !empty($this->params['blang']):
+            $translation = $this->modx->getConfig($str);
+            break;
+        case !empty($this->params['translator']) && is_callable($this->params['translator']):
+            $translation = call_user_func($this->params['translator'], [ 'str' => $str ]);
+            break;
+        default:
+            $translation = $str;
+            break;
+    }
+    return $translation;
 }
 
 }
