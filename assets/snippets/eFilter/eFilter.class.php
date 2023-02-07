@@ -280,6 +280,12 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                 $wrapper = '';
                 $count = '';
                 //||Чекбокс==1||Список==2||Диапазон==3||Флажок==4||Мультиселект==5
+                if(
+                    (empty($filters[$tv_id]['type']) || in_array($filters[$tv_id]['type'], [ 1, 2, 4, 5, 7, 8])) &&
+                    count($filter_values_full[$tv_id]) < 2 &&
+                    !empty($this->params['hideSingleVariant'])) {
+                    continue;
+                }
                 switch ($filters[$tv_id]['type']) {
                     case '1'://чекбоксы
                         $tplRow = $tplRowCheckbox;
