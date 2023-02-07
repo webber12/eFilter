@@ -665,8 +665,8 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         }
                         $disabled = empty($count) ? 'disabled' : '';
                         $wrapper = $this->parseTpl(
-                            array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
-                            array($tv_id, 1, $this->params['singleCheckboxTitle'] ?? 'есть', $selected, $disabled, $count, 1),
+                            array('[+tv_id+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]', '[+block_name+]'),
+                            array($tv_id, 1, $this->params['singleCheckboxTitle'] ?? 'есть', $selected, $disabled, $count, 1, $filters[$tv_id]['name']),
                             $tplRow
                         );
                         $output .= $this->parseTpl(
