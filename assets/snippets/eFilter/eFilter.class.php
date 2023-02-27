@@ -246,7 +246,6 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                             if($a['count'] == $b['count']) return 0;
                             return (int)$a['count'] > (int)$b['count'] ? -1 : 1;
                         });
-                        $filter_values_full[$tv_id][2650] = [ 'count' => 0 ];
                         $tmp_sort = [];
                         //сначала собираем те, что есть в $filter_values[$tv_id] в порядке их следования
                         foreach($filter_values[$tv_id] as $k => $v) {
