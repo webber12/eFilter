@@ -99,6 +99,12 @@ tovarParams
     - afterFilterSend(msg) - исполняется после получения ответа от сервера msg<br>
     - afterFilterComplete(_form) - исполняется после обновления фильтра и результатов поиска из ответа на сервере<br>
 <br>
+js-события (вызывать $(document).on("before-efilter-send") ...
+    - "before-efilter-send", [ _form, updateAll ] - перед отправкой данных на сервер<br>
+    - "before-efilter-update", [ msg, _form, updateAll ] - при получении данных с сервера перед вставкой на страницу<br>
+    - "after-efilter-update", [ msg, _form, updateAll ] - после вставки новых данных на страницу<br>
+    - "after-efilter-change-state", [ state ] - после изменения url в адресной строке<br>
+<br>
 ### пример вызова сниппета eFilterResult - для вывода результатов фильтрации (выведет в том числе и пагинацию)
 
         [!eFilterResult? &parents=`[*id*]` &depth=`3` &paginate=`pages` &display=`15` &tvList=`image,price`!]

@@ -94,11 +94,15 @@
                 type: type,   
                 beforeSend:function() {
                     self.prepareBeforeSend(_form, updateAll);
+                    $(document).trigger("before-efilter-send", [ _form, updateAll ]);
                 },                   
                 success: function(msg) {
+                    $(document).trigger("before-efilter-update", [ msg, _form, updateAll ]);
                     self.updateAfterSuccess(msg, _form, updateAll);
+                    $(document).trigger("after-efilter-update", [ msg, _form, updateAll ]);
                     var state = action + (data2 != '' ? '?' + data2 : '');
                     self.changeState(state);
+                    $(document).trigger("after-efilter-change-state", [ state ]);
                 }
             })
         },
