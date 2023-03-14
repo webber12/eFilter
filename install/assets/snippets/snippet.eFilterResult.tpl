@@ -111,7 +111,9 @@ $docid = isset($docid) ? (int)$docid : $modx->documentIdentifier;
 $display = isset($_SESSION['sortDisplay']) ? $modx->db->escape($_SESSION['sortDisplay']) : ($params['display'] ?? 12);
 $sortBy = isset($_SESSION['sortBy']) ? $modx->db->escape($_SESSION['sortBy']) : ($params['sortBy'] ?? 'menuindex');
 $sortOrder = isset($_SESSION['sortOrder']) ? $modx->db->escape($_SESSION['sortOrder']) : ($params['sortOrder'] ?? 'DESC');
-$params['orderBy'] = $sortBy . ' ' . $sortOrder;
+$params['orderBy'] = (!empty($params['orderByBefore']) ? $params['orderByBefore'] : '') . $sortBy . ' ' . $sortOrder . (!empty($params['orderByAfter']) ? $params['orderByAfter'] : '');
+unset($params['sortBy']);
+unset($params['sortOrder']);
 $params['display'] = $display;
 if ($display == 'all') unset($params['display']);
 
