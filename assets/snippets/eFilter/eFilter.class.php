@@ -228,9 +228,19 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
             $filters[$tv_id]['name'] = $this->translate($filters[$tv_id]['name']);
             if (isset($filter_values_full[$tv_id])) {
                 if (!empty($tv_types) && $tv_types[$tv_id] == 'custom_tv:selector') {
-                    $selector_elements = $this->modx->db->query("SELECT id,pagetitle FROM " . $this->modx->getFullTableName("site_content") . " WHERE id IN (" . implode(",", array_keys($filter_values_full[$tv_id])) . ") AND published=1 AND deleted=0 ORDER BY menuindex ASC");
-                    while ($selector_elements_row = $this->modx->db->getRow($selector_elements)) {
-                        $tv_elements[$tv_id][$selector_elements_row['id']] = $selector_elements_row['pagetitle'];
+                    $selectorDLParams = [
+                        'documents' => implode(",", array_keys($filter_values_full[$tv_id])),
+                        'returnDLObject' => 1,
+                        'selectFields' => 'c.id,c.pagetitle',
+                        'orderBy' => 'menuindex ASC',
+                        'makeUrl' => 0,
+                    ];
+                    if(!empty($this->params['blang'])) {
+                        $selectorDLParams['controller'] = 'lang_content';
+                    }
+                    $selector_elements = $this->modx->runSnippet("DocLister", $selectorDLParams)->getDocs();
+                    foreach($selector_elements as $row) {
+                        $tv_elements[$tv_id][ $row['id'] ] = $row['pagetitle'];
                     }
                 }
                 if (in_array($tv_id, $this->sort_by_count_tv_id) || (isset($this->sort_by_count_tv_id[0]) && $this->sort_by_count_tv_id[0] == 'all')) {
