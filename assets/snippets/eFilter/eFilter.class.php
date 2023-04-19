@@ -99,6 +99,7 @@ public $common_filters;
 public $common_filter_cats;
 public $common_filter_names;
 public $common_filter_tvs;
+public $list_tv_elements;
 
 
 public function __construct($modx, $params)
