@@ -70,6 +70,7 @@
             $(document).on("submit", this.params.form, function(e) {
                 if (typeof useAjax !== 'undefined' && !$(this).hasClass("eFiltr_submitted")) {
                     e.preventDefault();
+                    $(document).trigger("before-efilter-form-serialize", [ $(this) ]);
                     var _form = $(this);
                     var data2 = _form.serialize()/* + '&no_ajax_for_star_rating=1'*/;
                     var action = _form.attr("action");
