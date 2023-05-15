@@ -110,6 +110,8 @@ if($modx->event->name == 'OnDocFormRender') {
                 $output .= 'jQuery(".sectionBody").find("input[name=\'tv' . $k . '\']").parents("tr").addClass("hide_next");';
                 //фикс templatesEdit3
                 $output .= 'jQuery(".sectionBody").find("input[name=\'tv' . $k . '\']").closest(".row.form-row").hide();';
+                //фикс select полей чтобы их скрывало тоже
+                $output .= 'jQuery(".sectionBody").find("select[name=\'tv' . $k . '\']").closest(".row.form-row").hide();';
             }
             $output .= '})</script>';
             $output .= '<style>tr.hide_next,tr.hide_next + tr{display:none;}</style>' . "\n";
