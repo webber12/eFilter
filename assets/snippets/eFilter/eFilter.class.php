@@ -479,7 +479,7 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                                 $i++;
                                 $wrapper .= ($k != '' || ($k == '0' && isset($this->params['allowZero']))) ? $this->parseTpl(
                                     array('[+tv_id+]', '[+tv_name+]', '[+value+]', '[+name+]', '[+selected+]', '[+disabled+]', '[+count+]', '[+iteration+]'),
-                                    array($tv_id, $k, $tv_val_name, $selected, $disabled, $count, $i),
+                                    array($tv_id, $this->filter_tv_names[$tv_id] ?? '', $k, $tv_val_name, $selected, $disabled, $count, $i),
                                     $tplRow
                                 ) : '';
                             }
