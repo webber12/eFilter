@@ -49,7 +49,7 @@ if($modx->event->name == 'OnDocFormRender') {
         
         //узнаем родителя, чтобы грузить конфиг tovarparams
         //приоритет у прямых родителей товара, по ним сначала и пройдемся
-        $pid == '';
+        $pid = '';
         $allowedParams = array();
         if (isset($_GET['pid'])) {
              $pid = $_GET['pid'];
