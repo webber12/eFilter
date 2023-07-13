@@ -70,6 +70,9 @@ if (!empty($eFltr->list_tv_ids)) {
 //так и с использованием фильтра
 //на выходе получаем список id подходящих ресурсов через запятую
 $DLparams = array('parents' => $eFltr->docid, 'depth' => isset($eFltr->params['depth']) ? $eFltr->params['depth'] : '3', 'addWhereList' => ((isset($eFltr->params['addWhereList']) && !empty($eFltr->params['addWhereList'])) ? $eFltr->params['addWhereList'] . ' AND ' : '') . 'c.template IN(' . $eFltr->params['product_templates_id'] . ')', 'makeUrl' => '0');
+if(!empty($eFltr->params['showParent'])) {
+    $DLparams['showParent'] = $eFltr->params['showParent'];
+}
 $filter_ids = $modx->getPlaceholder("eFilter_filter_ids");
 if ($filter_ids && $filter_ids != '') {
     $DLparams['addWhereList'] .= ' AND c.id IN (' . $filter_ids . ') ';
