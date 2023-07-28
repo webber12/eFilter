@@ -104,12 +104,23 @@ if($modx->event->name == 'OnDocFormRender') {
             $output .= '<script type="text/javascript">jQuery(document).ready(function(){';
             foreach ($disallowedParams as $k => $v) {
                 $output .= 'jQuery(".sectionBody").find("#tv' . $k . '").parents("tr").addClass("hide_next");';
+                //select
+                $output .= 'jQuery(".sectionBody").find("select[name=\'tv' . $k . '\']").parents("tr").addClass("hide_next");';
+                //multiselect
+                $output .= 'jQuery(".sectionBody").find("select[name=\'tv' . $k . '[]\']").parents("tr").addClass("hide_next");';
                 //фикс чекбоксов
                 $output .= 'jQuery(".sectionBody").find("input[name=\'tv' . $k . '[]\']").parents("tr").addClass("hide_next");';
                 //фикс радио
                 $output .= 'jQuery(".sectionBody").find("input[name=\'tv' . $k . '\']").parents("tr").addClass("hide_next");';
+
                 //фикс templatesEdit3
                 $output .= 'jQuery(".sectionBody").find("input[name=\'tv' . $k . '\']").closest(".row.form-row").hide();';
+                //select
+                $output .= 'jQuery(".sectionBody").find("select[name=\'tv' . $k . '\']").closest(".row.form-row").hide();';
+                //checkbox
+                $output .= 'jQuery(".sectionBody").find("input[name=\'tv' . $k . '[]\']").closest(".row.form-row").hide();';
+                //multiselect
+                $output .= 'jQuery(".sectionBody").find("select[name=\'tv' . $k . '[]\']").closest(".row.form-row").hide();';
             }
             $output .= '})</script>';
             $output .= '<style>tr.hide_next,tr.hide_next + tr{display:none;}</style>' . "\n";
