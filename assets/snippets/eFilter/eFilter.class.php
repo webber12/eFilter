@@ -948,7 +948,7 @@ public function makeAllContentIDs ($DLparams)
     if ($this->content_ids_cnt != '-1' && $this->content_ids_cnt != '0') {
         $this->content_ids_cnt_ending = $this->getNumEnding($this->content_ids_cnt, $this->endings);
     } else if ($this->content_ids_cnt == '0') {
-        $this->content_ids_cnt_ending = isset($this->endings[2]) ? $this->endings : 'товаров';
+        $this->content_ids_cnt_ending = isset($this->endings[2]) ? $this->endings[2] : 'товаров';
     } else {
         $this->content_ids_cnt_ending = '';
     }
