@@ -73,6 +73,9 @@ $DLparams = array('parents' => $eFltr->docid, 'depth' => isset($eFltr->params['d
 if(!empty($eFltr->params['showParent'])) {
     $DLparams['showParent'] = $eFltr->params['showParent'];
 }
+if(!empty($eFltr->params['showNoPublish'])) {
+    $DLparams['showNoPublish'] = $eFltr->params['showNoPublish'];
+}
 $filter_ids = $modx->getPlaceholder("eFilter_filter_ids");
 if ($filter_ids && $filter_ids != '') {
     $DLparams['addWhereList'] .= ' AND c.id IN (' . $filter_ids . ') ';

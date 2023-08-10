@@ -153,6 +153,9 @@ public function getFilterParam ($param_tv_name, $docid = 0)
         $filter_param = json_decode($tv_config, true);
     } else {
         $tv = $this->modx->getTemplateVar($param_tv_name, '*', $docid);
+        if($tv === false && !empty($this->params['showNoPublish'])) {
+            $tv = $this->modx->getTemplateVar($param_tv_name, '*', $docid, 0);
+        }
         $param_tv_val = $tv['value'] != '' ? $tv['value'] : ($tv['defaultText'] ?? '');
         //$param_tv_val = $this->modx->runSnippet("DocInfo", array('docid' => $docid, 'tv' => '1', 'field' => $param_tv_name));
         if ($param_tv_val != '' && $param_tv_val != '[]' && $param_tv_val != '{"fieldValue":[{"param_id":""}],"fieldSettings":{"autoincrement":1}}') {//если задано для категории, ее и берем
@@ -1249,6 +1252,9 @@ public function getCategoryProductsChildren($id, $children = array(), $depth = 6
     }
     if(!empty($this->params['addWhereList'])) {
         $p['addWhereList'] .= ' AND ' . $this->params['addWhereList'];
+    }
+    if(!empty($this->params['showNoPublish'])) {
+        $p['showNoPublish'] = $this->params['showNoPublish'];
     }
     $filter_ids = $this->modx->getPlaceholder("eFilter_filter_ids");
     if (!empty($filter_ids)) {
