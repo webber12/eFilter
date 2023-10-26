@@ -39,11 +39,11 @@
  
 $out = '';
 $firstEmpty = isset($firstEmpty) && (int)$firstEmpty == 0 ? false : true;
-$order = isset($order) && !empty($order) ? $order : "pagetitle ASC, menuindex ASC";
+$order = $order ?? "pagetitle ASC, menuindex ASC";
 if ($firstEmpty) {
     $out .= '||';
 }
-switch ($action){
+switch ($action ?? ''){
     case 'getParamsToMultiTV' :
         $tmp = array_merge(array_map('trim', explode(',', $param_cat_id)), array_map('trim', explode(',', $param_cat_id_common)));
         $tmp = array_diff($tmp, array(''));
@@ -68,9 +68,9 @@ switch ($action){
         break;
 
     case 'showParamsFromTree':
-        $ids = isset($params['ids']) ? $params['ids'] : '';
+        $ids = $params['ids'] ?? '';
         $no_href = isset($nohref) ? true : false;
-        $arr = array();
+        $arr = [];
         if ($ids != '') {
             $ids = str_replace('||', ',', $ids);
             $q = $modx->db->query("SELECT id,pagetitle FROM " . $modx->getFullTableName("site_content") . " WHERE id IN (" . $ids . ") AND published=1 AND deleted=0");
