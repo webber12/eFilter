@@ -1245,7 +1245,8 @@ public function getCategoryProductsChildren($id, $children = array(), $depth = 6
         'selectFields' => 'c.id',
         'makeUrl' => '0',
         'debug' => '0',
-        'addWhereList' => 'template IN (' . $this->product_templates_id . ')'
+        'addWhereList' => 'template IN (' . $this->product_templates_id . ')',
+        'showParent' => -1,
     );
     if(!empty($this->params['showParent'])) {
         $p['showParent'] = $this->params['showParent'];
