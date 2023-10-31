@@ -1,6 +1,8 @@
 ;
 !function(wnd, $, undefined){
     var autoSubmit = wnd.eFiltrAutoSubmit||1;
+    var autoSubmitID = null;
+    var autoSubmitDelay = wnd.eFiltrAutoSubmitDelay||1;
     var useAjax = wnd.eFiltrAjax;
     var ajaxMode = wnd.eFiltrAjaxMode||1;
     var doChangeState = wnd.eFiltrChangeState||1;
@@ -57,8 +59,12 @@
             var self = this;
             $(document).on("change", this.params.form_selector, function(e) {
                 if (typeof autoSubmit !== 'undefined' && autoSubmit == '1' && !$(this).hasClass("eFiltr_submitted")) {
-                    //self.submitForm();
-                    $(document).find(self.params.form).submit();
+                    var $form = $(document).find(self.params.form);
+                    if (autoSubmitID) window.clearTimeout(autoSubmitID);
+                    if (!autoSubmitDelay) autoSubmitDelay = 100;
+                    autoSubmitID = window.setTimeout(function() {
+                        $form.submit();
+                    }, autoSubmitDelay);
                 }
             })
         },
