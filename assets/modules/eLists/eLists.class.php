@@ -38,7 +38,13 @@ public function __construct($modx){
 	$this->iconfolder='media/style/'.$this->theme.'/images/icons/';
 }
 
-public function parseTpl($arr1,$arr2,$tpl){
+public function parseTpl($arr1, $arr2, $tpl){
+	$csrf = '';
+	if(function_exists('csrf_field')) {
+		$csrf = csrf_field();
+	}
+	$arr1[] = '[+csrf+]';
+	$arr2[] = $csrf;
 	return str_replace($arr1,$arr2,$tpl);
 }
 

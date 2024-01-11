@@ -21,6 +21,7 @@ $formListTpl='
 	<br><br>
 	<!--форма для создания новой формы-->
 	<form action="" method="post" class="actionButtons"> 
+		[+csrf+]
 		<input type="hidden" name="action" value="newForm">
 		Новый параметр: <br><input type="text" value="" name="title"><br>
 		<input type="submit" value="Добавить параметр">
@@ -41,6 +42,7 @@ $formRowTpl='
 
 $formEditTpl='
 	<form action="" method="post" class="actionButtons">
+		[+csrf+]
 		<input type="hidden" name="action" value="updateForm">
 		Параметр: <br><input type="text" value=\'[+title+]\' name="title" size="50"><br>
 		<input type="submit" value="Сохранить">
@@ -50,6 +52,7 @@ $formEditTpl='
 
 $fieldListTpl='
 	<form id="sortpole" action="" method="post" class="actionButtons">
+		[+csrf+]
 		<table class="fl">
 			<thead>
 				<tr>
@@ -88,6 +91,7 @@ $fieldRowTpl='
 
 $fieldEditTpl='
 	<form action="" method="post" class="actionButtons">
+		[+csrf+]
 		<input type="hidden" name="action" value="updateField">
 		Значение: <br><input type="text" value=\'[+title+]\' name="title"><br> 
 		<input type="submit" value="Сохранить изменения">

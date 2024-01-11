@@ -10,6 +10,10 @@ if(!defined('MODX_BASE_PATH')){die('What are you doing? Get out of here!');}
 include_once('eLists.class.php');
 $eL=new eListsModule($modx);
 $eL->Run();
+$csrf = '';
+if(function_exists('csrf_field')) {
+    $csrf = csrf_field();
+}
 
 
 
@@ -64,10 +68,12 @@ $output=<<<OUT
 
 		{$eL->eBlock}
 				
-		<form action="" method="post" id="delform" name="delform"> 
+		<form action="" method="post" id="delform" name="delform">
+			{$csrf}
 			<input type="hidden" name="delform1" value="">
 		</form>
-		<form action="" method="post" id="delpole" name="delpole"> 
+		<form action="" method="post" id="delpole" name="delpole">
+			{$csrf}
 			<input type="hidden" name="delpole1" value="">
 		</form>
 	</div>
