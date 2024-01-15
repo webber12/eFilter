@@ -72,6 +72,7 @@ $fieldListTpl='
 	<br><br>
 	<h2>Добавление нового значения</h2>
 	<form action="" method="post" class="actionButtons">
+		[+csrf+]
 		<input type="hidden" name="action" value="newField">
 		Название <br><input type="text" value="" name="title"><br>
 		<input type="submit" value="Добавить значение">
