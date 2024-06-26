@@ -51,7 +51,7 @@ public function parseTpl($arr1, $arr2, $tpl){
 public function createTables(){
 	//создаем таблицу форм, если ее нет
 	$sql="
-	CREATE TABLE IF NOT EXISTS ".$this->list_catagory_table." (
+	CREATE TABLE IF NOT EXISTS " . $this->list_catagory_table . " (
 		`id` int(11) NOT NULL AUTO_INCREMENT,
 		`sort` int(5) NOT NULL DEFAULT '0',
 		`title` text NOT NULL DEFAULT '',
@@ -62,10 +62,11 @@ public function createTables(){
 
 	//создаем таблицу полей форм, если ее нет
 	$sql="
-	CREATE TABLE IF NOT EXISTS ".$this->list_value_table." (
+	CREATE TABLE IF NOT EXISTS " . $this->list_value_table . " (
 		`id` int(5) NOT NULL AUTO_INCREMENT,
 		`parent` int(5) NOT NULL DEFAULT '0',
 		`title` varchar(255) NOT NULL DEFAULT '',
+		`description` varchar(255) DEFAULT NULL,
 		`sort` int(5) NOT NULL DEFAULT '0',
 		PRIMARY KEY (`id`)
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -105,8 +106,8 @@ public function delForm($id){
 }
 
 
-public function addField($fields,$table){
-	$query=$this->modx->db->insert($fields,$table);
+public function addField($fields, $table){
+	$query=$this->modx->db->insert($fields, $table);
 	if($query){$this->info='<p class="info">Значение списка успешно добавлено</p>';}
 	else{$this->info='<p class="info error">Не удалось добавить значение</p>';}
 }
@@ -189,40 +190,51 @@ public function makeActions(){
 		
 		$parent=(int)$_GET['fid'];
 		if(isset($_POST['action'])&&$_POST['action']=='newField'){//добавляем новое поле
-			$title=$this->escape($_POST['title']);
+			$title = $this->escape($_POST['title']);
+            $value = $this->escape($_POST['value']);
+            if(!empty($value)) {
+                $title .= '==' . $value;
+            }
+            $description = $this->escape($_POST['description']);
 			$type=$this->escape($_POST['type']);
 			$value=$this->escape($_POST['value']);
 			$require=isset($_POST['require'])?1:0;
-			$sort=1;
-			$maxpolesort=$this->modx->db->getValue($this->modx->db->query("SELECT MAX(sort) FROM ".$this->list_value_table." WHERE parent=".$parent." LIMIT 0,1"));
+			$sort = 1;
+			$maxpolesort = $this->modx->db->getValue($this->modx->db->query("SELECT MAX(sort) FROM ".$this->list_value_table." WHERE parent=".$parent." LIMIT 0,1"));
 			if($maxpolesort){
-				$sort=(int)$maxpolesort+1;
+				$sort = (int)$maxpolesort+1;
 			}
-			$flds=array(
-				'parent'=>$parent,
-				'title'=>$title,
-				'sort'=>$sort
+			$fields = array(
+				'parent' => $parent,
+				'title' => $title,
+                'description' => $description,
+				'sort' => $sort
 			);
-			$this->addField($flds,$this->list_value_table);
+			$this->addField($fields, $this->list_value_table);
 		}
 	}//конец список полей
 
 
 	//редактирование поля формы
 	if(isset($_GET['fid'])&&isset($_GET['action'])&&$_GET['action']=='pole'&&isset($_GET['pid'])){
-		$this->info_type=4;
-		$this->zagol='Редактирование значения';
+		$this->info_type = 4;
+		$this->zagol = 'Редактирование значения';
 		$parent=(int)$_GET['fid'];
-		if(isset($_POST['action'])&&$_POST['action']=='updateField'){//редактируем поле
-			$title=$this->escape($_POST['title']);
-			$type=$this->escape($_POST['type']);
-			$value=$this->escape($_POST['value']);
-			$require=isset($_POST['require'])?1:0;
-			$flds=array(
-				'title'=>$title
+		if(isset($_POST['action']) && $_POST['action'] == 'updateField'){//редактируем поле
+			$title = $this->escape($_POST['title']);
+            $value = $this->escape($_POST['value']);
+            if(!empty($value)) {
+                $title .= '==' . $value;
+            }
+            $description = $this->escape($_POST['description']);
+			//$type=$this->escape($_POST['type']);
+			//$require=isset($_POST['require'])?1:0;
+			$fields = array(
+				'title' => $title,
+                'description' => $description
 			);
 			
-			$this->updateField($flds,$this->list_value_table,"id=".(int)$_GET['pid']);
+			$this->updateField($fields, $this->list_value_table,"id=" . (int)$_GET['pid']);
 		}
 		
 		//обновляем информацию о поле для вывода
@@ -269,8 +281,8 @@ public function getFieldList(){
 	$form_list=$this->modx->db->query("SELECT * FROM ".$this->list_value_table." WHERE parent=".(int)$_GET['fid']." ORDER BY sort ASC");
 	while($row=$this->modx->db->getRow($form_list)){
 		$rows.=$this->parseTpl(
-			array('[+id+]', '[+parent+]', '[+title+]', '[+sort+]', '[+moduleurl+]', '[+iconfolder+]'),
-			array($row['id'], $row['parent'], $row['title'], $row['sort'], $this->moduleurl, $this->iconfolder),
+			array('[+id+]', '[+parent+]', '[+title+]', '[+sort+]', '[+description+]', '[+moduleurl+]', '[+iconfolder+]'),
+			array($row['id'], $row['parent'], $row['title'], $row['sort'], $row['description'], $this->moduleurl, $this->iconfolder),
 			$fieldRowTpl
 		);
 	}
@@ -285,9 +297,12 @@ public function getFieldList(){
 
 public function getFieldEdit(){
 	include_once('config/config.php');
-	$this->eBlock.=$this->parseTpl(
-		array('[+title+]','[+parent+]','[+moduleurl+]'),
-		array($this->pole_info['title'],$this->pole_info['parent'],$this->moduleurl),
+    $tmp = explode('==', $this->pole_info['title'], 2);
+    $title = $tmp[0];
+    $value = $tmp[1] ?? '';
+	$this->eBlock .= $this->parseTpl(
+		array('[+title+]', '[+value+]', '[+description+]', '[+parent+]', '[+moduleurl+]'),
+		array($title, $value, (string)$this->pole_info['description'], $this->pole_info['parent'], $this->moduleurl),
 		$fieldEditTpl
 	);
 	return $out;
