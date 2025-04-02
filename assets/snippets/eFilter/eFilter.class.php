@@ -875,6 +875,7 @@ public function makeAllContentIDs ($DLparams)
     if (!empty($this->fp)) {//разбираем фильтры из строки GET и добавляем их в фильтр DocLister
         $f = $this->fp;
         $this->content_ids = '';
+        $filter_values = [];
         if (is_array($f)) {
             $fltr = '';
             foreach ($f as $tvid => $v) {
@@ -890,10 +891,13 @@ public function makeAllContentIDs ($DLparams)
 
                     case (isset($v['min']) || isset($v['max'])):
                         if (isset($v['min']) && (int)$v['min'] != 0 ) {
-                            $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'] . ';';
+                            $filter_values[$this->filter_tv_names[$tvid] . '_min'] = (int)$v['min'];
+                            $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . $this->filter_tv_names[$tvid] . '_min' . ';';
+
                         }
                         if (isset($v['max']) && (int)$v['max'] != 0 ) {
-                            $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':elt:' . (int)$v['max'] . ';';
+                            $filter_values[$this->filter_tv_names[$tvid] . '_max'] = (int)$v['max'];
+                            $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':elt:' . $this->filter_tv_names[$tvid] . '_max' . ';';
                         }
                         break;
 
@@ -922,8 +926,9 @@ public function makeAllContentIDs ($DLparams)
                                     $oper = 'containsOne';
                                 }
                             }
-                            $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
-                            $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val . ';';
+                            //$val = str_replace(array('(', ')'), array('\(', '\)'), $val);
+                            $filter_values[$this->filter_tv_names[$tvid]] = $val;
+                            $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $this->filter_tv_names[$tvid] . ';';
                         }
                         break;
                 }
@@ -932,6 +937,7 @@ public function makeAllContentIDs ($DLparams)
             if ($fltr != '') {
                 $fltr = 'AND(' . $fltr . ')';
                 $DLparams['filters'] = $fltr;
+                $DLparams['filterValues'] = json_encode($filter_values);
                 $_ = $this->modx->runSnippet("DocLister", $DLparams);
                 $this->content_ids = $this->getListFromJson($_);
                 //$this->content_ids = str_replace(' ', '', substr($this->content_ids, 0, -1));
@@ -965,6 +971,7 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
         $f = $this->fp;
         if (is_array($f)) {
             foreach ($this->filter_tv_names as $fid =>$name) {
+                $filter_values = [];
                 $fltr = '';
                 if (isset($f[$fid])) {
                     foreach ($f as $tvid => $v) {
@@ -981,10 +988,12 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
 
                                 case (isset($v['min']) || isset($v['max'])):
                                     if (isset($v['min']) && (int)$v['min'] != 0 ) {
-                                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . (int)$v['min'] . ';';
+                                        $filter_values[$this->filter_tv_names[$tvid] . '_min'] = (int)$v['min'];
+                                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':egt:' . $this->filter_tv_names[$tvid] . '_min' . ';';
                                     }
                                     if (isset($v['max']) && (int)$v['max'] != 0 ) {
-                                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':elt:' . (int)$v['max'] . ';';
+                                        $filter_values[$this->filter_tv_names[$tvid] . '_max'] = (int)$v['max'];
+                                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':elt:' . $this->filter_tv_names[$tvid] . '_max' . ';';
                                     }
                                     break;
 
@@ -1013,8 +1022,9 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                                                 $oper = 'containsOne';
                                             }
                                         }
-                                        $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
-                                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val.';';
+                                        //$val = str_replace(array('(', ')'), array('\(', '\)'), $val);
+                                        $filter_values[$this->filter_tv_names[$tvid]] = $val;
+                                        $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $this->filter_tv_names[$tvid] . ';';
                                     }
                                     break;
                             }
@@ -1025,6 +1035,7 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                 if ($fltr != '') {
                     $fltr = 'AND(' . $fltr . ')';
                     $DLparams['filters'] = $fltr;
+                    $DLparams['filterValues'] = json_encode($filter_values);
                     $_ = $this->modx->runSnippet("DocLister", $DLparams);
                     $this->curr_filter_values[$fid]['content_ids'] = $this->getListFromJson($_);
                 /*} else {
@@ -1365,6 +1376,7 @@ public function getSeoChildren($children)
     $common_tv_names = $this->getTVNames (implode(',', array_keys($this->common_filters)));
     $tvs = $this->modx->getTemplateVarOutput(array_keys($this->common_filters), $this->modx->documentIdentifier);
     $seoFilters = array();
+    $filterValues = [];
     foreach ($this->common_filters as $k => $v) {
         $seo_tv_name = !empty($common_tv_names[$k]) ? $common_tv_names[$k] : '';
         if (empty($seo_tv_name) || empty($tvs[$seo_tv_name])) continue;
@@ -1373,27 +1385,30 @@ public function getSeoChildren($children)
                 //диапазон-слайдер
                 $minmax = array_map('trim', explode('-', $tvs[$seo_tv_name]));
                 if (!empty($minmax[0])) {
-                    $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':>=:' . $minmax[0];
+                    $filterValues[$seo_tv_name . '_min'] = $minmax[0];
+                    $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':>=:' . $seo_tv_name . '_min';
                 }
                 if (!empty($minmax[1])) {
-                    $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':<=:' . $minmax[1];
+                    $filterValues[$seo_tv_name . '_max'] = $minmax[1];
+                    $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':<=:' . $seo_tv_name . '_max';
                 }
                 break;
             default:
                 if (empty($v['many'])) {
-                    $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':=:' . $tvs[$seo_tv_name];
+                    $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':=:' . $seo_tv_name;
                 } else {
                     if (isset($this->params['useRegexp'])) {
-                        $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':regexp:' . '[[:<:]]' . str_replace(array(',', '||'), '[[:>:]]|[[:<:]]', $tvs[$seo_tv_name]) . '[[:>:]]';
+                        $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':regexp:' . '[[:<:]]' . str_replace(array(',', '||'), '[[:>:]]|[[:<:]]', $seo_tv_name) . '[[:>:]]';
                     } else {
-                        $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':containsOne:' . str_replace('||', ',', $tvs[$seo_tv_name]);
+                        $seoFilters[] = $this->dl_filter_type . ':' . $seo_tv_name . ':containsOne:' . str_replace('||', ',', $seo_tv_name);
                     }
                 }
+                $filterValues[$seo_tv_name] = $tvs[$seo_tv_name];
                 break;
         }
     }
     if (!empty($seoFilters)) {
-        $DLparams = array('api' => 'id', 'JSONformat' => 'new', 'documents' => implode(',', array_keys($children)), 'sortType' => 'doclist', 'filters' => 'AND(' . implode(';', $seoFilters) . ')');
+        $DLparams = array('api' => 'id', 'JSONformat' => 'new', 'documents' => implode(',', array_keys($children)), 'sortType' => 'doclist', 'filters' => 'AND(' . implode(';', $seoFilters) . ')', 'filterValues' => json_encode($filterValues));
         $seo_dl = $this->modx->runSnippet("DocLister", $DLparams);
         $ids = $this->getListFromJson($seo_dl);
         if (!empty($ids)) {
