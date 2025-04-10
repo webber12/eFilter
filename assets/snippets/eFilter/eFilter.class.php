@@ -922,7 +922,7 @@ public function makeAllContentIDs ($DLparams)
                                     $oper = 'containsOne';
                                 }
                             }
-                            $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
+                            //$val = str_replace(array('(', ')'), array('\(', '\)'), $val);
                             $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val . ';';
                         }
                         break;
@@ -1013,7 +1013,7 @@ public function makeCurrFilterValuesContentIDs ($DLparams)
                                                 $oper = 'containsOne';
                                             }
                                         }
-                                        $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
+                                       // $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
                                         $fltr .= $this->dl_filter_type . ':' . $this->filter_tv_names[$tvid] . ':' . $oper . ':' . $val.';';
                                     }
                                     break;
