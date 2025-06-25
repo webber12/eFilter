@@ -13,6 +13,7 @@
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(10):before{content:"множ.";position:absolute;top:-20px;left:0;font-size:12px;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(12){width:50px;position:relative;vertical-align:middle;display:inline-block;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(12):before{content:"ссылка";position:absolute;top:-20px;left:0;font-size:12px;}
+.multitv #tv[+param_tv_id+]list .element label:nth-of-type(13):before{content:"Точное совпад";position:absolute;top:-20px;left:0;font-size:12px;}
     .multitv #tv[+param_tv_id+]list .element input.mtv_cat_name{width:140px !important;vertical-align:middle;display:inline-block;position:relative;}
     .multitv #tv[+param_tv_id+]list .element input.mtv_fltr_name{width:140px !important;vertical-align:middle;display:inline-block;}
     .multitv #tv[+param_tv_id+]list .element br{display:none;}
@@ -24,6 +25,7 @@
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(8){display:none;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(9){display:none;}
     .multitv #tv[+param_tv_id+]list .element label:nth-of-type(11){display:none;}
+    .multitv #tv[+param_tv_id+]list .element label:nth-of-type(12){display:none;}
     .multitv #tv[+param_tv_id+]list .element label.checkbox{cursor:pointer;}
 
     /*раскрашиваем чекбоксы*/
