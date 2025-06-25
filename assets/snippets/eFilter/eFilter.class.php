@@ -188,6 +188,7 @@ class eFilter {
     public function makeFilterArrays()
     {
         $this->common_filter_tvs = $this->common_filter_names = $this->common_filter_cats = $this->common_filters = array();
+		
         foreach ($this->filter_param['fieldValue'] as $k => $v) {
             if ($v['fltr_yes'] == '1'){
                 $this->filter_tvs[] = $v['param_id'];
@@ -197,6 +198,7 @@ class eFilter {
                 $this->filters[$v['param_id']]['name'] = $v['fltr_name'];
                 $this->filters[$v['param_id']]['many'] = $v['fltr_many'];
                 $this->filters[$v['param_id']]['href'] = $v['fltr_href'];
+				 $this->filters[$v['param_id']]['containsAll'] = $v['fltr_containsAll'] ??'';
             }
             if ($v['list_yes'] == '1'){
                 $this->list_tv_ids[] = $v['param_id'];
@@ -208,6 +210,7 @@ class eFilter {
             $this->common_filters[$v['param_id']]['name'] = $v['fltr_name'];
             $this->common_filters[$v['param_id']]['many'] = $v['fltr_many'];
             $this->common_filters[$v['param_id']]['href'] = $v['fltr_href'];
+			$this->filters[$v['param_id']]['containsAll'] = $v['fltr_containsAll'] ?? '';
         }
     }
 
