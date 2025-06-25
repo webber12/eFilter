@@ -952,7 +952,12 @@ class eFilter {
                                         $oper = 'regexp';
                                         $val = '[[:<:]]' . str_replace(array(',', '||'), '[[:>:]]|[[:<:]]', $val) . '[[:>:]]';
                                     } else {
-                                        $oper = 'containsOne';
+                                        if($this->filters[$tvid]['containsAll'] == '1'){
+                                            $oper = 'containsAll';
+                                        }else{
+                                            $oper = 'containsOne';
+                                        }
+                                        
                                     }
                                 }
                                 //$val = str_replace(array('(', ')'), array('\(', '\)'), $val);
@@ -1043,7 +1048,11 @@ class eFilter {
                                                     $oper = 'regexp';
                                                     $val = '[[:<:]]' . str_replace(array(',', '||'), '[[:>:]]|[[:<:]]', $val) . '[[:>:]]';
                                                 } else {
-                                                    $oper = 'containsOne';
+                                                    if($this->filters[$tvid]['containsAll'] == '1'){
+                                                        $oper = 'containsAll';
+                                                    }else{
+                                                        $oper = 'containsOne';
+                                                    }
                                                 }
                                             }
                                             // $val = str_replace(array('(', ')'), array('\(', '\)'), $val);
