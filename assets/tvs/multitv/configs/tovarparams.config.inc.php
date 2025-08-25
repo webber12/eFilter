@@ -38,6 +38,11 @@ $settings['fields'] = array(
         'caption' => 'Ссылка',
         'type' => 'checkbox',
         'elements' => 'Да==1'
+    ),
+     'fltr_containsAll' => array(
+        'caption' => 'Точное совпад.',
+        'type' => 'checkbox',
+        'elements' => 'Да==1'
     )
 );
 $settings['templates'] = array(

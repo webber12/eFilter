@@ -70,7 +70,8 @@
                     { id:"fltr_many", header:"Множ", width:50, template:"{common.checkbox()}", adjust:"header"},
                     { id:"cat_name", header:"Категория" , editor:"text", sort:"text"},
                     { id:"list_yes", header:"Список", template:"{common.checkbox()}", adjust:"header"},
-                    { id:"fltr_href", header:"Ссылка", width:65, template:"{common.checkbox()}", adjust:"header"}
+                    { id:"fltr_href", header:"Ссылка", width:65, template:"{common.checkbox()}", adjust:"header"},
+                    { id:"fltr_containsAll", header:"Точное совпад.", width:95, template:"{common.checkbox()}", adjust:"header"}
                 ],
                 autowidth:true,
                 /*autoheight:true,*/
