@@ -54,7 +54,7 @@ public function createTables(){
 	CREATE TABLE IF NOT EXISTS " . $this->list_catagory_table . " (
 		`id` int(11) NOT NULL AUTO_INCREMENT,
 		`sort` int(5) NOT NULL DEFAULT '0',
-		`title` text NOT NULL DEFAULT '',
+		`title` text NOT NULL,
 		PRIMARY KEY (`id`)
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 	";

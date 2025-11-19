@@ -13,7 +13,7 @@
             block : "#eFiltr",
             form : "form#eFiltr",
             form_btn : ".eFiltr_btn",
-            form_selector : "form#eFiltr input, form#eFiltr select",
+            form_selector : "form#eFiltr input:not(.stop_event), form#eFiltr select:not(.stop_event)",
             result_list : "#eFiltr_results",
             loader : "#eFiltr_results_wrapper .eFiltr_loader"
         },
