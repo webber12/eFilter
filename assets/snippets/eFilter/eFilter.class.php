@@ -694,11 +694,11 @@ public function renderFilterBlock ($filter_cats, $filter_values_full, $filter_va
                         $selected = '';
                         $count = 0;
                         if(empty($this->fp)) {
-                            foreach ($filter_values_full[$tv_id] as $k => $v) {
+                            foreach ($filter_values_full[$tv_id] ?? [] as $k => $v) {
                                 $count += $v['count'] ?? 0;
                             }
                         } else {
-                            foreach ($filter_values[$tv_id] as $k => $v) {
+                            foreach ($filter_values[$tv_id] ?? [] as $k => $v) {
                                 $count += $v['count'] ?? 0;
                             }
                         }
@@ -798,7 +798,7 @@ public function getFilterValues ($content_ids, $filter_tv_ids = '')
 {
     $filter_values = array();
     if ($content_ids != '') {//берем только если есть какие-то документы
-        $sql = "SELECT * FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN (" . $content_ids . ") " . ($filter_tv_ids != '' ? " AND tmplvarid IN (" . $filter_tv_ids . ")" : "");
+        $sql = "SELECT * FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE `value` IS NOT NULL AND contentid IN (" . $content_ids . ") " . ($filter_tv_ids != '' ? " AND tmplvarid IN (" . $filter_tv_ids . ")" : "");
         $q = $this->modx->db->query($sql);
         while ($row = $this->modx->db->getRow($q)) {
             if ($this->commaAsSeparator) {
@@ -835,7 +835,7 @@ public function getFilterFutureValues ($curr_filter_values, $filter_tv_ids = '')
         foreach ($curr_filter_values as $tv_id => $v) {
             if (isset($v['content_ids']) && $v['content_ids'] != '') {
                 $content_ids = $v['content_ids'] == 'all' ? $this->content_ids : $v['content_ids'];
-                $sql = "SELECT * FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE contentid IN (" . $content_ids . ") " . ($filter_tv_ids != '' ? " AND tmplvarid ={$tv_id}" : "");
+                $sql = "SELECT * FROM " . $this->modx->getFullTableName('site_tmplvar_contentvalues') . " WHERE `value` IS NOT NULL AND contentid IN (" . $content_ids . ") " . ($filter_tv_ids != '' ? " AND tmplvarid ={$tv_id}" : "");
                 $q = $this->modx->db->query($sql);
                 while ($row = $this->modx->db->getRow($q)) {
                     if ($this->commaAsSeparator) {
