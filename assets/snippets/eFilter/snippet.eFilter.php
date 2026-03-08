@@ -87,6 +87,7 @@ if (empty($allProducts)) return;//если документов нет, то и 
 unset($DLparams['parents']);
 unset($DLparams['depth']);
 $DLparams['documents'] = $allProducts;
+$DLparams['filters'] = 'AND('.$eFltr->params['filters_DL'].')';
 $DLparamsAll = array_merge($DLparams, $DLparamsAPI);
 
 //это список всех id товаров данной категории, дальше будем вычленять ненужные :)
@@ -98,6 +99,25 @@ $eFltr->content_ids_full = $eFltr->getListFromJson($_);
 //как все подходящие к данному фильтру товары
 //для подстановки в вызов DocLister и вывода списка отфильтрованных товаров на сайте
 $eFltr->makeAllContentIDs($DLparamsAll);
+
+//Дальнейший if написан не автором. 
+//Он достаточно грубо, но действенно использует в сниппете eFilter новый параметр &filters_DL для того, чтобы сделать выборку изначальных значений. 
+//Например, у нас в папке 1000 товаров, мы хотим изначально вывести все с color=10
+//&filters_DL=`tvd:color:is:10`
+//Чуть более удобный вариант использования - создать tv-параметр, например, filters, вписать в него tvd:color:is:10
+//Тогда вывод будет следующий: &filters_DL=`[*filters*]`
+if(isset($eFltr->params['filters_DL']) && strlen($eFltr->params['filters_DL'])>0) {
+    $filters_DL_params = [
+        'idType'=>'documents',
+        'documents'=>$eFltr->content_ids,
+        'tpl'=>'@CODE:[+id+],',
+        'tplLast'=>'@CODE:[+id+]',
+        'filters'=>$eFltr->params['filters_DL']
+];
+    $eFltr->content_ids_full = $eFltr->modx->runSnippet("DocLister", $filters_DL_params);
+    $eFltr->content_ids = $eFltr->content_ids_full; 
+    $eFltr->content_ids_cnt = count(explode(',',$eFltr->content_ids));
+}
 
 //начинаем формировать фильтр
 //проходимся по каждому фильтру и берем список всех товаров с учетом всех фильтров кроме текущего
