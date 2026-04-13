@@ -15,8 +15,8 @@ if ($modx->event->name == 'OnManagerPageInit') {
     $fields = array('enable_sharedparams' => 1);
  
     $modx->db->update($fields, $M, 'id = "' . $moduleId . '"');
-    $snippets = array('eFilter', 'eFilterResult', 'multiParams', 'tovarParams');
-    $plugins = array('eFilterHelper');
+    $snippets = array('eFilter', 'eFilterResult', 'multiParams', 'tovarParams', 'iFilter');
+    $plugins = array('eFilterHelper', 'iFilterIndexHelper', 'iFilterSeo');
     foreach ($snippets as $snippet) {
         $snippetId  = $modx->db->getValue($modx->db->select('id', $S, 'name="' . $snippet . '"'));
         if (empty($snippetId)) {

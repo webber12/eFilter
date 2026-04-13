@@ -39,4 +39,12 @@
 
 #eFiltr_results_wrapper{position:relative;min-height:64px;}
 #eFiltr_results{}
-#eFiltr_results_wrapper .eFiltr_loader{position:absolute;top:10px;left:50%;margin-left:-32px;z-index:10;width:64px;height:64px;background:url(loader.GIF) 0 0 no-repeat;display:none;}
+#eFiltr_results_wrapper .eFiltr_loader{position:absolute;top:10px;left:50%;margin-left:-32px;z-index:10;width:100px;height:100px;background:url(../bouncing-circles.svg) 50% 50% no-repeat;display:none;}
+
+[data-filter-choices]{}
+[data-filter-choices] .data-choice-wrapper{display:inline-block;margin-right:15px;margin-bottom:10px;}
+[data-filter-choices] .data-choice-wrapper .data-choice-inner{display:flex;align-items: center;padding:5px 7px;background:#efefef;color:#575757;}
+[data-filter-choices] .data-choice-wrapper .data-choice-inner .title{margin-right:3px;}
+[data-filter-choices] .data-choice-wrapper .data-choice-row{padding:1px 5px;border:solid 1px #575757;cursor:pointer;margin-right:5px;position:relative;padding-right:25px;}
+[data-filter-choices] .data-choice-wrapper .data-choice-delete{width:20px;height:20px;background:url(../delete.svg) 50% 50% no-repeat;background-size: contain;display:inline-block;position:absolute;right:3px;top:50%;margin-top:-9px;}
+

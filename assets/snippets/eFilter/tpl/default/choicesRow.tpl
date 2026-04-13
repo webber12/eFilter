@@ -1,0 +1,1 @@
+<span class="data-choice-row" data-choices-row="((value_id))">((value))<span class="data-choice-delete" data-choice-delete="((value_id))"></span></span>

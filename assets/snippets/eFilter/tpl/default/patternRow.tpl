@@ -1,0 +1,8 @@
+@CODE:
+<label class="[+disabled+] [+label_selected+]" title="[+name+] ([+count+])" data-value-block="[+tv_id+]_[+value+]">
+    <input type="checkbox" name="f[[+tv_id+]][]" value="[+value+]" [+selected+] [+disabled+]
+           data-seo-value="[+seo_value+]">
+    <img src="[+pattern_folder+][+value+]" alt="[+name+]">
+    <span class="filter_value_title">[+name+]</span>
+    <span class="fltr_count">[+count+]</span>
+</label>
