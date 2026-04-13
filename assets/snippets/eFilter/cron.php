@@ -4,8 +4,8 @@ $path = __DIR__ . '/../../../';
 
 define('MODX_API_MODE', true);
 define('MODX_BASE_PATH', $path);
-define('MODX_SITE_URL', 'https://www.sitex.by/');
-define('MODX_BASE_URL', 'https://www.sitex.by/');
+define('MODX_SITE_URL', 'https://www.test.ru/');
+define('MODX_BASE_URL', 'https://www.test.ru/');
 include_once($path . 'index.php');
 
 if (empty($modx->config)) {
