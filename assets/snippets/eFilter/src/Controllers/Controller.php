@@ -941,10 +941,19 @@ class Controller
 
                 if(empty($value)) continue;
 
-                if(!isset($arr[ $value ])) {
-                    $arr[ $value ] = [];
+                if(is_string($value)) {
+                    if (!isset($arr[$value])) {
+                        $arr[$value] = [];
+                    }
+                    $arr[$value][] = (int)$row['contentid'];
+                } else if (is_array($value)) {
+                    foreach($value as $v) {
+                        if (!isset($arr[$v])) {
+                            $arr[$v] = [];
+                        }
+                        $arr[$v][] = (int)$row['contentid'];
+                    }
                 }
-                $arr[ $value ][] = (int)$row['contentid'];
             }
         }
         if(!empty($arr)) {
