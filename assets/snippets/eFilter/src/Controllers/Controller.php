@@ -894,7 +894,7 @@ class Controller
         if(!empty($ids)) {
             $q = $this->modx->db->query("select `id` from " . $this->tvTable . ' where `category` in(' . implode(',', $ids) . ')');
             while($row = $this->modx->db->getRow($q)) {
-                $this->makeTVIndex($row['id']);
+                $this->makeTVIndex($row['id'], $row);
                 $i++;
             }
         }
@@ -913,7 +913,7 @@ class Controller
         return $flag;
     }
 
-    protected function makeTVIndex($tvid)
+    protected function makeTVIndex($tvid, $row)
     {
         $arr = [];
         $indexesPath = $this->getIndexFolderPath() . '/';
@@ -931,6 +931,8 @@ class Controller
             if(!is_string($row['value'])) continue;
             if(strpos($row['value'], '||') !== false) {
                 $values = explode('||', $row['value']);
+            } else if($tvrow['type'] == 'custom_tv:selector') {
+                $values = explode(',', $row['value']);
             } else {
                 $values[] = $row['value'];
             }
