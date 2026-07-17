@@ -25,7 +25,8 @@ if($modx->event->name == 'OnDocFormRender') {
             $("#actions>.btn-group").append('<a id="iFilterIndex" class="btn btn-primary" href="javascript:;"><i class="fa fa-eye"></i><span>Индекс iFilter</span></a>');
             $(document).on("click", "#iFilterIndex", function(e){
                 e.preventDefault();
-                $.get('/assets/snippets/eFilter/cron.php', function(data){
+                let timestamp = new Date().getTime();
+                $.get('/assets/snippets/eFilter/cron.php?_t=' + timestamp, function(data){
                     alert('Индексация завершена');
                 });
             })
