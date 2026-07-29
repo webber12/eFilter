@@ -571,6 +571,7 @@ class Controller
             $ids = $this->loadContentIdsFromCache($docid);
             if($ids === false) {
                 //иначе собираем с родителей, мультикатегорий и привязанных категорий через tagSaver
+                $ids = [];
                 $params = [
                     'parents' => $docid,
                     'depth' => 5,
