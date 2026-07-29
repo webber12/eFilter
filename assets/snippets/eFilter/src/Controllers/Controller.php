@@ -563,9 +563,9 @@ class Controller
         //получаем сначала все id товаров, которые участвуют в фильтрации
         $ids = [];
         $plh = $this->modx->getPlaceholder('eFilter_search_ids');
-        if(!empty($plh)) {
+        if($plh !== null) {
             //если список id установлен в плейсхолдер - просто забираем его
-            $ids = array_map('trim', explode(',', $plh));
+            $ids = is_array($plh) ? $plh : array_map('trim', explode(',', $plh));
         } else {
             $docid = $this->get('parents', -1);
             $ids = $this->loadContentIdsFromCache($docid);
