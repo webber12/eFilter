@@ -967,7 +967,7 @@ class Controller
                             $contentid = call_user_func($prepareIdBeforeIndex, [ 'id' => $contentid, 'tvid' => $tvid ]);
                         }
                         if($contentid !== false) {
-                            $arr[$value][] = $contentid;
+                            $arr[$v][] = $contentid;
                         }
                     }
                 }
