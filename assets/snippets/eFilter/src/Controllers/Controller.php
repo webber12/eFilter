@@ -948,13 +948,23 @@ class Controller
                     if (!isset($arr[$value])) {
                         $arr[$value] = [];
                     }
-                    $arr[$value][] = (int)$row['contentid'];
+                    $contentid = (int)$row['contentid'];
+                    $prepareIdBeforeIndex = $this->get('prepareIdBeforeIndex');
+                    if(is_callable($prepareIdBeforeIndex)) {
+                        $contentid = call_user_func($prepareIdBeforeIndex, [ 'id' => $contentid, 'tvid' => $tvid ]);
+                    }
+                    $arr[$value][] = $contentid;
                 } else if (is_array($value)) {
                     foreach($value as $v) {
                         if (!isset($arr[$v])) {
                             $arr[$v] = [];
                         }
-                        $arr[$v][] = (int)$row['contentid'];
+                        $contentid = (int)$row['contentid'];
+                        $prepareIdBeforeIndex = $this->get('prepareIdBeforeIndex');
+                        if(is_callable($prepareIdBeforeIndex)) {
+                            $contentid = call_user_func($prepareIdBeforeIndex, [ 'id' => $contentid, 'tvid' => $tvid ]);
+                        }
+                        $arr[$v][] = $contentid;
                     }
                 }
             }
