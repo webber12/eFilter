@@ -953,7 +953,9 @@ class Controller
                     if(is_callable($prepareIdBeforeIndex)) {
                         $contentid = call_user_func($prepareIdBeforeIndex, [ 'id' => $contentid, 'tvid' => $tvid ]);
                     }
-                    $arr[$value][] = $contentid;
+                    if($contentid !== false) {
+                        $arr[$value][] = $contentid;
+                    }
                 } else if (is_array($value)) {
                     foreach($value as $v) {
                         if (!isset($arr[$v])) {
@@ -964,7 +966,9 @@ class Controller
                         if(is_callable($prepareIdBeforeIndex)) {
                             $contentid = call_user_func($prepareIdBeforeIndex, [ 'id' => $contentid, 'tvid' => $tvid ]);
                         }
-                        $arr[$v][] = $contentid;
+                        if($contentid !== false) {
+                            $arr[$value][] = $contentid;
+                        }
                     }
                 }
             }
