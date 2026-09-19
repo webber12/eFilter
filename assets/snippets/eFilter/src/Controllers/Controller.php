@@ -234,10 +234,11 @@ class Controller
     {
         //Чекбокс==1||Список==2||Диапазон==3||Флажок==4||Мультиселект==5||Слайдер==6||Цвет==7||Паттерн==8||Одиночный чебокс==9
         $type = $this->filterTypes[ $this->filterConfig[$tvid]['fltr_type'] ?? 1 ] ?? 'checkboxes';
-        $rowTpl = $this->getTpl($type.'Row');
-        $ownerTpl = $this->getTpl($type.'Owner');
+        $rowTpl = $this->getTpl($type.'Row', $filter['name']);
+        $ownerTpl = $this->getTpl($type.'Owner', $filter['name']);
         $rows = $owner = '';
         $removeDisabled = $this->get('removeDisabled', false);
+        $prepare = $this->get('prepare');
         switch($this->filterConfig[$tvid]['fltr_type']) {
             case 3: //диапазон
                 $fields = [
@@ -254,6 +255,9 @@ class Controller
                 if((float)$fields['finish'] == (float)$fields['max'] && empty($this->get('setIntervalValues'))) {
                     $fields['finish'] = '';
                 }
+                if(!empty($prepare) && is_callable($prepare)) {
+                    $fields = call_user_func($prepare, $fields, 'row', [ 'filter' => $filter, 'types' => $this->filterTypes, 'config' => $this->filterConfig[$tvid] ]);
+                }
                 $rows .= $this->parse($rowTpl, $fields);
                 break;
             case 6: //слайдер
@@ -265,6 +269,9 @@ class Controller
                     'start' => $filter['values']['currMin'] ?: $filter['values']['min'],
                     'finish' => $filter['values']['currMax'] ?: $filter['values']['max'],
                 ];
+                if(!empty($prepare) && is_callable($prepare)) {
+                    $fields = call_user_func($prepare, $fields, 'row', [ 'filter' => $filter, 'types' => $this->filterTypes, 'config' => $this->filterConfig[$tvid] ]);
+                }
                 $rows .= $this->parse($rowTpl, $fields);
                 break;
             default:
@@ -296,6 +303,9 @@ class Controller
                         $fields['label_selected'] = !empty($row['checked']) ? 'active' : '';
                         $fields['pattern_folder'] = $this->get('patternFolder', 'assets/images/pattern/');
                     }
+                    if(!empty($prepare) && is_callable($prepare)) {
+                        $fields = call_user_func($prepare, $fields, 'row', [ 'filter' => $filter, 'types' => $this->filterTypes, 'config' => $this->filterConfig[$tvid] ]);
+                    }
                     $rows .= $this->parse($rowTpl, $fields);
                 }
                 break;
@@ -308,6 +318,9 @@ class Controller
                 'name' => $filter['caption'],
                 'wrapper' => $rows,
             ];
+            if(!empty($prepare) && is_callable($prepare)) {
+                $fields = call_user_func($prepare, $fields, 'owner', [ 'filter' => $filter, 'types' => $this->filterTypes, 'config' => $this->filterConfig[$tvid] ]);
+            }
             $owner .= $this->parse($ownerTpl, $fields);
         }
         return $owner;
@@ -1025,10 +1038,30 @@ class Controller
         return $this->getIdsCacheFolderPath() . '/id_' . $docid . '.dat';
     }
 
-    protected function getTpl($name)
+    protected function getTpl($name, $tvName = false)
     {
         $tpl = '';
-        $path = $this->tplPath . $name  . '.tpl';
+        $path = '';
+        $tpls = $this->get('tpls', []);
+        if(!empty($tvName)) {
+            if(!empty($tpls[ $tvName ])) {
+                //пробуем взять путь из параметров вызова iFilter tpls => [ 'brand' => 'new' ]; checkboxesOwnerNew.tpl / checkboxesRowNew.tpl
+                $path = $this->tplPath . $name  . ucfirst($tpls[ $tvName ]) . '.tpl';
+                if(!is_file($path) || !is_readable($path)) {
+                    $path = ''; //fallback
+                }
+            }
+            if(empty($path)) {
+                //пробуем взять путь по имени ТВ  checkboxesOwnerBrand.tpl / checkboxesRowBrand.tpl
+                $path = $this->tplPath . $name . ucfirst($tvName) . '.tpl';
+                if (!is_file($path) || !is_readable($path)) {
+                    $path = ''; //fallback
+                }
+            }
+        }
+        if(empty($path)) {
+            $path = $this->tplPath . $name . '.tpl';
+        }
         if(is_file($path) && is_readable($path)) {
             $tpl = @file_get_contents($path);
         }
