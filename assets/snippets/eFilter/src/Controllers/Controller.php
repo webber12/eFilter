@@ -180,11 +180,12 @@ class Controller
         return $this;
     }
 
-    public function renderFilters($filter)
+    public function renderFilters($filters)
     {
         $html = '';
         $categoryTpl = $this->getTpl('category');
-        foreach($filter as $i => $category) {
+        $prepare = $this->get('prepare');
+        foreach($filters as $i => $category) {
             $category_filters = '';
             foreach($category['filters'] as $tvid => $filter) {
                 $category_filters .= $this->renderFilter($filter, $tvid);
@@ -195,6 +196,9 @@ class Controller
                     'cat_name' => $category['category'],
                     'wrapper' => $category_filters,
                 ];
+                if(!empty($prepare) && is_callable($prepare)) {
+                    $fields = call_user_func($prepare, $fields, 'category', [ 'filter' => $category['filters'], 'types' => $this->filterTypes, 'config' => $this->filterConfig[$tvid] ]);
+                }
                 $html .= $this->parse($categoryTpl, $fields);
             }
         }
@@ -222,6 +226,9 @@ class Controller
                 'wrapper' => $html,
                 'btn_text' => $this->get('btnText', 'Найти'),
             ];
+            if(!empty($prepare) && is_callable($prepare)) {
+                $fields = call_user_func($prepare, $fields, 'form', [ 'filter' => $filters, 'types' => $this->filterTypes, 'config' => $this->filterConfig[$tvid] ]);
+            }
             $html = $this->parse($formTpl, $fields);
             if(!empty($html)) {
                 $html .= $this->parse($this->getTpl('reset'), [ 'reset_url' => $form_url ]);
