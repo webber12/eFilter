@@ -35,6 +35,8 @@ if ($modx->event->name == 'OnPageNotFound') {
 
     if(!empty($seoFilter)) {
         $_GET['f'] = $seoFilter;
+        $modx->setPlaceholder('forwardId', $docid);
+        $modx->setPlaceholder('forwardUrl', (string)$_GET['q']); //пригодится в каком-нибудь плагине на OnAfterLoadDocumentObject для поиска и подмены полей documentObject
         $modx->sendForward($docid);
         exit();
     }

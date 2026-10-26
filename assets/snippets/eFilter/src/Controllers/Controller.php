@@ -1171,11 +1171,32 @@ class Controller
                     $this->tvInfo[$tvid]['elements'] = $this->loadSelectorElements($tvid);
                 }
                 if(!empty($this->tvInfo[$tvid]['elements'])) {
-                    $keys = array_keys($this->tvInfo[$tvid]['elements']);
-                    $elements = array_map([ $this, 'stripAlias' ], array_values($this->tvInfo[$tvid]['elements']));
+                    $sorted = $this->tvInfo[$tvid]['elements'];
+                    //ставим в плагине на OnPageNotFound выше плагина iFilterSeo
+                    $noSortTvSeoFilter = evo()->getPlaceholder('noSortTvSeoFilter');
+                    if(!empty($noSortTvSeoFilter)) {
+                        if(is_callable($noSortTvSeoFilter)) {
+                            //метод класса или функция для кастомной сортировки элементов
+                            $sorted = call_user_func($noSortTvSeoFilter, [ 'elements' => $sorted, 'tvid' => $tvid ]);
+                        } else {
+                            //если tvid нет в списке не подлежащих сортировке - сортируем
+                            if($noSortTvSeoFilter != 'all' && !in_array($tvid, array_map('trim', explode(",", $noSortTvSeoFilter)))) {
+                                asort($sorted, SORT_REGULAR);
+                            }
+                        }
+                    } else {
+                        asort($sorted, SORT_REGULAR);
+                    }
+                    $keys = array_keys($sorted);
+                    $elements = array_map([ $this, 'stripAlias' ], array_values($sorted));
+                    $pos = 0;
                     foreach($values as $value) {
                         $key = array_search($value, $elements);
                         if($key === false || !isset($keys[$key])) return false; //такого значения нет в списке возможных
+                        if($key < $pos) {//сравниваем порядок элементов. если не совпадает  - 404
+                            return false;
+                        }
+                        $pos = $key;
                         $realValues[] = $keys[$key];
                     }
                     if(empty($realValues)) return false;
